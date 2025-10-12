@@ -1,0 +1,26 @@
+@import "tailwindcss";
+@tailwind utilities;
+
+/* 1) Khai báo keyframes bên trong @theme */
+@theme {
+  @keyframes zoomFade {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.1);
+      opacity: 0.6; /* mờ bớt khi phóng to */
+    }
+  }
+}
+
+/* 2) Tạo utility class bên ngoài @theme */
+@utility animate-zoomFade {
+  animation: zoomFade 1.5s ease-in-out infinite;
+}
+
+
+body {
+  @apply bg-gray-200; 
+}
