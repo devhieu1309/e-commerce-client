@@ -11,8 +11,11 @@ import AddItem from "../components/ItemList/AddItem";
 import ItemDetail from "../components/ItemList/ItemDetail";
 import ProductEdit from "../components/ItemList/EditItem";
 import EditItem from "../components/ItemList/EditItem";
-
 import AdminBannerList from "../components/AdminBannerList";
+import AdminNewsList from "../components/News/NewsList";
+import AdminNewsBlocks from "../components/News/NewsBlocks";
+import QuantityInStock from "../components/QuantityInStock";
+import OrderStatusList from "../components/OrderStatusList";
 
 export const routes = [
   {
@@ -83,6 +86,25 @@ export const routes = [
       {
         path: "bannerlist",
         element: <AdminBannerList />,
+      },
+
+      {
+        path: "quantityInStock",
+        element: <QuantityInStock />,
+      },
+
+      {
+        path: "newslist",
+        element: <AdminNewsList />,
+      },
+      {
+        path: "newsblocks",
+        element: <AdminNewsBlocks />,
+      },
+
+      {
+        path: "orderstatus",
+        element: <OrderStatusList />,
       },
     ],
   },

@@ -49,6 +49,35 @@ function MenuSider() {
       icon: <HighlightOutlined />,
       key: "menu-6",
     },
+
+    {
+      // label: "Quản lý tin tức và chi tiết tin tức",
+      label: <Link to="">Tin Tức</Link>,
+      icon: <HighlightOutlined />,
+      key: "menu-7",
+      children: [
+        {
+          label: <Link to="/admin/newslist">Quản lý tin tức</Link>,
+          key: "menu-7-1",
+        },
+        {
+          label: <Link to="newsblocks">Quản lý chi tiết tin tức</Link>,
+          key: "menu-7-2",
+        },
+      ],
+    },
+    {
+      // label: "Quản lý sản phẩm tồn kho",
+      label: <Link to="/admin/quantityInStock">Quản lý sản phẩm tồn kho</Link>,
+      icon: <HighlightOutlined />,
+      key: "menu-4",
+    },
+    {
+      // label: "Quản lý phương thanh toán  phương thanh toán",
+      label: <Link to="/admin/orderstatus">Quản lý phương thanh toán</Link>,
+      icon: <HighlightOutlined />,
+      key: "menu-5",
+    },
   ];
 
   return (
