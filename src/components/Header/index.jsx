@@ -261,6 +261,7 @@ function Header() {
                       alt="Order"
                     />
                   </span>
+
                   <span className="hover:text-amber-300 text-[14px]">
                     Tra cứu
                     <br />
@@ -357,6 +358,7 @@ function Header() {
           <Link to="">
             <li className="py-2 hover:text-[#000F8F] text-[16px]">Trang chủ</li>
           </Link>
+
           <li className="py-2 hover:text-[#000F8F] text-[16px]">Giới thiệu</li>
           <li className="flex items-center justify-center py-2 space-x-1 group/rotate">
             <span className="hover:text-[#000F8F] text-[16px]">Sản phẩm</span>
@@ -473,6 +475,7 @@ function Header() {
           <Link to="/dat-truoc-san-pham">
             <li className="py-2 hover:text-[#000F8F] text-[16px]">Đặt trước</li>
           </Link>
+
           <li className="py-2 hover:text-[#000F8F] text-[16px]">Liên hệ</li>
         </ul>
         <div className="group-hover/header:h-[115px]"></div>
