@@ -13,7 +13,7 @@ function MenuSider() {
     {
       label: <Link to="/admin">Thống kê</Link>,
       icon: <PlayCircleOutlined />,
-      key: "menu-1",
+      key: "menu-0",
       // children: [
       //     {
       //         label: <Link to="/">Dashboard</Link>,
@@ -82,19 +82,19 @@ function MenuSider() {
       // label: "Quản lý sản phẩm tồn kho",
       label: <Link to="/admin/quantityInStock">Quản lý sản phẩm tồn kho</Link>,
       icon: <HighlightOutlined />,
-      key: "menu-4",
+      key: "menu-8",
     },
     {
       // label: "Quản lý phương thanh toán  phương thanh toán",
       label: <Link to="/admin/orderstatus">Quản lý phương thanh toán</Link>,
       icon: <HighlightOutlined />,
-      key: "menu-5",
+      key: "menu-9",
     },
     {
       // label: "Quản lý phương thức vận chuyển",
       label: <Link to="/admin/shipping_methods">Quản lý phương thức vận chuyển</Link>,
       icon: <ShoppingOutlined />,
-      key: "menu-4",
+      key: "menu-10",
     },
   ];
 

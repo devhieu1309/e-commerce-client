@@ -14,6 +14,7 @@ function CategoryToolbar({
     { id: 2, category_name: "Laptop" },
     { id: 3, category_name: "Máy tính bảng" },
   ],
+  onReload
 }) {
   return (
     <div
@@ -45,7 +46,7 @@ function CategoryToolbar({
           ))}
         </Select>
       </Space>
-      <CategoryModal mode="create" record={{  }}  />
+      <CategoryModal mode="create" record={{  }} onReload={onReload}  />
     </div>
   );
 }

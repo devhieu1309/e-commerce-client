@@ -10,12 +10,6 @@ function Header() {
               <div className="w-[219px] h-[45px]">
                 <img src="/logo.webp" alt="Ảnh logo" />
               </div>
-              {/* <div className="bg-[#2E3AA3] flex p-2 items-center justify-center space-x-3 rounded-sm focus-within:bg-red-500">
-                                <span className="">
-                                    <img className="h-[20px] w-[20px]" src="/icons8-navigation-menu-50.png" alt="Danh mục" />
-                                </span>
-                                <span>Danh mục</span>
-                            </div> */}
               <div className="bg-[#2E3AA3] z-10 flex p-2 items-center justify-center space-x-3 rounded-sm group focus-within:bg-amber-500 relative">
                 <button className="flex items-center space-x-2 cursor-pointer">
                   <img

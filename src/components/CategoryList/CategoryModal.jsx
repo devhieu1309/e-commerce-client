@@ -1,22 +1,11 @@
-import {
-  Button,
-  Form,
-  Input,
-  InputNumber,
-  Modal,
-  notification,
-  Select,
-  Spin,
-  Switch,
-  Tooltip,
-} from "antd";
-import { EditOutlined, LoadingOutlined, PlusOutlined } from "@ant-design/icons";
+import { Button, Form, Input, Modal, notification, Spin, Tooltip } from "antd";
+import { EditOutlined, PlusOutlined } from "@ant-design/icons";
 import { useState } from "react";
-
-const { Option } = Select;
+import TextArea from "antd/es/input/TextArea";
+import { editCategory, storeCategory } from "../../services/categoryServices";
 
 function CategoryModal(props) {
-  const { record, mode } = props;
+  const { record, onReload, mode } = props;
   const [showModal, setShowModal] = useState(false);
   const [form] = Form.useForm();
   const [apiNoti, contextHolder] = notification.useNotification();
@@ -39,25 +28,41 @@ function CategoryModal(props) {
   };
 
   const handleSubmit = async (values) => {
-    // setSpinning(true);
-    // const response = await updateRoom(record.id, values);
-    // // const response = undefined;
-    // setTimeout(() => {
-    //   if (response) {
-    //     apiNoti.success({
-    //       message: `Notification`,
-    //       description: `Cập nhật sản phẩm ${record.name} thành công!`,
-    //     });
-    //     setShowModal(false);
-    //     onReload();
-    //   } else {
-    //     apiNoti.error({
-    //       message: `Notification`,
-    //       description: `Cập nhật sản phẩm ${record.name} không thành công!`,
-    //     });
-    //   }
-    //   setSpinning(false);
-    // }, 3000);
+    setSpinning(true);
+    if (mode === "edit") {
+      const response = await editCategory(record.category_id, values);
+      if (response) {
+        apiNoti.success({
+          message: `Notification`,
+          description: `Cập nhật danh mục ${response.category_name} thành công!`,
+        });
+        setShowModal(false);
+        onReload();
+      } else {
+        apiNoti.error({
+          message: `Notification`,
+          description: `Cập nhật danh mục ${response.category_name} không thành công!`,
+        });
+      }
+      setSpinning(false);
+    } else {
+      const response = await storeCategory(values);
+      if (response) {
+        apiNoti.success({
+          message: `Notification`,
+          description: `Thêm danh mục ${response.category_name} thành công!`,
+        });
+        setShowModal(false);
+        form.resetFields();
+        onReload();
+      } else {
+        apiNoti.error({
+          message: `Notification`,
+          description: `Thêm danh mục ${response.category_name} không thành công!`,
+        });
+      }
+      setSpinning(false);
+    }
   };
   return (
     <>
@@ -72,15 +77,14 @@ function CategoryModal(props) {
           />
         </Tooltip>
       ) : (
-        <Button 
-        type="primary" 
-        icon={<PlusOutlined />} 
-         onClick={handleShowModal}
-         >
-        Thêm danh mục
-      </Button>
+        <Button
+          type="primary"
+          icon={<PlusOutlined />}
+          onClick={handleShowModal}
+        >
+          Thêm danh mục
+        </Button>
       )}
-      
 
       <Modal
         open={showModal}
@@ -88,7 +92,7 @@ function CategoryModal(props) {
         title={mode === "edit" ? "Cập nhật danh mục" : "Thêm danh mục"}
         footer={null}
       >
-        <Spin spinning={spinning} tip="Đang cập nhật...">
+        <Spin spinning={spinning} tip={mode === "edit" ? "Đang cập nhật..." : "Đang tạo mới..."}>
           <Form
             layout="vertical"
             name="create-room"
@@ -100,20 +104,22 @@ function CategoryModal(props) {
               <Input />
             </Form.Item>
 
-            <Form.Item label="Chọn danh mục cha" name="category_parent_id" rules={rules}>
-              <Select
-                style={{
-                  width: "100%",
-                }}
-                placeholder="Danh mục cha"
-                allowClear
-              >
-                <Option value="Điện thoại">Điện thoại</Option>
-                <Option value="Laptop">Laptop</Option>
-                <Option value="Ipad">Ipad</Option>
-              </Select>
+            <Form.Item
+              label="Mô tả"
+              name="description"
+              rules={[
+                {
+                  required: false,
+                  message: "Vui lòng nhập mô tả danh mục",
+                },
+              ]}
+            >
+              <TextArea
+                placeholder="Nhập mô tả danh mục"
+                autoSize={{ minRows: 3, maxRows: 6 }}
+              />
             </Form.Item>
-            
+
             <Form.Item label={null}>
               <Button type="primary" htmlType="submit">
                 {mode === "edit" ? "Cập nhật" : "Thêm mới"}

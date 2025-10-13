@@ -1,34 +1,37 @@
-import { Button, notification, Popconfirm, Tooltip } from "antd";
+import { Button, notification, Popconfirm } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
+import { deleteCategory } from "../../services/categoryServices";
 
 function DeleteCategory(props) {
-  const { record } = props;
+  const { record, onReload } = props;
+  const [apiNoti, contextHolder] = notification.useNotification();
 
-  const [notiCategory, contextHolder] = notification.useNotification();
-
-  const openNotificationWithIcon = (type, name) => {
-    notiCategory[type]({
-      message: "Thành công",
-      description: `Danh mục "${name}" đã được xóa thành công.`,
-    });
-  };
-
-  const handleDelete = () => {
-    openNotificationWithIcon("success", record.category_name);
-    // const response = await deleteRoom(record.id);
-    // if(response){
-    //   onReload();
-    //   alert("Xóa bảng ghi thành công!");
-    // }else{
-    //   alert("Xóa bảng ghi thất bại. Vui lòng thử lại!");
-    // }
+  const handleDelete = async () => {
+    const response = await deleteCategory(record.category_id);
+    if (response.success) {
+      apiNoti.success({
+        message: `Notification`,
+        description: `Xóa danh mục ${record.category_name} thành công!`,
+      });
+      setTimeout(() => {
+        onReload();
+      }, 1500) 
+    } else {
+      apiNoti.error({
+        message: `Notification`,
+        description: `Xóa danh mục ${record.category_name} thất bại!`,
+      });
+    }
   };
 
   return (
     <>
       {contextHolder}
-      <Popconfirm title={`Bạn có chắc muốn xóa ${record.category_name}?`} onConfirm={handleDelete}>
-          <Button danger size="small" icon={<DeleteOutlined />}></Button>
+      <Popconfirm
+        title={`Bạn có chắc muốn xóa ${record.category_name}?`}
+        onConfirm={handleDelete}
+      >
+        <Button danger size="small" icon={<DeleteOutlined />}></Button>
       </Popconfirm>
     </>
   );
