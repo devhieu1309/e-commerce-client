@@ -12,6 +12,8 @@ import ItemDetail from "../components/ItemList/ItemDetail";
 import ProductEdit from "../components/ItemList/EditItem";
 import EditItem from "../components/ItemList/EditItem";
 
+import AdminBannerList from "../components/AdminBannerList";
+
 export const routes = [
   {
     path: "/",
@@ -77,12 +79,18 @@ export const routes = [
         path: "variation",
         element: <VariationList />,
       },
+
+      {
+        path: "bannerlist",
+        element: <AdminBannerList />,
+      },
     ],
   },
 ];
 
-{/* <Route path="/admin/products/edit/:id" element={<ProductEdit />} /> */}
-
+{
+  /* <Route path="/admin/products/edit/:id" element={<ProductEdit />} /> */
+}
 
 {
   /* <Routes>
