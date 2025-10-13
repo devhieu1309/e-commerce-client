@@ -11,11 +11,20 @@ import AddItem from "../components/ItemList/AddItem";
 import ItemDetail from "../components/ItemList/ItemDetail";
 import ProductEdit from "../components/ItemList/EditItem";
 import EditItem from "../components/ItemList/EditItem";
+
 import Introduction from "../pages/User/Introduction";
 import Cart from "../pages/User/Cart";
 import Review from "../pages/User/Review";
 import Relatedquestions from "../pages/User/Relatedquestions";
 import Contact from "../pages/User/Contact";
+
+import AdminBannerList from "../components/AdminBannerList";
+import AdminNewsList from "../components/News/NewsList";
+import AdminNewsBlocks from "../components/News/NewsBlocks";
+import QuantityInStock from "../components/QuantityInStock";
+import OrderStatusList from "../components/OrderStatusList";
+import ShippingMethodList from "../components/ShippingMethodList";
+
 
 export const routes = [
   {
@@ -102,11 +111,41 @@ export const routes = [
         path: "variation",
         element: <VariationList />,
       },
+
+      {
+        path: "bannerlist",
+        element: <AdminBannerList />,
+      },
+
+      {
+        path: "quantityInStock",
+        element: <QuantityInStock />,
+      },
+
+      {
+        path: "newslist",
+        element: <AdminNewsList />,
+      },
+      {
+        path: "newsblocks",
+        element: <AdminNewsBlocks />,
+      },
+
+      {
+        path: "orderstatus",
+        element: <OrderStatusList />,
+      },
+      {
+        path: "shipping_methods", 
+        element: <ShippingMethodList />, 
+      },
     ],
   },
 ];
 
-{/* <Route path="/admin/products/edit/:id" element={<ProductEdit />} /> */ }
+{
+  /* <Route path="/admin/products/edit/:id" element={<ProductEdit />} /> */
+}
 
 
 {
