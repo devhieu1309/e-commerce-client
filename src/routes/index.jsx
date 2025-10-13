@@ -5,11 +5,17 @@ import Error404 from "../components/Error404";
 import Dashboard from "../pages/Admin/Dashboard";
 import LayoutDashboard from "../layout/LayoutDashboard";
 import CategoryList from "../components/CategoryList";
+import News from "../pages/User/news/News";
+import NewsDetail from "../pages/User/detailnews/NewsDetail";
+import Guarantee from "../pages/User/guarantee/Guarantee";
+import ComparProducts from "../pages/User/compareproducts/ComparProducts";
+import StoreSystem from "../pages/User/storesystem/StoreSystem";
+import PreOrderPage from "../pages/User/preOrderPage/PreOrderPage";
+import ProductsFavorite from "../pages/User/FavoriteProducts/ProductsFavorite";
 import ItemList from "../components/ItemList";
 import VariationList from "../components/VariationList";
 import AddItem from "../components/ItemList/AddItem";
 import ItemDetail from "../components/ItemList/ItemDetail";
-import ProductEdit from "../components/ItemList/EditItem";
 import EditItem from "../components/ItemList/EditItem";
 import AdminBannerList from "../components/AdminBannerList";
 import AdminNewsList from "../components/News/NewsList";
@@ -25,6 +31,38 @@ export const routes = [
       {
         index: true,
         element: <Home />,
+      },
+      {
+        path: "iphone-15-256gb-chinh-hang-vn-a",
+        element: <Detail />,
+      },
+      {
+        path: "news",
+        element: <News />,
+      },
+      {
+        path: "iphone-15-hong-co-may-phien-ban-5-diem-doc-dao-khien-nhieu-chi-em-yeu-thich",
+        element: <NewsDetail />,
+      },
+      {
+        path: "Tra-cuu-bao-hanh",
+        element: <Guarantee />,
+      },
+      {
+        path: "san-pham-yeu-thich",
+        element: <ProductsFavorite />,
+      },
+      {
+        path: "so-sanh-san-pham",
+        element: <ComparProducts />,
+      },
+      {
+        path: "he-thong-cua-hang",
+        element: <StoreSystem />,
+      },
+      {
+        path: "dat-truoc-san-pham",
+        element: <PreOrderPage />,
       },
       {
         path: "iphone-15-256gb-chinh-hang-vn-a",
