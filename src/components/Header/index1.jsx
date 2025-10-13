@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
 import { useState } from 'react';
+
 function Header() {
     const [open, setOpen] = useState(false);
+
     return (
         <>
             <header className="relative group/header">
@@ -195,25 +197,9 @@ function Header() {
                                         đơn hàng
                                     </span>
                                 </li>
-                                <li className="flex space-x-1.5 items-center justify-center w-[120px] relative">
-                                    <span className="">
-                                        <img className="h-[50px] w-[50px] object-contain" src="/icons8-cart-100.png" alt="Cart" />
-                                    </span>
-                                    <span className="hover:text-amber-300 group/cart">
-                                        <span className="text-[14px]">
-                                            Giỏ hàng Sản phẩm
-                                        </span>
-                                        <div className="group-hover/cart:flex hidden absolute top-14 right-3 bg-white w-[400px] py-3 px-3 rounded-md flex-col items-center justify-center space-y-3 ring-1 ring-black/10 shadow-[0_0_18px_0_rgba(0,0,0,0.06)]">
-                                            <div>
-                                                <img className="w-[30px] h-[30px] object-cover" src="/icons8-cart-50.png" alt="Cart" />
-                                            </div>
-                                            <p className="text-black text-[14px]">
-                                                Không có sản phẩm nào trong giỏ hàng của bạn
-                                            </p>
-                                        </div>
-                                    </span>
 
-                                </li>
+
+
                             </ul>
                             <div className="bg-[#2E3AA3] flex flex-col justify-center items-center p-2 rounded-sm hover:bg-amber-400 group">
                                 <span className="">

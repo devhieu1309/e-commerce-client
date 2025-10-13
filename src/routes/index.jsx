@@ -11,6 +11,11 @@ import AddItem from "../components/ItemList/AddItem";
 import ItemDetail from "../components/ItemList/ItemDetail";
 import ProductEdit from "../components/ItemList/EditItem";
 import EditItem from "../components/ItemList/EditItem";
+import Introduction from "../pages/User/Introduction";
+import Cart from "../pages/User/Cart";
+import Review from "../pages/User/Review";
+import Relatedquestions from "../pages/User/Relatedquestions";
+import Contact from "../pages/User/Contact";
 
 export const routes = [
   {
@@ -20,6 +25,26 @@ export const routes = [
       {
         index: true,
         element: <Home />,
+      },
+      {
+        path: "Introduction",
+        element: <Introduction />,
+      },
+      {
+        path: "cart",
+        element: <Cart />,
+      },
+      {
+        path: "Review",
+        element: <Review />,
+      },
+      {
+        path: "Relatedquestions",
+        element: <Relatedquestions />,
+      },
+      {
+        path: "contact",
+        element: <Contact />,
       },
       {
         path: "iphone-15-256gb-chinh-hang-vn-a",
@@ -81,7 +106,7 @@ export const routes = [
   },
 ];
 
-{/* <Route path="/admin/products/edit/:id" element={<ProductEdit />} /> */}
+{/* <Route path="/admin/products/edit/:id" element={<ProductEdit />} /> */ }
 
 
 {
