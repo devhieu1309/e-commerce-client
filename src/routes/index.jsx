@@ -16,6 +16,7 @@ import AdminNewsList from "../components/News/NewsList";
 import AdminNewsBlocks from "../components/News/NewsBlocks";
 import QuantityInStock from "../components/QuantityInStock";
 import OrderStatusList from "../components/OrderStatusList";
+import ShippingMethodList from "../components/ShippingMethodList";
 
 export const routes = [
   {
@@ -105,6 +106,10 @@ export const routes = [
       {
         path: "orderstatus",
         element: <OrderStatusList />,
+      },
+      {
+        path: "shipping_methods", 
+        element: <ShippingMethodList />, 
       },
     ],
   },

@@ -3,6 +3,7 @@ import {
   CheckOutlined,
   HighlightOutlined,
   PlayCircleOutlined,
+  ShoppingOutlined
 } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 
@@ -77,6 +78,12 @@ function MenuSider() {
       label: <Link to="/admin/orderstatus">Quản lý phương thanh toán</Link>,
       icon: <HighlightOutlined />,
       key: "menu-5",
+    },
+    {
+      // label: "Quản lý phương thức vận chuyển",
+      label: <Link to="/admin/shipping_methods">Quản lý phương thức vận chuyển</Link>,
+      icon: <ShoppingOutlined />,
+      key: "menu-4",
     },
   ];
 
