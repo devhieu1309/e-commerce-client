@@ -3,7 +3,8 @@ import {
   CheckOutlined,
   HighlightOutlined,
   PlayCircleOutlined,
-  ShoppingOutlined
+  ShoppingOutlined,
+  UserOutlined,
 } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 
@@ -29,19 +30,29 @@ function MenuSider() {
       // ]
     },
     {
+      label: <Link to="/admin/user">Danh sách người dùng</Link>,
+      icon: <UserOutlined />,
+      key: "menu-1",
+    },
+    {
+      label: <Link to="/admin/on_off">Khóa/Mở tài khoản người dùng</Link>,
+      icon: <UserOutlined />,
+      key: "menu-2",
+    },
+    {
       label: <Link to="/admin/products">Quản lý sản phẩm</Link>,
       icon: <CheckOutlined />,
-      key: "menu-2",
+      key: "menu-3",
     },
     {
       label: <Link to="/admin/categories">Quản lý danh mục</Link>,
       icon: <HighlightOutlined />,
-      key: "menu-3",
+      key: "menu-4",
     },
     {
       label: <Link to="/admin/variation">Quản lý biến thể</Link>,
       icon: <HighlightOutlined />,
-      key: "menu-4",
+      key: "menu-5",
     },
 
     {
