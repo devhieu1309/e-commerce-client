@@ -83,7 +83,13 @@ function MenuSider() {
       // label: "Quản lý phương thức vận chuyển",
       label: <Link to="/admin/shipping_methods">Quản lý phương thức vận chuyển</Link>,
       icon: <ShoppingOutlined />,
-      key: "menu-4",
+      key: "menu-10",
+    },
+    {
+      // label: "Quản lý chương trình khuyến mãi",
+      label: <Link to="/admin/promotions">Quản lý chương trình khuyến mãi</Link>,
+      icon: <HighlightOutlined />,
+      key: "menu-11",
     },
   ];
 

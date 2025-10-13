@@ -24,6 +24,7 @@ import AdminNewsBlocks from "../components/News/NewsBlocks";
 import QuantityInStock from "../components/QuantityInStock";
 import OrderStatusList from "../components/OrderStatusList";
 import ShippingMethodList from "../components/ShippingMethodList";
+import PromotionList from "../components/PromotionList";
 
 
 export const routes = [
@@ -138,6 +139,10 @@ export const routes = [
       {
         path: "shipping_methods", 
         element: <ShippingMethodList />, 
+      },
+      {
+        path: "promotions", 
+        element: <PromotionList />, 
       },
     ],
   },
