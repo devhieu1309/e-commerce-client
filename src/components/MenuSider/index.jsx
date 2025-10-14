@@ -92,19 +92,20 @@ function MenuSider() {
     },
     {
       // label: "Quản lý phương thức vận chuyển",
-      label: <Link to="/admin/shipping_methods">Quản lý phương thức vận chuyển</Link>,
+      label: (
+        <Link to="/admin/shipping_methods">Quản lý phương thức vận chuyển</Link>
+      ),
       icon: <ShoppingOutlined />,
       key: "menu-10",
-<<<<<<< HEAD
-=======
     },
-    {
-      // label: "Quản lý chương trình khuyến mãi",
-      label: <Link to="/admin/promotions">Quản lý chương trình khuyến mãi</Link>,
-      icon: <HighlightOutlined />,
-      key: "menu-11",
->>>>>>> f294a43d1fbd039a99dc03b004f749e7da48ccba
-    },
+    //     },
+    //     {
+    //       // label: "Quản lý chương trình khuyến mãi",
+    //       label: <Link to="/admin/promotions">Quản lý chương trình khuyến mãi</Link>,
+    //       icon: <HighlightOutlined />,
+    //       key: "menu-11",
+    // >>>>>>> f294a43d1fbd039a99dc03b004f749e7da48ccba
+    //     },
   ];
 
   return (

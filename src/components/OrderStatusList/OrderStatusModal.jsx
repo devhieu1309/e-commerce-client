@@ -1,21 +1,10 @@
-import {
-  Button,
-  Form,
-  Input,
-  InputNumber,
-  Modal,
-  notification,
-  Select,
-  Spin,
-  Switch,
-} from "antd";
-import { EditOutlined, LoadingOutlined, PlusOutlined } from "@ant-design/icons";
+import { Button, Form, Input, Modal, notification, Spin, Tooltip } from "antd";
+import { EditOutlined, PlusOutlined } from "@ant-design/icons";
 import { useState } from "react";
-
-const { Option } = Select;
+import { editOrderStatus, storeOrderStatus } from "../../services/orderStatus";
 
 function OrderStatusModal(props) {
-  const { record, mode } = props;
+  const { record, onReload, mode } = props;
   const [showModal, setShowModal] = useState(false);
   const [form] = Form.useForm();
   const [apiNoti, contextHolder] = notification.useNotification();
@@ -38,43 +27,62 @@ function OrderStatusModal(props) {
   };
 
   const handleSubmit = async (values) => {
-    // setSpinning(true);
-    // const response = await updateRoom(record.id, values);
-    // // const response = undefined;
-    // setTimeout(() => {
-    //   if (response) {
-    //     apiNoti.success({
-    //       message: `Notification`,
-    //       description: `Cập nhật sản phẩm ${record.name} thành công!`,
-    //     });
-    //     setShowModal(false);
-    //     onReload();
-    //   } else {
-    //     apiNoti.error({
-    //       message: `Notification`,
-    //       description: `Cập nhật sản phẩm ${record.name} không thành công!`,
-    //     });
-    //   }
-    //   setSpinning(false);
-    // }, 3000);
+    setSpinning(true);
+    if (mode === "edit") {
+      const response = await editOrderStatus(record.id, values);
+      if (response) {
+        apiNoti.success({
+          message: `Notification`,
+          description: `Cập nhật phương thanh toán ${response.status} thành công!`,
+        });
+        setShowModal(false);
+        form.resetFields();
+        onReload();
+      } else {
+        apiNoti.error({
+          message: `Notification`,
+          description: `Cập nhật phương thanh toán ${response.status} không thành công!`,
+        });
+      }
+      setSpinning(false);
+    } else {
+      const response = await storeOrderStatus(values);
+      if (response) {
+        apiNoti.success({
+          message: `Notification`,
+          description: `Thêm phương thanh toán ${response.status} thành công!`,
+        });
+        setShowModal(false);
+        form.resetFields();
+        onReload();
+      } else {
+        apiNoti.error({
+          message: `Notification`,
+          description: `Thêm phương thanh toán ${response.status} không thành công!`,
+        });
+      }
+      setSpinning(false);
+    }
   };
   return (
     <>
       {contextHolder}
       {mode === "edit" ? (
-        <Button
-          size="small"
-          type="primary"
-          icon={<EditOutlined />}
-          onClick={handleShowModal}
-        />
+        <Tooltip title="Chỉnh sửa Phương thanh toán">
+          <Button
+            size="small"
+            type="primary"
+            icon={<EditOutlined />}
+            onClick={handleShowModal}
+          />
+        </Tooltip>
       ) : (
         <Button
           type="primary"
           icon={<PlusOutlined />}
           onClick={handleShowModal}
         >
-          Thêm phương thanh toán
+          Thêm Phương thanh toán
         </Button>
       )}
 
@@ -83,12 +91,15 @@ function OrderStatusModal(props) {
         onCancel={handleCancel}
         title={
           mode === "edit"
-            ? "Cập nhật phương thanh toán"
-            : "Thêm phương thanh toán vào"
+            ? "Cập nhật Phương thanh toán"
+            : "Thêm Phương thức thanh toán"
         }
         footer={null}
       >
-        <Spin spinning={spinning} tip="Đang cập nhật...">
+        <Spin
+          spinning={spinning}
+          tip={mode === "edit" ? "Đang cập nhật..." : "Đang tạo mới..."}
+        >
           <Form
             layout="vertical"
             name="create-room"
@@ -97,8 +108,8 @@ function OrderStatusModal(props) {
             initialValues={record}
           >
             <Form.Item
-              label="Nhập tên phương thanh toán vào "
-              name="name_status"
+              label="Tên Phương thanh toán"
+              name="status"
               rules={rules}
             >
               <Input />

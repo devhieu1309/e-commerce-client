@@ -1,77 +1,58 @@
-import { Button, Popconfirm, Space, Table } from "antd";
-import { useState } from "react";
-
+import { Button, Popconfirm, Space, Table, Tooltip } from "antd";
+import { useEffect, useState } from "react";
 import OrderStatusTooblar from "./OrderStatusTooblar";
 import DeleteOrderStatus from "./DeleteOrderStatus";
 import OrderStatusModal from "./OrderStatusModal";
+import { getOrderStatusList } from "../../services/orderStatus";
 
 function OrderStatusList() {
-  const [orderstatus, setorderstatus] = useState([
-    {
-      id: 1,
-      name_status: "Đang chờ xác nhận",
-      created_at: "2025-09-01 12:00:00",
-      updated_at: "2025-09-10 08:00:00",
-    },
-    {
-      id: 2,
-      name_status: "Đang vận chuyển",
-      created_at: "2025-09-01 12:00:00",
-      updated_at: "2025-09-10 08:00:00",
-    },
-    {
-      id: 3,
-      name_status: "Đang trên đường giao hàng",
-      created_at: "2025-09-01 12:00:00",
-      updated_at: "2025-09-10 08:00:00",
-    },
-    {
-      id: 4,
-      name_status: "Đã giao hàng",
-      created_at: "2025-09-01 12:00:00",
-      updated_at: "2025-09-10 08:00:00",
-    },
-    {
-      id: 5,
-      name_status: "Đã hủy đơn hàng",
-      created_at: "2025-09-01 12:00:00",
-      updated_at: "2025-09-10 08:00:00",
-    },
-    {
-      id: 6,
-      name_status: "Đang hoàn trả hàng",
-      created_at: "2025-09-01 12:00:00",
-      updated_at: "2025-09-10 08:00:00",
-    },
-  ]);
+  const [orderStatus, setOrderStatus] = useState([]);
 
-  const getParentName = (parentId) => {
-    const parent = orderstatus.find((c) => c.id === parentId);
-    return parent ? parent.name_status : "Không có";
+  const fetchApi = async () => {
+    const result = await getOrderStatusList();
+    setOrderStatus(result);
+  };
+
+  // Lấy danh sách phương thanh toán
+  useEffect(() => {
+    fetchApi();
+  }, []);
+
+  // Load lại trang
+  const handleReload = () => {
+    fetchApi();
   };
 
   const columns = [
     {
-      title: "ID",
-      dataIndex: "id",
+      title: "STT",
       key: "id",
       width: 80,
+      render: (text, record, index) => index + 1,
     },
     {
-      title: "Tên trạng thái",
-      dataIndex: "name_status",
-      key: "name_status",
+      title: "Tên phương thanh toán",
+      dataIndex: "status",
+      key: "status",
     },
 
     {
       title: "Ngày tạo",
       dataIndex: "created_at",
       key: "created_at",
+      render: (text) => {
+        const date = new Date(text);
+        return date.toLocaleDateString("vi-VN");
+      },
     },
     {
       title: "Ngày cập nhật",
       dataIndex: "updated_at",
       key: "updated_at",
+      render: (text) => {
+        const date = new Date(text);
+        return date.toLocaleDateString("vi-VN");
+      },
     },
     {
       title: "Hành động",
@@ -79,25 +60,28 @@ function OrderStatusList() {
       render: (_, record) => (
         <Space>
           {/* <EditCategory record={record} onReload={onReload} /> */}
-          <OrderStatusModal mode="edit" record={record} />
+          <OrderStatusModal
+            mode="edit"
+            record={record}
+            onReload={handleReload}
+          />
           <Popconfirm
-            title="Bạn chắc chắn muốn xóa danh mục này?"
+            title="Bạn chắc chắn muốn xóa phương thanh toán này?"
             okText="Xóa"
             cancelText="Hủy"
           >
-            <DeleteOrderStatus record={record} />
+            <DeleteOrderStatus record={record} onReload={handleReload} />
           </Popconfirm>
         </Space>
       ),
     },
   ];
-
   return (
     <>
       <OrderStatusTooblar />
       <Table
         columns={columns}
-        dataSource={orderstatus}
+        dataSource={orderStatus}
         pagination={{ pageSize: 5 }}
       />
     </>
@@ -105,8 +89,3 @@ function OrderStatusList() {
 }
 
 export default OrderStatusList;
-
-// function OrderStatusList() {
-//   return <div>OrderStatusList</div>;
-// }
-// export default OrderStatusList;

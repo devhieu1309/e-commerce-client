@@ -1,21 +1,10 @@
-import {
-  Button,
-  Form,
-  Input,
-  InputNumber,
-  Modal,
-  notification,
-  Select,
-  Spin,
-  Switch,
-} from "antd";
-import { EditOutlined, LoadingOutlined, PlusOutlined } from "@ant-design/icons";
+import { Button, Form, Input, Modal, notification, Spin, Tooltip } from "antd";
+import { EditOutlined, PlusOutlined } from "@ant-design/icons";
 import { useState } from "react";
-
-const { Option } = Select;
+import { editBanner, storeBanner } from "../../services/bannerServices";
 
 function BannerListModal(props) {
-  const { record, mode } = props;
+  const { record, onReload, mode } = props;
   const [showModal, setShowModal] = useState(false);
   const [form] = Form.useForm();
   const [apiNoti, contextHolder] = notification.useNotification();
@@ -38,109 +27,131 @@ function BannerListModal(props) {
   };
 
   const handleSubmit = async (values) => {
-    // setSpinning(true);
-    // const response = await updateRoom(record.id, values);
-    // // const response = undefined;
-    // setTimeout(() => {
-    //   if (response) {
-    //     apiNoti.success({
-    //       message: `Notification`,
-    //       description: `Cập nhật sản phẩm ${record.name} thành công!`,
-    //     });
-    //     setShowModal(false);
-    //     onReload();
-    //   } else {
-    //     apiNoti.error({
-    //       message: `Notification`,
-    //       description: `Cập nhật sản phẩm ${record.name} không thành công!`,
-    //     });
-    //   }
-    //   setSpinning(false);
-    // }, 3000);
+    setSpinning(true);
+    if (mode === "edit") {
+      const response = await editBanner(record.id, values);
+      if (response) {
+        apiNoti.success({
+          message: `Notification`,
+          description: `Cập nhật Banner ${response.title} thành công!`,
+        });
+        setShowModal(false);
+        form.resetFields();
+        onReload();
+      } else {
+        apiNoti.error({
+          message: `Notification`,
+          description: `Cập nhật Banner ${response.title} không thành công!`,
+        });
+      }
+      setSpinning(false);
+    } else {
+      const response = await storeBanner(values);
+      if (response) {
+        apiNoti.success({
+          message: `Notification`,
+          description: `Thêm Banner ${response.title} thành công!`,
+        });
+        setShowModal(false);
+        form.resetFields();
+        onReload();
+      } else {
+        apiNoti.error({
+          message: `Notification`,
+          description: `Thêm Banner ${response.title} không thành công!`,
+        });
+      }
+      setSpinning(false);
+    }
   };
   return (
     <>
       {contextHolder}
       {mode === "edit" ? (
-        <Button
-          size="small"
-          type="primary"
-          icon={<EditOutlined />}
-          onClick={handleShowModal}
-        />
+        <Tooltip title="Chỉnh sửa Banner">
+          <Button
+            size="small"
+            type="primary"
+            icon={<EditOutlined />}
+            onClick={handleShowModal}
+          />
+        </Tooltip>
       ) : (
         <Button
           type="primary"
           icon={<PlusOutlined />}
           onClick={handleShowModal}
         >
-          Thêm banner vào
+          Thêm Phương thanh toán
         </Button>
       )}
 
       <Modal
         open={showModal}
         onCancel={handleCancel}
-        title={mode === "edit" ? "Cập nhật banner" : "Thêm banner"}
+        title={mode === "edit" ? "Cập nhật Banner" : "Thêm Banner"}
         footer={null}
       >
-        <Spin spinning={spinning} tip="Đang cập nhật...">
+        <Spin
+          spinning={spinning}
+          tip={mode === "edit" ? "Đang cập nhật..." : "Đang tạo mới..."}
+        >
           <Form
             layout="vertical"
-            name="create-room"
+            name="create-banner"
             onFinish={handleSubmit}
             form={form}
             initialValues={record}
           >
-            <Form.Item label="Tên tiêu đề" name="title" rules={rules}>
-              <Input />
-            </Form.Item>
-
-            <Form.Item
-              label="Upload ảnh"
+            {/* Tiêu đề banner */}
+            {/* <Form.Item
+              label="Tên Banner"
               name="title"
-              rules={rules}
-            ></Form.Item>
-
-            <Form.Item label="Đường dẫn liên kết" name="link_url" rules={rules}>
+              rules={[{ required: true, message: "Vui lòng nhập tên banner" }]}
+            >
               <Input />
-            </Form.Item>
+            </Form.Item> */}
 
-            <Form.Item
-              label="Chọn trang hiển thị "
+            {/* <Form.Item
+              label="Ảnh"
+              name="image"
+              rules={[{ required: true, message: "Vui lòng chọn ảnh banner" }]}
+            >
+              <Input placeholder="Tên file ảnh (ví dụ: banner.jpg)" />
+            
+            </Form.Item> */}
+
+            {/* Link URL */}
+            {/* <Form.Item
+              label="Link URL"
+              name="link_url"
+              rules={[{ required: true, message: "Vui lòng nhập link URL" }]}
+            >
+              <Input placeholder="https://..." />
+            </Form.Item> */}
+
+            {/* Vị trí banner */}
+            {/* <Form.Item
+              label="Vị trí"
               name="position"
-              rules={rules}
+              rules={[{ required: true, message: "Vui lòng chọn vị trí" }]}
             >
-              <Select
-                style={{
-                  width: "100%",
-                }}
-                placeholder="Chọn trang hiển thị"
-                allowClear
-              >
-                <Option value="home">Trang chủ</Option>
-                <Option value="product">Trang sản phẩm</Option>
+              <Select>
+                <Select.Option value="home">Trang chủ</Select.Option>
+                <Select.Option value="product">Sản phẩm</Select.Option>
               </Select>
-            </Form.Item>
+            </Form.Item> */}
 
-            <Form.Item
-              label="Chọn trạng thái"
-              name="category_parent_id"
-              rules={rules}
-            >
-              <Select
-                style={{
-                  width: "100%",
-                }}
-                placeholder="Chọn trạng thái"
-                allowClear
-              >
-                <Option value="0">ẩn đi</Option>
-                <Option value="1">Hiển thị</Option>
+            {/* Trạng thái hiển thị */}
+            {/* <Form.Item label="Trạng thái" name="is_active">
+              <Select>
+                <Select.Option value="1">Hiển thị</Select.Option>
+                <Select.Option value="0">Ân đi</Select.Option>
               </Select>
-            </Form.Item>
+            </Form.Item> */}
 
-            <Form.Item label={null}>
+            {/* Nút submit */}
+            <Form.Item>
               <Button type="primary" htmlType="submit">
                 {mode === "edit" ? "Cập nhật" : "Thêm mới"}
               </Button>

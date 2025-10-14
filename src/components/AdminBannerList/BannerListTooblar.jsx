@@ -1,33 +1,19 @@
 import React from "react";
 import { Input, Select, Button, Space } from "antd";
 import { PlusOutlined, SearchOutlined } from "@ant-design/icons";
-
 import BannerListModal from "./BannerListModal";
 
 const { Option } = Select;
 
-function BannerListToolbar({
+function BannerListTooblar({
   onSearch,
-  onParentChange,
   onAdd,
-  parentOptions = [
-    {
-      id: 1,
-      title: "sản phẩm mới Iphone 17",
-      image_url: "image1.jpg",
-      link_url: "iphon 17",
-      position: "home",
-      status: "1",
-    },
-    {
-      id: 2,
-      title: "sản phẩm mới Iphone 17",
-      image_url: "image1.jpg",
-      link_url: "iphon 17",
-      position: "home",
-      status: "1",
-    },
-  ],
+  // parentOptions = [
+  //   { id: 1, status: "Đang xử lý" },
+  //   { id: 2, status: "Giao thành công" },
+  //   { id: 3, status: "Xác nhận đơn hàng" },
+  // ],
+  onReload,
 }) {
   return (
     <div
@@ -39,33 +25,15 @@ function BannerListToolbar({
     >
       <Space>
         <Input
-          placeholder="Tìm kiếm banner"
+          placeholder="Tìm kiếm Banner"
           prefix={<SearchOutlined />}
           onChange={(e) => onSearch(e.target.value)}
           style={{ width: 200 }}
         />
-
-        {/* <Select
-          placeholder="Danh mục cha"
-          onChange={onParentChange}
-          style={{ width: 160 }}
-          allowClear
-        >
-          <Option value="">Tất cả</Option>
-          {parentOptions.map((item) => (
-            <Option key={item.id} value={item.id}>
-              {item.category_name}
-            </Option>
-          ))}
-        </Select> */}
       </Space>
-
-      {/* <Button type="primary" icon={<PlusOutlined />} onClick={onAdd}>
-        Thêm danh mục
-      </Button> */}
-      <BannerListModal mode="create" record={{}} />
+      <BannerListModal mode="create" record={{}} onReload={onReload} />
     </div>
   );
 }
 
-export default BannerListToolbar;
+export default BannerListTooblar;

@@ -1,113 +1,35 @@
-import { Button, Popconfirm, Space, Table } from "antd";
-import { useState } from "react";
+import { Button, Popconfirm, Space, Table, Tooltip } from "antd";
+import { useEffect, useState } from "react";
 
-import BannerListModal from "./BannerListModal";
-import DeleteBanner from "./DeleteBannerList";
+import DeleteBannerList from "./DeleteBannerList";
+import { getBanner } from "../../services/bannerServices";
 import BannerListToolbar from "./BannerListTooblar";
+import BannerListModal from "./BannerListModal";
 
 function AdminBannerList() {
-  const [banner, setbanner] = useState([
-    {
-      id: 1,
-      title: "sản phẩm mới Iphone 17",
-      image_url: "image1.jpg",
-      link_url: "iphon 17",
-      position: "home",
-      status: "1",
-    },
-    {
-      id: 2,
-      title: "sản phẩm mới Iphone 17",
-      image_url: "image1.jpg",
-      link_url: "iphon 17",
-      position: "home",
-      status: "1",
-    },
-    {
-      id: 3,
-      title: "sản phẩm mới Iphone 17",
-      image_url: "image1.jpg",
-      link_url: "iphon 17",
-      position: "home",
-      status: "1",
-    },
-    {
-      id: 4,
-      title: "sản phẩm mới Iphone 17",
-      image_url: "image1.jpg",
-      link_url: "iphon 17",
-      position: "home",
-      status: "1",
-    },
-    {
-      id: 5,
-      title: "sản phẩm mới Iphone 17",
-      image_url: "image1.jpg",
-      link_url: "iphon 17",
-      position: "home",
-      status: "1",
-    },
-    {
-      id: 6,
-      title: "sản phẩm mới Iphone 17",
-      image_url: "image1.jpg",
-      link_url: "iphon 17",
-      position: "home",
-      status: "1",
-    },
-    {
-      id: 7,
-      title: "sản phẩm mới Iphone 17",
-      image_url: "image1.jpg",
-      link_url: "iphon 17",
-      position: "home",
-      status: "1",
-    },
-    {
-      id: 8,
-      title: "sản phẩm mới Iphone 17",
-      image_url: "image1.jpg",
-      link_url: "iphon 17",
-      position: "home",
-      status: "1",
-    },
-    {
-      id: 9,
-      title: "sản phẩm mới Iphone 17",
-      image_url: "image1.jpg",
-      link_url: "iphon 17",
-      position: "home",
-      status: "1",
-    },
-    {
-      id: 10,
-      title: "sản phẩm mới Iphone 17",
-      image_url: "image1.jpg",
-      link_url: "iphon 17",
-      position: "home",
-      status: "1",
-    },
-    {
-      id: 11,
-      title: "sản phẩm mới Iphone 17",
-      image_url: "image1.jpg",
-      link_url: "iphon 17",
-      position: "home",
-      status: "1",
-    },
-  ]);
+  const [banner, setBanner] = useState([]);
 
-  const getParentName = (parentId) => {
-    const parent = banner.find((c) => c.id === parentId);
-    return parent ? parent.title : "Không có";
+  const fetchApi = async () => {
+    const result = await getBanner();
+    setBanner(result);
+  };
+
+  // Lấy danh sách danh mục
+  useEffect(() => {
+    fetchApi();
+  }, []);
+
+  // Load lại trang
+  const handleReload = () => {
+    fetchApi();
   };
 
   const columns = [
     {
-      title: "ID",
-      dataIndex: "id",
+      title: "STT",
       key: "id",
       width: 80,
+      render: (text, record, index) => index + 1,
     },
     {
       title: "Tiêu đề",
@@ -115,63 +37,76 @@ function AdminBannerList() {
       key: "title",
     },
     {
-      title: "Hình ảnh banner",
-      dataIndex: "image_url",
-      key: "image_url",
+      title: "Ảnh",
+      dataIndex: "image",
+      key: "image",
       render: (text) => (
-        <img
-          src={`/public/2banner_1.webp`}
-          alt="product"
-          style={{ width: 120, height: 80, objectFit: "cover" }}
-        />
+        <img src={`/images/${text}`} alt={text} style={{ width: 100 }} />
       ),
     },
     {
-      title: "Đường dẫn liên kết",
+      title: "Link URL",
       dataIndex: "link_url",
       key: "link_url",
+      render: (text) => (
+        <a href={text} target="_blank" rel="noopener noreferrer">
+          {text}
+        </a>
+      ),
     },
     {
-      title: "Vị trí hiển thị",
+      title: "Vị trí",
       dataIndex: "position",
       key: "position",
-      render: (position) => getParentName(position),
+      render: (text) => (text === "home" ? "Trang chủ" : "Sản phẩm"),
     },
     {
       title: "Trạng thái",
       dataIndex: "is_active",
       key: "is_active",
-      render: (is_active) => getParentName(is_active),
+      render: (text) => (text === 1 ? "Hiển thị" : "Ẩn"),
     },
-    // {
-    //   title: "Ngày tạo",
-    //   dataIndex: "created_at",
-    //   key: "created_at",
-    // },
-    // {
-    //   title: "Ngày cập nhật",
-    //   dataIndex: "updated_at",
-    //   key: "updated_at",
-    // },
+    {
+      title: "Ngày tạo",
+      dataIndex: "created_at",
+      key: "created_at",
+      render: (text) => {
+        const date = new Date(text);
+        return date.toLocaleDateString("vi-VN");
+      },
+    },
+    {
+      title: "Ngày cập nhật",
+      dataIndex: "updated_at",
+      key: "updated_at",
+      render: (text) => {
+        const date = new Date(text);
+        return date.toLocaleDateString("vi-VN");
+      },
+    },
+
     {
       title: "Hành động",
       key: "action",
       render: (_, record) => (
         <Space>
           {/* <EditCategory record={record} onReload={onReload} /> */}
-          <BannerListModal mode="edit" record={record} />
+          <BannerListModal
+            mode="edit"
+            record={record}
+            onReload={handleReload}
+          />
           <Popconfirm
-            title="Bạn chắc chắn muốn đi banner này không?"
+            title="Bạn chắc chắn muốn xóa Banner này không?"
             okText="Xóa"
             cancelText="Hủy"
           >
-            <DeleteBanner record={record} />
+            <DeleteBannerList record={record} onReload={handleReload} />
           </Popconfirm>
         </Space>
       ),
     },
   ];
-
   return (
     <>
       <BannerListToolbar />
