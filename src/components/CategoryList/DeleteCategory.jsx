@@ -15,7 +15,7 @@ function DeleteCategory(props) {
       });
       setTimeout(() => {
         onReload();
-      }, 1500) 
+      }, 1000) 
     } else {
       apiNoti.error({
         message: `Notification`,
