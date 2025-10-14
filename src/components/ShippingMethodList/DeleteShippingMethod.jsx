@@ -1,33 +1,38 @@
 import { Button, notification, Popconfirm } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
+import { deleteShippingMethod } from "../../services/shippingMethodServices";
 
 function DeleteShippingMethod(props) {
-  const { record } = props;
+  const { record, onReload } = props;
 
-  const [notiShippingMethod, contextHolder] = notification.useNotification();
+  const [apiNoti, contextHolder] = notification.useNotification();
 
-  const openNotificationWithIcon = (type, name) => {
-    notiShippingMethod[type]({
-      message: "Thành công",
-      description: `Phương thức "${name}" đã được xóa thành công.`,
-    });
-  };
-
-  const handleDelete = () => {
-    openNotificationWithIcon("success", record.shipping_method_name);
-    // const response = await deleteRoom(record.id);
-    // if(response){
-    //   onReload();
-    //   alert("Xóa bảng ghi thành công!");
-    // }else{
-    //   alert("Xóa bảng ghi thất bại. Vui lòng thử lại!");
-    // }
-  };
+  const handleDelete = async () => {
+      const response = await deleteShippingMethod(record.shipping_method_id);
+      
+      console.log(response);
+      
+      if (response.success) {
+        apiNoti.success({
+          message: `Notification`,
+          description: `Xóa phương thức ${record.shipping_method_name} thành công!`,
+        });
+        setTimeout(() => {
+          onReload();
+        }, 1500) 
+      } else {
+        apiNoti.error({
+          message: `Notification`,
+          description: `Xóa phương thức ${record.shipping_method_name} thất bại!`,
+        });
+      }
+    };
+  
 
   return (
     <>
       {contextHolder}
-      <Popconfirm title="Bạn chắc chắn muốn xóa phương thức này?" onConfirm={handleDelete}>
+      <Popconfirm title={`Bạn có chắc muốn xóa ${record.shipping_method_name}?`} onConfirm={handleDelete}>
         <Button danger size="small" icon={<DeleteOutlined />}></Button>
       </Popconfirm>
     </>
