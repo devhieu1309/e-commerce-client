@@ -6,7 +6,8 @@ import ShippingMethodModal from "./ShippingMethodModal";
 // const { Option } = Select;
 function ShippingMethodToolbar({
     onSearch,
-    onAdd
+    onAdd,
+    onReload
 }) {
     return (
         <div style={{
@@ -23,7 +24,7 @@ function ShippingMethodToolbar({
             {/* <Button type="primary" icon={<PlusOutlined />} onClick={onAdd}>
             Thêm phương thức
             </Button> */}
-            <ShippingMethodModal mode="create" record={{  }}/>
+            <ShippingMethodModal mode="create" record={{  }} onReload = {onReload}/>
         </div>
     );
 }

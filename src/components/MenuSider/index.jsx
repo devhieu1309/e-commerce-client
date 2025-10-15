@@ -95,7 +95,6 @@ function MenuSider() {
       label: <Link to="/admin/shipping_methods">Quản lý phương thức vận chuyển</Link>,
       icon: <ShoppingOutlined />,
       key: "menu-10",
-
     },
     {
       // label: "Quản lý chương trình khuyến mãi",
@@ -109,7 +108,6 @@ function MenuSider() {
       label: <Link to="/admin/video-review">Quản lý video review sản phẩm</Link>,
       icon: <HighlightOutlined />,
       key: "menu-12",
-
     },
   ];
 

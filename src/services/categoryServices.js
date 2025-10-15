@@ -2,7 +2,7 @@ import { del, edit, get, post,  } from "../utils/request";
 
 export const getCategoryList = async () => {
    const result = await get('categories');
-    return result.reverse();
+    return result;
 }
 
 export const storeCategory = async (option) => {
