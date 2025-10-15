@@ -32,6 +32,7 @@ import ShippingMethodList from "../components/ShippingMethodList";
 import PromotionList from "../components/PromotionList";
 import UserList from "../components/UserList";
 import OnOffUserList from "../components/On_Off_User";
+import VideoReview from "../components/VideoReview";
 
 
 export const routes = [
@@ -191,6 +192,10 @@ export const routes = [
         path: "promotions", 
         element: <PromotionList />, 
       },
+      {
+        path: "video-review", 
+        element: <VideoReview/>, 
+      },
     ],
   },
 ];
@@ -198,7 +203,6 @@ export const routes = [
 {
   /* <Route path="/admin/products/edit/:id" element={<ProductEdit />} /> */
 }
-
 
 {
   /* <Routes>

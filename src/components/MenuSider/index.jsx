@@ -101,6 +101,13 @@ function MenuSider() {
       label: <Link to="/admin/promotions">Quản lý chương trình khuyến mãi</Link>,
       icon: <HighlightOutlined />,
       key: "menu-11",
+
+    },
+     {
+     
+      label: <Link to="/admin/video-review">Quản lý video review sản phẩm</Link>,
+      icon: <HighlightOutlined />,
+      key: "menu-12",
     },
   ];
 
