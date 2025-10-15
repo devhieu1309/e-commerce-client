@@ -1,25 +1,27 @@
 import { Button, notification, Popconfirm } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
-import { deleteCategory } from "../../services/categoryServices";
+import { deleteVideoReview } from "../../services/videoreviewServices";
 
-function DeleteCategory(props) {
+function DeleteVideoReview(props) {
   const { record, onReload } = props;
   const [apiNoti, contextHolder] = notification.useNotification();
 
   const handleDelete = async () => {
-    const response = await deleteCategory(record.category_id);
+    const response = await deleteVideoReview(record.video_id);
+    //console.log(response);
+    
     if (response.success) {
-      apiNoti.success({
+      apiNoti.success({        
         message: `Notification`,
-        description: `Xóa danh mục ${record.category_name} thành công!`,
+        description: `Xóa video review ${record.title} thành công!`,
       });
       setTimeout(() => {
-        onReload();
-      }, 500) 
+      onReload();
+      }, 1500) 
     } else {
       apiNoti.error({
         message: `Notification`,
-        description: `Xóa danh mục ${record.category_name} thất bại!`,
+        description: `Xóa video review ${record.title} thất bại!`,
       });
     }
   };
@@ -28,7 +30,7 @@ function DeleteCategory(props) {
     <>
       {contextHolder}
       <Popconfirm
-        title={`Bạn có chắc muốn xóa ${record.category_name}?`}
+        title={`Bạn có chắc muốn xóa video có tiêu đề ${record.title}?`}
         onConfirm={handleDelete}
       >
         <Button danger size="small" icon={<DeleteOutlined />}></Button>
@@ -37,4 +39,4 @@ function DeleteCategory(props) {
   );
 }
 
-export default DeleteCategory;
+export default DeleteVideoReview;

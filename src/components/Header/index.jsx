@@ -353,7 +353,7 @@ function Header() {
             <li className="py-2 hover:text-[#000F8F] text-[16px]">Trang chủ</li>
           </Link>
 
-          <li className="py-2 hover:text-[#000F8F] text-[16px]">Giới thiệu</li>
+          <li className="py-2 hover:text-[#000F8F] text-[16px]"><Link to="/introduction">Giới thiệu</Link></li>
           <li className="flex items-center justify-center py-2 space-x-1 group/rotate">
             <span className="hover:text-[#000F8F] text-[16px]">Sản phẩm</span>
             <div>
@@ -457,10 +457,8 @@ function Header() {
             <li className="py-2 hover:text-[#000F8F] text-[16px]">Tin tức</li>
           </Link>
 
-          <li className="py-2 hover:text-[#000F8F] text-[16px]">Review</li>
-          <li className="py-2 hover:text-[#000F8F] text-[16px]">
-            Câu hỏi thường gặp
-          </li>
+          <li className="py-2 hover:text-[#000F8F] text-[16px]"><Link to="/review">Review</Link></li>
+          <li className="py-2 hover:text-[#000F8F] text-[16px]"><Link to="/relatedquestions">Câu hỏi thường gặp</Link></li>
           <Link to="/Tra-cuu-bao-hanh">
             <li className="py-2 hover:text-[#000F8F] text-[16px]">
               Tra cứu bảo hành
@@ -470,7 +468,7 @@ function Header() {
             <li className="py-2 hover:text-[#000F8F] text-[16px]">Đặt trước</li>
           </Link>
 
-          <li className="py-2 hover:text-[#000F8F] text-[16px]">Liên hệ</li>
+          <li className="py-2 hover:text-[#000F8F] text-[16px]"><Link to="/contact">Liên hệ</Link></li>
         </ul>
         <div className="group-hover/header:h-[115px]"></div>
       </header>

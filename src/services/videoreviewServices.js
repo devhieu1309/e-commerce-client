@@ -1,0 +1,21 @@
+import { del, edit, get, post, } from "../utils/request";
+
+export const getVideoReview = async () => {
+  const result = await get('video-reviews');
+  return result;
+}
+
+export const storeVideoReview = async (option) => {
+  const result = await post(`video-reviews`, option);
+  return result;
+};
+
+export const editVideoReview = async (id, option) => {
+  const result = await edit(`video-reviews/${id}`, option);
+  return result;
+};
+
+export const deleteVideoReview = async (id) => {
+  const result = await del(`video-reviews/${id}`);
+  return result;
+};

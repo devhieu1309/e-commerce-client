@@ -106,14 +106,21 @@ function MenuSider() {
       icon: <ShoppingOutlined />,
       key: "menu-10",
     },
-    //     },
-    //     {
-    //       // label: "Quản lý chương trình khuyến mãi",
-    //       label: <Link to="/admin/promotions">Quản lý chương trình khuyến mãi</Link>,
-    //       icon: <HighlightOutlined />,
-    //       key: "menu-11",
-    // >>>>>>> f294a43d1fbd039a99dc03b004f749e7da48ccba
-    //     },
+    {
+      // label: "Quản lý chương trình khuyến mãi",
+      label: (
+        <Link to="/admin/promotions">Quản lý chương trình khuyến mãi</Link>
+      ),
+      icon: <HighlightOutlined />,
+      key: "menu-11",
+    },
+    {
+      label: (
+        <Link to="/admin/video-review">Quản lý video review sản phẩm</Link>
+      ),
+      icon: <HighlightOutlined />,
+      key: "menu-12",
+    },
   ];
 
   return (

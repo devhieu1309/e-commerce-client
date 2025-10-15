@@ -11,13 +11,6 @@ function CategoryModal(props) {
   const [apiNoti, contextHolder] = notification.useNotification();
   const [spinning, setSpinning] = useState(false);
 
-  const rules = [
-    {
-      required: true,
-      message: "Bắt buộc",
-    },
-  ];
-
   const handleShowModal = () => {
     setShowModal(true);
   };
@@ -29,41 +22,37 @@ function CategoryModal(props) {
 
   const handleSubmit = async (values) => {
     setSpinning(true);
-    if (mode === "edit") {
-      const response = await editCategory(record.category_id, values);
+    try {
+      const response =
+        mode === "edit"
+          ? await editCategory(record.category_id, values)
+          : await storeCategory(values);
       if (response) {
         apiNoti.success({
-          message: `Notification`,
-          description: `Cập nhật danh mục ${response.category_name} thành công!`,
-        });
-        setShowModal(false);
-        onReload();
-      } else {
-        apiNoti.error({
-          message: `Notification`,
-          description: `Cập nhật danh mục ${response.category_name} không thành công!`,
-        });
-      }
-      setSpinning(false);
-    } else {
-      const response = await storeCategory(values);
-      if (response) {
-        apiNoti.success({
-          message: `Notification`,
-          description: `Thêm danh mục ${response.category_name} thành công!`,
+          message: `Thông báo`,
+          description: response.message,
         });
         setShowModal(false);
         form.resetFields();
         onReload();
-      } else {
-        apiNoti.error({
-          message: `Notification`,
-          description: `Thêm danh mục ${response.category_name} không thành công!`,
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 422) {
+        const serverErrors = error.response.data.errors;
+        Object.keys(serverErrors).forEach((field) => {
+          form.setFields([
+            {
+              name: field,
+              errors: serverErrors[field],
+            },
+          ]);
         });
       }
+    } finally {
       setSpinning(false);
     }
   };
+
   return (
     <>
       {contextHolder}
@@ -92,7 +81,10 @@ function CategoryModal(props) {
         title={mode === "edit" ? "Cập nhật danh mục" : "Thêm danh mục"}
         footer={null}
       >
-        <Spin spinning={spinning} tip={mode === "edit" ? "Đang cập nhật..." : "Đang tạo mới..."}>
+        <Spin
+          spinning={spinning}
+          tip={mode === "edit" ? "Đang cập nhật..." : "Đang tạo mới..."}
+        >
           <Form
             layout="vertical"
             name="create-room"
@@ -100,7 +92,7 @@ function CategoryModal(props) {
             form={form}
             initialValues={record}
           >
-            <Form.Item label="Tên danh mục" name="category_name" rules={rules}>
+            <Form.Item label="Tên danh mục" name="category_name" rules={[]}>
               <Input />
             </Form.Item>
 

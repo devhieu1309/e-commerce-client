@@ -17,7 +17,6 @@ import VariationList from "../components/VariationList";
 import AddItem from "../components/ItemList/AddItem";
 import ItemDetail from "../components/ItemList/ItemDetail";
 import EditItem from "../components/ItemList/EditItem";
-
 import Introduction from "../pages/User/Introduction";
 import Cart from "../pages/User/Cart";
 import Review from "../pages/User/Review";
@@ -33,6 +32,7 @@ import ShippingMethodList from "../components/ShippingMethodList";
 import PromotionList from "../components/PromotionList";
 import UserList from "../components/UserList";
 import OnOffUserList from "../components/On_Off_User";
+import VideoReview from "../components/VideoReview";
 
 
 export const routes = [
@@ -192,6 +192,10 @@ export const routes = [
         path: "promotions", 
         element: <PromotionList />, 
       },
+      {
+        path: "video-review", 
+        element: <VideoReview/>, 
+      },
     ],
   },
 ];
@@ -199,7 +203,6 @@ export const routes = [
 {
   /* <Route path="/admin/products/edit/:id" element={<ProductEdit />} /> */
 }
-
 
 {
   /* <Routes>
