@@ -2,7 +2,7 @@ import { del, edit, get, post,  } from "../utils/request";
 
 export const getShippingMethodList = async () => {
    const result = await get('shipping_methods');
-    return result.reverse();
+    return result;
 }
 
 export const storeShippingMethod = async (option) => {

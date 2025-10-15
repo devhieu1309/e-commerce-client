@@ -10,8 +10,6 @@ function DeleteShippingMethod(props) {
   const handleDelete = async () => {
       const response = await deleteShippingMethod(record.shipping_method_id);
       
-      console.log(response);
-      
       if (response.success) {
         apiNoti.success({
           message: `Notification`,
@@ -19,7 +17,7 @@ function DeleteShippingMethod(props) {
         });
         setTimeout(() => {
           onReload();
-        }, 1500) 
+        }, 500) 
       } else {
         apiNoti.error({
           message: `Notification`,

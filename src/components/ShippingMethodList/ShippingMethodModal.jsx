@@ -27,17 +27,17 @@ function ShippingMethodModal(props) {
     const v = `${start}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
     return `${end ? `${v}.${end}` : `${v}`} ₫`;
   };
-// const formatter = value => {
-//   const [start, end] = `${value}`.split('.') || [];
-//   const v = `${start}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-//   return `$ ${end ? `${v}.${end}` : `${v}`}`;
-// };
-  const rules = [
-    {
-      required: true,
-      message: "Bắt buộc",
-    },
-  ];
+  // const formatter = value => {
+  //   const [start, end] = `${value}`.split('.') || [];
+  //   const v = `${start}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  //   return `$ ${end ? `${v}.${end}` : `${v}`}`;
+  // };
+  // const rules = [
+  //   {
+  //     required: true,
+  //     message: "Bắt buộc",
+  //   },
+  // ];
 
   const handleShowModal = () => {
     setShowModal(true);
@@ -51,67 +51,39 @@ function ShippingMethodModal(props) {
   const handleSubmit = async (values) => {
 
     setSpinning(true);
-    if (mode === "edit") {
-      const response = await editShippingMethod(record.shipping_method_id, values);
+    try {
+      const response = mode === "edit" ? await editShippingMethod(record.shipping_method_id, values) : await storeShippingMethod(values);
       if (response) {
         apiNoti.success({
-          message: `Notification`,
-          description: `Cập nhật phương thức ${response.shipping_method_name} thành công!`,
-        });
-        setShowModal(false);
-        onReload();
-      } else {
-        apiNoti.error({
-          message: `Notification`,
-          description: `Cập nhật phương thức ${response.shipping_method_name} không thành công!`,
-        });
-      }
-      setSpinning(false);
-    } else {
-      const response = await storeShippingMethod(values);
-      if (response) {
-        apiNoti.success({
-          message: `Notification`,
-          description: `Thêm phương thức ${response.shipping_method_name} thành công!`,
+          message: `Thông báo`,
+          description: response.message,
         });
         setShowModal(false);
         form.resetFields();
         onReload();
-      } else {
-        apiNoti.error({
-          message: `Notification`,
-          description: `Thêm phương thức ${response.shipping_method_name} không thành công!`,
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 422) {
+        const serverErrors = error.response.data.errors;
+        Object.keys(serverErrors).forEach((field) => {
+          form.setFields([
+            {
+              name: field,
+              errors: serverErrors[field],
+            },
+          ]);
         });
       }
+    } finally {
       setSpinning(false);
     }
-
-    // setSpinning(true);
-    // const response = await updateRoom(record.id, values);
-    // // const response = undefined;
-    // setTimeout(() => {
-    //   if (response) {
-    //     apiNoti.success({
-    //       message: `Notification`,
-    //       description: `Cập nhật sản phẩm ${record.name} thành công!`,
-    //     });
-    //     setShowModal(false);
-    //     onReload();
-    //   } else {
-    //     apiNoti.error({
-    //       message: `Notification`,
-    //       description: `Cập nhật sản phẩm ${record.name} không thành công!`,
-    //     });
-    //   }
-    //   setSpinning(false);
-    // }, 3000);
   };
   return (
     <>
 
-{contextHolder}
+      {contextHolder}
       {mode === "edit" ? (
-        <Tooltip title="Chỉnh sửa danh mục">
+        <Tooltip title="Chỉnh sửa phương thức">
           <Button
             size="small"
             type="primary"
@@ -143,22 +115,17 @@ function ShippingMethodModal(props) {
             form={form}
             initialValues={record}
           >
-            <Form.Item label="Tên phương thức" name="shipping_method_name" rules={rules}>
+            <Form.Item label="Tên phương thức" name="shipping_method_name" rules={[]}>
               <Input />
             </Form.Item>
 
-            <Form.Item label="Giá phương thức" name="shipping_method_price" rules={rules}>
-              {/* <Select
-                style={{
-                  width: "100%",
-                }}
-                placeholder="Danh mục cha"
-                allowClear
-              >
-                <Option value="Điện thoại">Điện thoại</Option>
-                <Option value="Laptop">Laptop</Option>
-                <Option value="Ipad">Ipad</Option>
-              </Select> */}
+            <Form.Item label="Giá phương thức" name="shipping_method_price" rules={[
+              {
+                required: false,
+                message: "Vui lòng nhập giá phương thức vận chuyển",
+              },
+            ]}>
+
               <InputNumber style={{ width: "100%" }} formatter={formatter} parser={value => value?.replace(/[₫\s.]*/g, '')} onChange={onChange} />
             </Form.Item>
 

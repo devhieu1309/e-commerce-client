@@ -11,8 +11,23 @@ function ShippingMethodList() {
 
   const fetchApi = async () => {
     const result = await getShippingMethodList();
+    
+    //setShippingMethods(result.shippingMethods.reverse());
     setShippingMethods(result);
   };
+//   const fetchApi = async () => {
+//   try {
+//     const res = await getShippingMethodList();
+
+//     // Kiểm tra dữ liệu có tồn tại và là mảng
+//     const data = Array.isArray(res?.data?.data) ? res.data.data : [];
+
+//     const list = data.reverse(); // ✅ Không lỗi
+//     setShippingMethods(list);
+//   } catch (error) {
+//     console.error("Fetch API error:", error);
+//   }
+// };
 
   // Lấy danh sách phương thức vận chuyển
   useEffect(() => {
@@ -27,7 +42,7 @@ function ShippingMethodList() {
 
   const columns = [
     {
-      title: "ID",
+      title: "STT",
       dataIndex: "shipping_method_id",
       key: "shipping_method_id",
       width: 80,
