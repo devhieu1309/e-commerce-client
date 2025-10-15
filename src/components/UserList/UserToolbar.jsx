@@ -5,9 +5,9 @@ import UserModal from "./UserModal";
 
 const { Option } = Select;
 
-function UserToolbar({
-    onSearch,
-}) {
+function UserToolbar(props) {
+  // console.log("MINH HEu: ", props);
+  const { onSearch, onReload } = props;
   return (
     <div
       style={{
@@ -25,7 +25,7 @@ function UserToolbar({
         />
       </Space>
       {/* Nút thêm người dùng */}
-      <UserModal mode="create" record={{}} />
+      <UserModal mode="create" record={{}} onReload={onReload}/>
     </div>
   );
 }
