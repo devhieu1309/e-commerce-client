@@ -41,7 +41,7 @@ function AdminBannerList() {
       dataIndex: "image",
       key: "image",
       render: (text) => (
-        <img src={`/images/${text}`} alt={text} style={{ width: 100 }} />
+        <img src={`/public/banner/${text}`} alt={text} style={{ width: 100 }} />
       ),
     },
     {
@@ -90,7 +90,6 @@ function AdminBannerList() {
       key: "action",
       render: (_, record) => (
         <Space>
-          {/* <EditCategory record={record} onReload={onReload} /> */}
           <BannerListModal
             mode="edit"
             record={record}

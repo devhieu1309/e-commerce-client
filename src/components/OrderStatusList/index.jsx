@@ -78,11 +78,11 @@ function OrderStatusList() {
   ];
   return (
     <>
-      <OrderStatusTooblar />
+      <OrderStatusTooblar onReload={handleReload} />
       <Table
         columns={columns}
         dataSource={orderStatus}
-        pagination={{ pageSize: 5 }}
+        pagination={{ pageSize: 8 }}
       />
     </>
   );

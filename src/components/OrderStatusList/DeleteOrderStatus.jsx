@@ -15,11 +15,11 @@ function DeleteOrderStatus(props) {
       });
       setTimeout(() => {
         onReload();
-      }, 1500);
+      }, 1000);
     } else {
       apiNoti.error({
         message: `Notification`,
-        description: `Xóa phương thanh toán ${record.status} thất bại!`,
+        description: `Xóa phương thanh toán "${record.status}" thất bại!`,
       });
     }
   };
@@ -28,7 +28,7 @@ function DeleteOrderStatus(props) {
     <>
       {contextHolder}
       <Popconfirm
-        title={`Bạn có chắc muốn xóa ${record.status}?`}
+        title={`Bạn có chắc muốn xóa ${record.status} không?`}
         onConfirm={handleDelete}
       >
         <Button danger size="small" icon={<DeleteOutlined />}></Button>

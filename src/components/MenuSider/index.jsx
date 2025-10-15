@@ -5,8 +5,14 @@ import {
   PlayCircleOutlined,
   ShoppingOutlined,
   UserOutlined,
+  PictureOutlined,
+  ReadOutlined,
+  DatabaseOutlined,
+  CreditCardOutlined,
+  EditOutlined,
 } from "@ant-design/icons";
 import { Link } from "react-router-dom";
+import { icons } from "antd/es/image/PreviewGroup";
 
 function MenuSider() {
   const items = [
@@ -58,36 +64,38 @@ function MenuSider() {
     {
       // label: "Quản lý banners",
       label: <Link to="/admin/bannerlist">Quản lý Banners</Link>,
-      icon: <HighlightOutlined />,
+      icon: <PictureOutlined />,
       key: "menu-6",
     },
 
     {
       // label: "Quản lý tin tức và chi tiết tin tức",
       label: <Link to="">Tin Tức</Link>,
-      icon: <HighlightOutlined />,
+      icon: <ReadOutlined />,
       key: "menu-7",
       children: [
         {
           label: <Link to="/admin/newslist">Quản lý tin tức</Link>,
           key: "menu-7-1",
+          icon: <ReadOutlined />,
         },
         {
           label: <Link to="newsblocks">Quản lý chi tiết tin tức</Link>,
           key: "menu-7-2",
+          icons: <ReadOutlined />,
         },
       ],
     },
     {
       // label: "Quản lý sản phẩm tồn kho",
       label: <Link to="/admin/quantityInStock">Quản lý sản phẩm tồn kho</Link>,
-      icon: <HighlightOutlined />,
+      icon: <DatabaseOutlined />,
       key: "menu-8",
     },
     {
       // label: "Quản lý phương thanh toán  phương thanh toán",
       label: <Link to="/admin/orderstatus">Quản lý phương thanh toán</Link>,
-      icon: <HighlightOutlined />,
+      icon: <CreditCardOutlined />,
       key: "menu-9",
     },
     {

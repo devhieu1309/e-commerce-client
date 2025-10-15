@@ -145,7 +145,7 @@ const EditItem = () => {
           const file = info.file.originFileObj;
           if (file) {
             const previewUrl = URL.createObjectURL(file);
-            record.image = previewUrl; 
+            record.image = previewUrl;
           }
         };
 

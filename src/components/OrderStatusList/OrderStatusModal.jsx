@@ -10,12 +10,12 @@ function OrderStatusModal(props) {
   const [apiNoti, contextHolder] = notification.useNotification();
   const [spinning, setSpinning] = useState(false);
 
-  const rules = [
-    {
-      required: true,
-      message: "Bắt buộc",
-    },
-  ];
+  // const rules = [
+  //   {
+  //     required: true,
+  //     message: "Bắt buộc",
+  //   },
+  // ];
 
   const handleShowModal = () => {
     setShowModal(true);
@@ -110,7 +110,20 @@ function OrderStatusModal(props) {
             <Form.Item
               label="Tên Phương thanh toán"
               name="status"
-              rules={rules}
+              rules={[
+                {
+                  required: true,
+                  message: "Bắt buộc",
+                },
+                {
+                  pattern: /^[^\s].*[^\s]$|^[^\s]$/,
+                  message: "Không được chứa khoảng trắng ở đầu hoặc cuối",
+                },
+                {
+                  pattern: /^[a-zA-Z0-9\sÀ-ỹ]+$/,
+                  message: "Không được chứa ký tự đặc biệt",
+                },
+              ]}
             >
               <Input />
             </Form.Item>
