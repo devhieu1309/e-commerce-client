@@ -5,39 +5,15 @@ import { useEffect } from "react";
 import DeleteVideoReview from "./DeleteVideoReview";
 import VideoReviewToolbar from "./VideoReviewToolbar";
 import VideoReviewModal from "./VideoReviewModal";
+import { getVideoReview } from "../../services/videoreviewServices";
 
 
 function VideoReview() {
-  // const [categories, setCategories] = useState([
-  //   {
-  //     id: 1,
-  //     product_id: 101,
-  //     title: "Đánh giá iPhone 13 Pro Max",
-  //     video_url: "https://www.youtube.com/watch?v=example1",
-  //   },
-  //   {
-  //     id: 2,
-  //     product_id: 102,
-  //     title: "Trên tay Samsung Galaxy S21",
-  //     video_url: "https://www.youtube.com/watch?v=example2",
-  //   },
-  //   {
-  //     id: 3,
-  //     product_id: 103,
-  //     title: "Mở hộp và đánh giá MacBook Pro M1",
-  //     video_url: "https://www.youtube.com/watch?v=example3",
-  //   },
-  //   {
-  //     id: 4,
-  //     product_id: 104,
-  //     title: "So sánh Xiaomi Mi 11 và OnePlus 9",
-  //     video_url: "https://www.youtube.com/watch?v=example4",
-  //   },
-  // ]);
   const [videoReviews, setVideoReviews] = useState([]);
   const [iconState, setIconState] = useState({});
   const [products, setProducts] = useState([]);
 
+  // Lấy danh sách sản phẩm
   const fetchProducts = async () => {
     try {
       const res = await fetch("http://localhost:8000/api/products");
@@ -50,15 +26,25 @@ function VideoReview() {
   };
 
   const loadVideoReviews = async () => {
-    try {
-      const response = await fetch("http://localhost:8000/api/video-reviews");
-      if (!response.ok) throw new Error("Không thể tải danh sách video review");
-
-      const data = await response.json();
-      setVideoReviews(data);
-    } catch (error) {
-      console.error("Lỗi khi tải danh sách video review:", error);
-    }
+    const result = await getVideoReview();
+    
+    setVideoReviews(result);
+    // try {
+    //   const response = await fetch("http://localhost:8000/api/video-reviews");
+    //   if (!response.ok) {
+    //     const errorData = await response.json().catch(() => ({}));
+    //     const message = errorData.message || "Không thể tải danh sách video review";
+    //     throw new Error(message);
+    //   }
+    //   const data = await response.json();
+    //   setVideoReviews(data);
+    // } catch (error) {
+    //   console.error("Lỗi khi tải danh sách video review:", error);
+    //   apiNoti.error({
+    //     message: "Lỗi tải dữ liệu",
+    //     description: error.message || "Đã xảy ra lỗi không xác định.",
+    //   });
+    // }
   };
 
   useEffect(() => {
@@ -73,30 +59,30 @@ function VideoReview() {
   //   }));
   // };
 
-  const handleToggleIcon = async (record) => {
-    try {
-      const newVisible = !record.is_visible;
-      await fetch(`http://localhost:8000/api/video-reviews/${record.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...record,
-          is_visible: newVisible ? 1 : 0,
-        }),
-      });
+  // const handleToggleIcon = async (record) => {
+  //   try {
+  //     const newVisible = !record.is_visible;
+  //     await fetch(`http://localhost:8000/api/video-reviews/${record.id}`, {
+  //       method: "PATCH",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({
+  //         ...record,
+  //         is_visible: newVisible ? 1 : 0,
+  //       }),
+  //     });
 
-      // Cập nhật state
-      setIconState((prev) => ({
-        ...prev,
-        [record.id]: newVisible,
-      }));
+  //     // Cập nhật state
+  //     setIconState((prev) => ({
+  //       ...prev,
+  //       [record.id]: newVisible,
+  //     }));
 
 
-      loadVideoReviews();
-    } catch (error) {
-      console.error("Lỗi khi cập nhật trạng thái hiển thị:", error);
-    }
-  };
+  //     loadVideoReviews();
+  //   } catch (error) {
+  //     console.error("Lỗi khi cập nhật trạng thái hiển thị:", error);
+  //   }
+  // };
 
   const columns = [
     {
@@ -107,7 +93,6 @@ function VideoReview() {
     },
     {
       title: "Sản phẩm",
-      // dataIndex: "product_id",
       dataIndex: ["product", "name"],
       key: "product_name",
       render: (_, record) => {
@@ -138,7 +123,7 @@ function VideoReview() {
         const isVisible = record.is_visible ?? iconState[record.id] ?? false;
         return (
           <Space>
-            <VideoReviewModal mode="edit" record={record} onReload={loadVideoReviews} />
+            <VideoReviewModal mode="edit" products={products} record={record} onReload={loadVideoReviews} />
             <Popconfirm
               title="Bạn chắc chắn muốn xóa video review này?"
               okText="Xóa"

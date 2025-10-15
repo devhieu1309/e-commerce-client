@@ -2,7 +2,7 @@ import { del, edit, get, post, } from "../utils/request";
 
 export const getVideoReview = async () => {
   const result = await get('video-reviews');
-  return result();
+  return result;
 }
 
 export const storeVideoReview = async (option) => {

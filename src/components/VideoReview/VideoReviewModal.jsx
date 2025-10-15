@@ -1,18 +1,7 @@
-import {
-  Button,
-  Form,
-  Input,
-  InputNumber,
-  Modal,
-  notification,
-  Select,
-  Spin,
-  Switch,
-  Tooltip,
-} from "antd";
-import { EditOutlined, LoadingOutlined, PlusOutlined } from "@ant-design/icons";
+import { Button, Form, Input, Modal, notification, Spin, Tooltip, Select } from "antd";
+import { EditOutlined, PlusOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
-import { storeVideoReview, editVideoReview  } from '../../services/videoreviewServices';
+import { storeVideoReview, editVideoReview } from '../../services/videoreviewServices';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -42,13 +31,6 @@ function VideoReviewModal(props) {
       });
   }, []);
 
-  const rules = [
-    {
-      required: true,
-      message: "Vui lòng chọn sản phẩm",
-    },
-  ];
-
   const handleShowModal = () => {
     setShowModal(true);
   };
@@ -59,104 +41,77 @@ function VideoReviewModal(props) {
   };
 
   const handleSubmit = async (values) => {
-    // setSpinning(true);
-    // const response = await updateRoom(record.id, values);
-    // // const response = undefined;
-    // setTimeout(() => {
+    setSpinning(true);
+    // if (mode === "edit") {
+    //   const response = await editVideoReview(record.video_id, values);
     //   if (response) {
     //     apiNoti.success({
     //       message: `Notification`,
-    //       description: `Cập nhật sản phẩm ${record.name} thành công!`,
+    //       description: `Cập nhật video review với title ${response.title} thành công!`,
     //     });
     //     setShowModal(false);
     //     onReload();
     //   } else {
     //     apiNoti.error({
     //       message: `Notification`,
-    //       description: `Cập nhật sản phẩm ${record.name} không thành công!`,
+    //       description: `Cập nhật video review với title ${response.title} không thành công!`,
     //     });
     //   }
     //   setSpinning(false);
-    // }, 3000);
-
-    // try {
-    //   setSpinning(true);
-    //   const response = await fetch("http://localhost:8000/api/video-reviews", {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify(values),
-    //   });
-
-    //   if (!response.ok) {
-    //     throw new Error("Lỗi khi thêm video review");
+    // } else {
+    //   const response = await storeVideoReview(values);
+    //   if (response) {
+    //     apiNoti.success({
+    //       message: `Notification`,
+    //       description: `Thêm video review với title ${response.title} thành công!`,
+    //     });
+    //     setShowModal(false);
+    //     form.resetFields();
+    //     onReload();
+    //   } else {
+    //     apiNoti.error({
+    //       message: `Notification`,
+    //       description: `Thêm video review với title ${response.title} không thành công!`,
+    //     });
     //   }
-
-    //   const data = await response.json();
-
-    //   apiNoti.success({
-    //     message: "Thành công",
-    //     description: `Thêm video review "${values.title}" thành công!`,
-    //   });
-
-    //   setShowModal(false);
-    //   onReload();
-
-    // } catch (error) {
-    //   console.error("Error:", error);
-    //   apiNoti.error({
-    //     message: "Thất bại",
-    //     description: `Thêm video review không thành công!`,
-    //   });
-    // } finally {
     //   setSpinning(false);
     // }
-
-    setSpinning(true);
-    if (mode === "edit") {
-      const response = await editVideoReview(record.video_id, values);
+    try {
+      const response =
+        mode === "edit"
+          ? await editVideoReview(record.video_id, values)
+          : await storeVideoReview(values);
       if (response) {
         apiNoti.success({
-          message: `Notification`,
-          description: `Cập nhật video review với title ${response.title} thành công!`,
-        });
-        setShowModal(false);
-        onReload();
-      } else {
-        apiNoti.error({
-          message: `Notification`,
-          description: `Cập nhật video review với title ${response.title} không thành công!`,
-        });
-      }
-      setSpinning(false);
-    } else {
-      const response = await storeVideoReview(values);
-      if (response) {
-        apiNoti.success({
-          message: `Notification`,
-          description: `Thêm video review với title ${response.title} thành công!`,
+          message: `Thông báo`,
+          description: response.message,
         });
         setShowModal(false);
         form.resetFields();
         onReload();
-      } else {
-        apiNoti.error({
-          message: `Notification`,
-          description: `Thêm video review với title ${response.title} không thành công!`,
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 422) {
+        const serverErrors = error.response.data.errors;
+        Object.keys(serverErrors).forEach((field) => {
+          form.setFields([
+            {
+              name: field,
+              errors: serverErrors[field],
+            },
+          ]);
         });
       }
+    } finally {
       setSpinning(false);
     }
-
-
 
   };
   return (
     <>
       {contextHolder}
       {mode === "edit" ? (
-        <Tooltip title="Chỉnh sửa danh mục">
+        <Tooltip title="Chỉnh sửa video review">
           <Button
             size="small"
             type="primary"
@@ -178,10 +133,13 @@ function VideoReviewModal(props) {
       <Modal
         open={showModal}
         onCancel={handleCancel}
-        title={mode === "edit" ? "Cập nhật video review sản phẩm" : "Thêm video review sản phẩm"}
+        title={mode === "edit" ? "Chỉnh sửa video review sản phẩm" : "Thêm video review sản phẩm"}
         footer={null}
       >
-        <Spin spinning={spinning} tip="Đang cập nhật...">
+        <Spin
+          spinning={spinning}
+          tip={mode === "edit" ? "Đang cập nhật..." : "Đang tạo mới..."}
+        >
           <Form
             layout="vertical"
             name="create-room"
@@ -189,8 +147,8 @@ function VideoReviewModal(props) {
             form={form}
             initialValues={record}
           >
-
-            <Form.Item label="Sản phẩm" name="product_id" rules={rules}>
+            <Form.Item label="Sản phẩm" name="product_id"
+              rules={[{ required: true, message: "Vui lòng chọn sản phẩm" }]} >
               <Select
                 showSearch
                 placeholder="Chọn sản phẩm"
@@ -220,11 +178,15 @@ function VideoReviewModal(props) {
               </Select>
             </Form.Item>
 
-            <Form.Item label="Tiêu đề video" name="title" rules={rules}>
+            <Form.Item label="Tiêu đề video" name="title"
+              rules={[{ required: true, message: "Vui lòng nhập tiêu đề video" }]}
+            >
               <TextArea row={4} />
             </Form.Item>
 
-            <Form.Item label="URL" name="url" rules={rules}>
+            <Form.Item label="URL" name="url"
+              rules={[{ required: true, message: "Vui lòng nhập URL video" }]}
+            >
               <TextArea row={4} />
             </Form.Item>
 
