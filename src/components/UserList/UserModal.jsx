@@ -151,7 +151,6 @@ function UserModal(props) {
             <Form.Item
               label="Mật khẩu"
               name="password"
-              
             >
               <Input.Password placeholder="Nhập mật khẩu" />
             </Form.Item>
