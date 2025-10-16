@@ -19,3 +19,4 @@ export const deleteCategory = async (id) => {
   const result = await del(`categories/${id}`);
   return result;
 };
+

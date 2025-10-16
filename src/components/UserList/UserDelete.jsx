@@ -1,42 +1,27 @@
 import { Button, notification, Popconfirm } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
+import { deleteUser } from "../../services/userServices";
 
 function UserDelete(props) {
-  const { record, onReload } = props; // nhận record và callback reload
-
-  const [notiUser, contextHolder] = notification.useNotification();
-
-  // Hàm mở thông báo
-  const openNotificationWithIcon = (type, name) => {
-    notiUser[type]({
-      message: "Thành công",
-      description: `Người dùng "${name}" đã được xóa thành công.`,
-    });
-  };
+  const { record, onReload } = props;
+  const [apiNoti, contextHolder] = notification.useNotification();
 
   // Hàm xử lý xóa
   const handleDelete = async () => {
-    try {
-      // ⚠️ Chỗ này bạn thay bằng API thật khi có
-      // const response = await deleteUser(record.id);
-      // if (response) {
-      //   onReload();
-      //   openNotificationWithIcon("success", record.full_name);
-      // } else {
-      //   notiUser.error({
-      //     message: "Thất bại",
-      //     description: "Xóa người dùng thất bại. Vui lòng thử lại!",
-      //   });
-      // }
-
-      // Tạm thời mô phỏng:
-      openNotificationWithIcon("success", record.name);
-      if (onReload) onReload();
-
-    } catch (error) {
-      notiUser.error({
-        message: "Lỗi",
-        description: "Đã xảy ra lỗi khi xóa người dùng.",
+    const response = await deleteUser(record.user_id);
+    // console.log("Minh Hieu: ", record);
+     if (response.success) {
+      apiNoti.success({
+        message: `Notification`,
+        description: `Xóa người ${record.name} dùng thành công!`,
+      });
+      setTimeout(() => {
+        onReload();
+      }, 500) 
+    } else {
+      apiNoti.error({
+        message: `Notification`,
+        description: `Xóa danh mục thất bại!`,
       });
     }
   };

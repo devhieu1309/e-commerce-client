@@ -5,7 +5,7 @@ function UserView({ open, onCancel, user }) {
 
     return (
         <Modal
-            title={"Xem Thông Tin Khách Hàng".toUpperCase()} // ✅ Tên in hoa, in đậm
+            title={"Xem Thông Tin Khách Hàng".toUpperCase()} 
             open={open}
             onCancel={onCancel}
             footer={null}
