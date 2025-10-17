@@ -21,6 +21,7 @@ function BannerListModal(props) {
   const [form] = Form.useForm();
   const [apiNoti, contextHolder] = notification.useNotification();
   const [spinning, setSpinning] = useState(false);
+  const [fileList, setFileList] = useState([]);
 
   const rules = [
     {
@@ -30,52 +31,39 @@ function BannerListModal(props) {
   ];
 
   const handleShowModal = () => {
+    if (mode === "edit" && record) {
+      form.setFieldsValue({
+        title: record.title,
+        link_url: record.link_url,
+        position: record.position,
+        is_active: String(record.is_active),
+      });
+
+      setFileList(
+        record.image
+          ? [
+              {
+                uid: "-1",
+                name: record.image,
+                status: "done",
+                url: `http://127.0.0.1:8000/storage/${record.image}`,
+              },
+            ]
+          : []
+      );
+    } else {
+      form.resetFields();
+      setFileList([]);
+    }
+
     setShowModal(true);
   };
 
   const handleCancel = () => {
     setShowModal(false);
     form.resetFields();
+    setFileList([]);
   };
-
-  // const handleSubmit = async (values) => {
-  //   setSpinning(true);
-  //   if (mode === "edit") {
-  //     const response = await editBanner(record.id, values);
-  //     if (response) {
-  //       apiNoti.success({
-  //         message: `Notification`,
-  //         description: `Cập nhật Banner ${response.title} thành công!`,
-  //       });
-  //       setShowModal(false);
-  //       form.resetFields();
-  //       onReload();
-  //     } else {
-  //       apiNoti.error({
-  //         message: `Notification`,
-  //         description: `Cập nhật Banner ${response.title} không thành công!`,
-  //       });
-  //     }
-  //     setSpinning(false);
-  //   } else {
-  //     const response = await storeBanner(values);
-  //     if (response) {
-  //       apiNoti.success({
-  //         message: `Notification`,
-  //         description: `Thêm Banner ${response.title} thành công!`,
-  //       });
-  //       setShowModal(false);
-  //       form.resetFields();
-  //       onReload();
-  //     } else {
-  //       apiNoti.error({
-  //         message: `Notification`,
-  //         description: `Thêm Banner ${response.title} không thành công!`,
-  //       });
-  //     }
-  //     setSpinning(false);
-  //   }
-  // };
 
   const handleSubmit = async (values) => {
     setSpinning(true);
@@ -84,11 +72,13 @@ function BannerListModal(props) {
     formData.append("title", values.title);
     formData.append("link_url", values.link_url);
     formData.append("position", values.position);
-    formData.append("is_active", values.is_active);
+    formData.append("is_active", Number(values.is_active));
 
-    // 🖼️ Lấy file ảnh
-    if (values.image && values.image[0]) {
-      formData.append("image", values.image[0].originFileObj);
+    if (fileList && fileList.length > 0) {
+      const file = fileList[0];
+      if (file.originFileObj) {
+        formData.append("image", file.originFileObj);
+      }
     }
 
     let response;
@@ -100,17 +90,18 @@ function BannerListModal(props) {
 
     if (response) {
       apiNoti.success({
-        message: `Notification`,
+        message: "Notification",
         description: `${
           mode === "edit" ? "Cập nhật" : "Thêm"
         } Banner thành công!`,
       });
       setShowModal(false);
       form.resetFields();
+      setFileList([]);
       onReload();
     } else {
       apiNoti.error({
-        message: `Notification`,
+        message: "Notification",
         description: `${
           mode === "edit" ? "Cập nhật" : "Thêm"
         } Banner thất bại!`,
@@ -157,40 +148,26 @@ function BannerListModal(props) {
             name="create-banner"
             onFinish={handleSubmit}
             form={form}
-            initialValues={record}
           >
             <Form.Item
               label="Tên tiêu đề Banner"
               name="title"
-              rules={[
-                { required: true, message: "Vui lòng nhập tên tiêu đề banner" },
-              ]}
+              rules={[...rules]}
             >
               <Input />
             </Form.Item>
 
-            {/* <Form.Item
-              label="Ảnh"
-              name="image"
-              rules={[{ required: true, message: "Vui lòng chọn ảnh banner" }]}
-            >
-              <Input placeholder="Tên file ảnh (ví dụ: banner.jpg)" />
-            </Form.Item> */}
-
-            {/* Ảnh  */}
             <Row gutter={24}>
               <Col xs={24} md={12}>
-                <Form.Item
-                  label="Ảnh Banner"
-                  name="image"
-                  rules={[
-                    { required: true, message: "Vui lòng tải ảnh Banner!" },
-                  ]}
-                >
+                <Form.Item label="Ảnh Banner" name="image">
                   <Upload
                     listType="picture-card"
                     beforeUpload={() => false}
                     maxCount={1}
+                    fileList={fileList}
+                    onChange={({ fileList: newFileList }) =>
+                      setFileList(newFileList)
+                    }
                   >
                     <div className="flex flex-col items-center justify-center">
                       <UploadOutlined className="text-xl text-gray-600" />
@@ -201,33 +178,24 @@ function BannerListModal(props) {
               </Col>
             </Row>
 
-            <Form.Item
-              label="Link URL"
-              name="link_url"
-              rules={[{ required: true, message: "Vui lòng nhập link URL" }]}
-            >
+            <Form.Item label="Link URL" name="link_url" rules={[...rules]}>
               <Input placeholder="https://..." />
             </Form.Item>
 
-            <Form.Item
-              label="Vị trí"
-              name="position"
-              rules={[{ required: true, message: "Vui lòng chọn vị trí" }]}
-            >
+            <Form.Item label="Vị trí" name="position" rules={[...rules]}>
               <Select>
                 <Select.Option value="home">Trang chủ</Select.Option>
                 <Select.Option value="product">Sản phẩm</Select.Option>
               </Select>
             </Form.Item>
 
-            <Form.Item label="Trạng thái" name="is_active">
+            <Form.Item label="Trạng thái" name="is_active" rules={[...rules]}>
               <Select>
                 <Select.Option value="1">Hiển thị</Select.Option>
                 <Select.Option value="0">Ẩn đi</Select.Option>
               </Select>
             </Form.Item>
 
-            {/* Nút submit */}
             <Form.Item>
               <Button type="primary" htmlType="submit">
                 {mode === "edit" ? "Cập nhật" : "Thêm mới"}
