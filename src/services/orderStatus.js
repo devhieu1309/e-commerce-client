@@ -19,3 +19,24 @@ export const deleteOrderStatus = async (id) => {
   const result = await del(`order-status/${id}`);
   return result;
 };
+
+export const searchOrderStatus = async (status) => {
+  try {
+    const response = await fetch(
+      `http://127.0.0.1:8000/api/order-status/search?status=${encodeURIComponent(
+        status
+      )}`
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP lỗi : ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    return data;
+  } catch (error) {
+    console.log("Lỗi khi tìm kiếm Phương thanh toán: ", error);
+    throw error;
+  }
+};
