@@ -24,6 +24,10 @@ function AdminBannerList() {
     fetchApi();
   };
 
+  const handleSearchResut = (result) => {
+    setBanner(result);
+  };
+
   const columns = [
     {
       title: "STT",
@@ -41,7 +45,11 @@ function AdminBannerList() {
       dataIndex: "image",
       key: "image",
       render: (text) => (
-        <img src={`/public/banner/${text}`} alt={text} style={{ width: 100 }} />
+        <img
+          src={`http://127.0.0.1:8000/storage/${text}`}
+          alt={text}
+          style={{ width: 150, height: 55, objectFit: "cover" }}
+        />
       ),
     },
     {
@@ -108,11 +116,15 @@ function AdminBannerList() {
   ];
   return (
     <>
-      <BannerListToolbar />
+      <BannerListToolbar
+        onReload={handleReload}
+        onSearchResult={handleSearchResut}
+      />
       <Table
         columns={columns}
         dataSource={banner}
-        pagination={{ pageSize: 6 }}
+        rowKey={(record) => record.id}
+        pagination={{ pageSize: 7 }}
       />
     </>
   );
