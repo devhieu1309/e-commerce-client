@@ -1,32 +1,34 @@
 import { Button, notification, Popconfirm } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
+import { deleteNews } from "../../../services/newsServices";
 
-function DeleteNewsList() {
-  const [notiNews, contextHolder] = notification.useNotification();
+function DeleteNewsList(props) {
+  const { record, onReload } = props;
+  const [apiNoti, contextHolder] = notification.useNotification();
 
-  const openNotificationWithIcon = (type, name) => {
-    notiNews[type]({
-      message: "Thành công",
-      description: `Tin tức "${name}" đã được xóa thành công.`,
-    });
-  };
-
-  const handleDelete = () => {
-    openNotificationWithIcon("success");
-    // const response = await deleteRoom(record.id);
-    // if(response){
-    //   onReload();
-    //   alert("Xóa bảng ghi thành công!");
-    // }else{
-    //   alert("Xóa bảng ghi thất bại. Vui lòng thử lại!");
-    // }
+  const handleDelete = async () => {
+    const response = await deleteNews(record.id);
+    if (response.success) {
+      apiNoti.success({
+        message: `Notification`,
+        description: `Xóa tin tức ${record.title} thành công!`,
+      });
+      setTimeout(() => {
+        onReload();
+      }, 1500);
+    } else {
+      apiNoti.error({
+        message: `Notification`,
+        description: `Xóa tin tức ${record.title} thất bại!`,
+      });
+    }
   };
 
   return (
     <>
       {contextHolder}
       <Popconfirm
-        title="Bạn có muốn xóa tin tức này không?"
+        title={`Bạn có chắc muốn xóa ${record.title}?`}
         onConfirm={handleDelete}
       >
         <Button danger size="small" icon={<DeleteOutlined />}></Button>
