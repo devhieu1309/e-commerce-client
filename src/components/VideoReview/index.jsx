@@ -59,30 +59,29 @@ function VideoReview() {
   //   }));
   // };
 
-  // const handleToggleIcon = async (record) => {
-  //   try {
-  //     const newVisible = !record.is_visible;
-  //     await fetch(`http://localhost:8000/api/video-reviews/${record.id}`, {
-  //       method: "PATCH",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify({
-  //         ...record,
-  //         is_visible: newVisible ? 1 : 0,
-  //       }),
-  //     });
+  const handleToggleIcon = async (record) => {
+    try {
+      const newVisible = !record.is_visible;
+      await fetch(`http://localhost:8000/api/video-reviews/${record.video_id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...record,
+          is_visible: newVisible ? 1 : 0,
+        }),
+      });
 
-  //     // Cập nhật state
-  //     setIconState((prev) => ({
-  //       ...prev,
-  //       [record.id]: newVisible,
-  //     }));
+      // Cập nhật state
+      setIconState((prev) => ({
+        ...prev,
+        [record.id]: newVisible,
+      }));
 
-
-  //     loadVideoReviews();
-  //   } catch (error) {
-  //     console.error("Lỗi khi cập nhật trạng thái hiển thị:", error);
-  //   }
-  // };
+      loadVideoReviews();
+    } catch (error) {
+      console.error("Lỗi khi cập nhật trạng thái hiển thị:", error);
+    }
+  };
 
   const columns = [
     {
@@ -131,14 +130,21 @@ function VideoReview() {
             >
               <DeleteVideoReview record={record} onReload={loadVideoReviews} />
             </Popconfirm>
-            <Tooltip title={isVisible ? "Ẩn" : "Hiện"}>
+
+            <Popconfirm
+              title="Bạn chắc chắn muốn thay đổi trạng thái video này?"
+              okText="Đồng ý"
+              cancelText="Hủy"
+            >
+             {/* <Tooltip title={isVisible ? "Hiện" : "Ẩn"}> */}
               <span
                 onClick={() => handleToggleIcon(record)}
                 style={{ fontSize: 18, cursor: "pointer", color: "#1677ff" }}
               >
                 {isVisible ? <EyeOutlined /> : <EyeInvisibleOutlined />}
               </span>
-            </Tooltip>
+            {/* </Tooltip> */}
+            </Popconfirm>
           </Space>
         );
       },
