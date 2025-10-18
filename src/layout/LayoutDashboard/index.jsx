@@ -36,7 +36,7 @@ function LayoutDashboard(){
                 </header>
                 
                 <Layout>
-                    <Sider className="sider" collapsed={collapsed} theme="light">
+                    <Sider className="sider" collapsed={collapsed} theme="light" width={250}>
                         <MenuSider/>
                     </Sider>
 
