@@ -6,16 +6,18 @@ import VariationModal from "./VariationModal";
 
 const { Option } = Select;
 
-function ViriationToolbar({
-  onSearch,
-  onParentChange,
-  onAdd,
-  parentOptions = [
-    { id: 1, category_name: "Điện thoại" },
-    { id: 2, category_name: "Laptop" },
-    { id: 3, category_name: "Máy tính bảng" },
-  ],
-}) {
+function ViriationToolbar(props) {
+  const {
+    onSearch,
+    onParentChange,
+    onAdd,
+    parentOptions = [
+      { id: 1, category_name: "Điện thoại" },
+      { id: 2, category_name: "Laptop" },
+      { id: 3, category_name: "Máy tính bảng" },
+    ],
+    onReload,
+  } = props;
   return (
     <div
       style={{
@@ -46,7 +48,7 @@ function ViriationToolbar({
           ))}
         </Select>
       </Space>
-      <VariationModal mode="create" record={{  }}  />
+      <VariationModal mode="create" record={{}} onReload={onReload} />
     </div>
   );
 }
