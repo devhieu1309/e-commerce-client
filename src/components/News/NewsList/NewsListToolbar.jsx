@@ -15,7 +15,7 @@ function NewsListToolbar({
 }) {
   const [keyword, setKeyword] = useState("");
 
-  const handleSearchBanner = async () => {
+  const handleSearchNews = async () => {
     try {
       if (keyword.trim() === "") {
         onReload();
@@ -31,7 +31,7 @@ function NewsListToolbar({
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      handleSearchBanner();
+      handleSearchNews();
     }
   };
   return (
