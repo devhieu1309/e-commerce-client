@@ -33,6 +33,8 @@ import PromotionList from "../components/PromotionList";
 import UserList from "../components/UserList";
 import OnOffUserList from "../components/On_Off_User";
 import VideoReview from "../components/VideoReview";
+import LoGin from "../pages/User/login/Login";
+import RegisTer from "../pages/User/register/Register";
 
 
 export const routes = [
@@ -99,6 +101,14 @@ export const routes = [
       {
         path: "iphone-15-256gb-chinh-hang-vn-a",
         element: <Detail />,
+      },
+      {
+        path: "dang-nhap",
+        element: <LoGin />,
+      },
+      {
+        path: "dang-ky",
+        element: <RegisTer />,
       },
       {
         path: "*",

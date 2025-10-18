@@ -307,7 +307,9 @@ function Header() {
                           src="/icons8-login-50.png"
                           alt=""
                         />
+                        <Link to="/dang-nhap">
                         <span>Đăng nhập</span>
+                        </Link>
                       </li>
                       <li className="flex items-center px-4 py-1 space-x-2 hover:bg-gray-200">
                         <img
@@ -315,7 +317,9 @@ function Header() {
                           src="/icons8-add-24.png"
                           alt=""
                         />
+                        <Link to="/dang-ky">
                         <span>Đăng ký</span>
+                        </Link>
                       </li>
                       <li className="flex items-center px-4 py-1 space-x-2 hover:bg-gray-200">
                         <img

@@ -6,8 +6,6 @@ export const get = async (path) => {
   const result = await response.json();
   return result;
 };
-<<<<<<< HEAD
-=======
 
 // export const post = async (path, options) => {
 //     const response = await fetch(API_DOMAIN + path , {
@@ -21,7 +19,6 @@ export const get = async (path) => {
 //     const result = await response.json();
 //     return result;
 // }
->>>>>>> a6d1ae3179102933a62168c386f785d6cf786151
 
 export const post = async (path, options) => {
   const response = await fetch(API_DOMAIN + path, {
@@ -32,9 +29,6 @@ export const post = async (path, options) => {
     },
     body: JSON.stringify(options),
   });
-<<<<<<< HEAD
-  const result = await response.json();
-=======
 
   const result = await response.json();
 
@@ -47,7 +41,6 @@ export const post = async (path, options) => {
     throw error;
   }
 
->>>>>>> a6d1ae3179102933a62168c386f785d6cf786151
   return result;
 };
 
