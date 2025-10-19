@@ -23,6 +23,10 @@ function OrderStatusList() {
     fetchApi();
   };
 
+  const handleSearchResult = (result) => {
+    setOrderStatus(result);
+  };
+
   const columns = [
     {
       title: "STT",
@@ -78,10 +82,14 @@ function OrderStatusList() {
   ];
   return (
     <>
-      <OrderStatusTooblar onReload={handleReload} />
+      <OrderStatusTooblar
+        onReload={handleReload}
+        onSearchResult={handleSearchResult}
+      />
       <Table
         columns={columns}
         dataSource={orderStatus}
+        rowKey={(record) => record.id}
         pagination={{ pageSize: 8 }}
       />
     </>
