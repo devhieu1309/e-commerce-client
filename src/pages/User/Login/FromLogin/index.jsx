@@ -1,9 +1,47 @@
 import { Link } from "react-router-dom";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { login } from "../../../../services/authServices"; // đường dẫn đúng tới authServices.js
+
+
 
 function FromLogin() {
 
     const [showForgot, setShowForgot] = useState(false);
+
+    const [formData, setFormData] = useState({
+        email: "",
+        password: "",
+    });
+    const [errors, setErrors] = useState({});
+    const [loading, setLoading] = useState(false);
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        setErrors({});
+
+        try {
+            const response = await login(formData);
+            localStorage.setItem("token", response.data.token);
+            navigate("/home");
+        } catch (error) {
+            if (error.response && error.response.status === 422) {
+                setErrors(error.response.data.errors || {});
+            } else if (error.response && error.response.status === 401) {
+                setErrors({ email: ["Email hoặc mật khẩu không đúng!"] });
+            } else {
+                setErrors({ email: ["Lỗi kết nối server!"] });
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
+
 
     return (
         <>
@@ -29,24 +67,39 @@ function FromLogin() {
                     </h2>
 
                     {/* Form */}
-                    <form>
+                    <form onSubmit={handleSubmit}>
                         <input
                             type="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
                             placeholder="Email"
                             className="w-full border border-gray-300 rounded-md px-3 py-2 mb-3 border-b-blue-700"
                         />
+                        {errors.email && (
+                            <p className="text-red-600 text-sm mb-2">{errors.email[0]}</p>
+                        )}
+
                         <input
                             type="password"
+                            name="password"
+                            value={formData.password}
+                            onChange={handleChange}
                             placeholder="Mật khẩu"
-                            className="w-full border border-gray-300 rounded-md px-3 py-2 mb-4 border-b-blue-700"
+                            className="w-full border border-gray-300 rounded-md px-3 py-2 mb-1 border-b-blue-700"
                         />
+                        {errors.password && (
+                            <p className="text-red-600 text-sm mb-2">{errors.password[0]}</p>
+                        )}
+
                         <button
                             type="submit"
                             className="w-full bg-blue-800 text-white py-2 rounded-md font-medium hover:bg-blue-900 transition"
                         >
-                            Đăng nhập
+                            {loading ? "Đang xử lý..." : "Đăng nhập"}
                         </button>
                     </form>
+
 
                     {/* Quên mật khẩu */}
                     <p
