@@ -24,7 +24,7 @@ function CategoryToolbar({
         marginBottom: 16,
       }}
     >
-      <Space>
+      {/* <Space>
         <Input
           placeholder="Tìm kiếm danh mục"
           prefix={<SearchOutlined />}
@@ -45,7 +45,7 @@ function CategoryToolbar({
             </Option>
           ))}
         </Select>
-      </Space>
+      </Space> */}
       <CategoryModal mode="create" record={{  }} onReload={onReload}  />
     </div>
   );
