@@ -4,25 +4,62 @@ import DeleteVariation from "./DeleteVariation";
 import ViriationToolbar from "./VariationToolbar";
 import VariationModal from "./VariationModal";
 import { getVariationList } from "../../services/variationServices";
-import { getCategoryList } from "../../services/categoryServices";
+import {
+  getCategoryList,
+  getVariationByCategoryId,
+} from "../../services/categoryServices";
 
 function VariationList() {
   const [variations, setVariations] = useState([]);
+  const [filterVariations, setFilterVariations] = useState([]);
+  const [isFiltering, setIsFiltering] = useState(false);
+
+  // Get variation by variation nam
+  const handleSearchVariation = (value) => {
+    if (!value) {
+      setIsFiltering(false);
+      setFilterVariations([]); 
+      return;
+    }
+
+    setIsFiltering(true);
+    const resultFinal = variations.filter((item) =>
+      item.variation_name.toLowerCase().includes(value.toLowerCase())
+    );
+
+    setFilterVariations(resultFinal);
+    // setSearchText(value);
+  };
+
+  // Filter variation by category nam
+  const handleGetVariationByCategoryId = (category_id) => {
+    console.log("MINH HIEU: ", category_id);
+    if (!category_id) {
+      setIsFiltering(false);
+      setFilterVariations([]);
+      return;
+    }
+    setIsFiltering(true);
+    const resultFinal = variations.filter(
+      (item) => item.category_id === category_id
+    );
+    setFilterVariations(resultFinal);
+  };
 
   const fetchApi = async () => {
     const resultVariations = await getVariationList();
     const resultCategories = await getCategoryList();
 
     const resultFinal = [];
-    resultVariations.variations.map((item) => {
+    for (let i = 0; i < resultVariations.variations.length; i++) {
       resultFinal.push({
-        ...item,
+        ...resultVariations.variations[i],
         ...resultCategories.categories.find(
-          (category) => category.category_id === item.category_id
+          (category) =>
+            category.category_id === resultVariations.variations[i].category_id
         ),
       });
-    });
-
+    }
     setVariations(resultFinal.reverse());
   };
 
@@ -75,13 +112,13 @@ function VariationList() {
       key: "action",
       render: (_, record) => (
         <Space>
-          <VariationModal mode="edit" record={record} onReload={handleReload}/>
+          <VariationModal mode="edit" record={record} onReload={handleReload} />
           <Popconfirm
             title="Bạn chắc chắn muốn xóa danh mục này?"
             okText="Xóa"
             cancelText="Hủy"
           >
-            <DeleteVariation record={record} onReload={handleReload}/>
+            <DeleteVariation record={record} onReload={handleReload} />
           </Popconfirm>
         </Space>
       ),
@@ -90,10 +127,14 @@ function VariationList() {
 
   return (
     <>
-      <ViriationToolbar onReload={handleReload}/>
+      <ViriationToolbar
+        onReload={handleReload}
+        handleGetVariationByCategoryId={handleGetVariationByCategoryId}
+        handleSearchVariation={handleSearchVariation}
+      />
       <Table
         columns={columns}
-        dataSource={variations}
+        dataSource={isFiltering ? filterVariations : variations}
         pagination={{ pageSize: 10 }}
       />
     </>

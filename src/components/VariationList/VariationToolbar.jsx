@@ -1,23 +1,44 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Input, Select, Button, Space } from "antd";
 import { PlusOutlined, SearchOutlined } from "@ant-design/icons";
 import VariationModal from "./VariationModal";
+import { getCategoryList } from "../../services/categoryServices";
 // import CategoryModal from "./CategoryModal";
 
 const { Option } = Select;
 
 function ViriationToolbar(props) {
-  const {
-    onSearch,
-    onParentChange,
-    onAdd,
-    parentOptions = [
-      { id: 1, category_name: "Điện thoại" },
-      { id: 2, category_name: "Laptop" },
-      { id: 3, category_name: "Máy tính bảng" },
-    ],
-    onReload,
-  } = props;
+  const {handleGetVariationByCategoryId, onAdd, onReload, handleSearchVariation} = props;
+
+  const [categoryOptions, setCategoryOptions] = useState([]);
+  useEffect(() => {
+    const fetchApi = async () => {
+      const result = await getCategoryList();
+      setCategoryOptions(result.categories);
+    };
+
+    fetchApi();
+  }, []);
+
+  const onParentChange = (value) => {
+    handleGetVariationByCategoryId(value);
+  };
+
+  const onSearch = (value) => {
+    console.log("MINH HIEU: ", value);
+    handleSearchVariation(value);
+    // setSearchText(value); 
+
+    // if (!value) {
+    //   setFilteredVariations(variations);
+    // } else {
+    //   const filtered = variations.filter((item) =>
+    //     item.name.toLowerCase().includes(value.toLowerCase())
+    //   );
+    //   setFilteredVariations(filtered);
+    // }
+  };
+
   return (
     <div
       style={{
@@ -41,8 +62,8 @@ function ViriationToolbar(props) {
           allowClear
         >
           <Option value="">Tất cả</Option>
-          {parentOptions.map((item) => (
-            <Option key={item.id} value={item.id}>
+          {categoryOptions.map((item) => (
+            <Option key={item.category_id} value={item.category_id}>
               {item.category_name}
             </Option>
           ))}
