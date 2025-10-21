@@ -6,22 +6,28 @@ import DeletePromotion from "./DeletePromotion";
 import { getPromotionList } from "../../services/promotionServices";
 
 function PromotionList() {
-    const [promotions, setPromotions] = useState([]);
-    const fetchApi = async () => {
-        const result = await getPromotionList();
-        
-        setPromotions(result.promotions.reverse());
-      };
-    
-      // Lấy danh sách chương trình khuyến mãi
-      useEffect(() => {
-        fetchApi();
-      }, []);
-    
-      // Load lại trang
-      const handleReload = () => {
-        fetchApi();
-      };
+  const [promotions, setPromotions] = useState([]);
+  const fetchApi = async () => {
+    const result = await getPromotionList();
+
+    setPromotions(result.promotions.reverse());
+  };
+
+  // Lấy danh sách chương trình khuyến mãi
+  useEffect(() => {
+    fetchApi();
+  }, []);
+
+  // tìm kiếm
+  // const handleSearch = (data) => {
+  //   setPromotions(data); // cập nhật danh sách hiển thị
+  // };
+
+
+  // Load lại trang
+  const handleReload = () => {
+    fetchApi();
+  };
 
   const columns = [
     {
@@ -87,9 +93,9 @@ function PromotionList() {
     },
   ];
 
-    return (
+  return (
     <>
-      <PromotionToolbar onReload={handleReload}/>
+      <PromotionToolbar onReload={handleReload} />
       <Table
         columns={columns}
         dataSource={promotions}

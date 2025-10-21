@@ -1,4 +1,4 @@
-import { del, edit, get, post,  } from "../utils/request";
+import { del, edit, get, post,searchPost,  } from "../utils/request";
 
 export const getPromotionList = async () => {
    const result = await get('promotions');
@@ -20,3 +20,7 @@ export const deletePromotion = async (id) => {
   return result;
 };
 
+export const searchPromotion = async (keyword) => {
+  const result = await searchPost("promotions/search", { keyword });
+  return result;
+};

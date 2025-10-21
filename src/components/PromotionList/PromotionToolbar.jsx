@@ -2,12 +2,13 @@ import React from "react";
 import { Input, Button, Space } from "antd";
 import { PlusOutlined, SearchOutlined } from "@ant-design/icons";
 import PromotionModal from "./PromotionModal";
+import { searchPromotion } from "../../services/promotionServices";
 
 // const { Option } = Select;
 function PromotionToolbar({
     onSearch,
     onAdd, 
-    onReload
+    onReload,
 }) {
     return (
         <div style={{
