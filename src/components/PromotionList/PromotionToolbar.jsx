@@ -6,7 +6,8 @@ import PromotionModal from "./PromotionModal";
 // const { Option } = Select;
 function PromotionToolbar({
     onSearch,
-    onAdd
+    onAdd, 
+    onReload
 }) {
     return (
         <div style={{
@@ -23,7 +24,7 @@ function PromotionToolbar({
             {/* <Button type="primary" icon={<PlusOutlined />} onClick={onAdd}>
             Thêm chương trình khuyến mãi
             </Button> */}
-            <PromotionModal mode="create" record={{  }}/>
+            <PromotionModal mode="create" record={{  }} onReload = {onReload}/>
         </div>
     );
 }
