@@ -1,25 +1,39 @@
-import React from "react";
+import React, { useState } from "react";
 import { Input, Select, Button, Space } from "antd";
 import { PlusOutlined, SearchOutlined } from "@ant-design/icons";
-
 import NewsListModal from "./NewsListModal";
+import { searchNews } from "../../../services/newsServices";
 
 const { Option } = Select;
 
 function NewsListToolbar({
   onSearch,
-  onParentChange,
   onAdd,
-  parentOptions = [
-    {
-      id: 1,
-      title: "Điện thoại Iphone 16 sắp ra mắt",
-      cover_image: "image1.jpg",
-    },
-    { id: 2, title: "Laptop xịn sắp ra mắt", cover_image: "image1.jpg" },
-    { id: 3, title: "Máy tính bảng quá xịn", cover_image: "image1.jpg" },
-  ],
+  onSearchResult,
+
+  onReload,
 }) {
+  const [keyword, setKeyword] = useState("");
+
+  const handleSearchNews = async () => {
+    try {
+      if (keyword.trim() === "") {
+        onReload();
+        return;
+      }
+      const data = await searchNews(keyword);
+      onSearchResult(data);
+    } catch (error) {
+      console.log("Tìm kiếm thất bại!", error);
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleSearchNews();
+    }
+  };
   return (
     <div
       style={{
@@ -30,31 +44,17 @@ function NewsListToolbar({
     >
       <Space>
         <Input
-          placeholder="Tìm kiếm tin tức"
+          placeholder="Nhập tiêu đề tin tức "
           prefix={<SearchOutlined />}
-          onChange={(e) => onSearch(e.target.value)}
-          style={{ width: 200 }}
-        />
-
-        {/* <Select
-          placeholder="Danh mục cha"
-          onChange={onParentChange}
-          style={{ width: 160 }}
+          // onChange={(e) => onSearch(e.target.value)}
+          style={{ width: 250 }}
+          value={keyword}
+          onChange={(e) => setKeyword(e.target.value)}
+          onKeyDown={handleKeyDown}
           allowClear
-        >
-          <Option value="">Tất cả</Option>
-          {parentOptions.map((item) => (
-            <Option key={item.id} value={item.id}>
-              {item.category_name}
-            </Option>
-          ))}
-        </Select> */}
+        />
       </Space>
-
-      {/* <Button type="primary" icon={<PlusOutlined />} onClick={onAdd}>
-        Thêm danh mục
-      </Button> */}
-      <NewsListModal mode="create" record={{}} />
+      <NewsListModal mode="create" record={{}} onReload={onReload} />
     </div>
   );
 }

@@ -1,39 +1,33 @@
-import React from "react";
+import React, { useState } from "react";
 import { Input, Select, Button, Space } from "antd";
 import { PlusOutlined, SearchOutlined } from "@ant-design/icons";
-
 import NewsBlocksModal from "./NewsBlocksModal";
+import { searchNewsBlocks } from "../../../services/newsBlocksServices";
 
 const { Option } = Select;
 
-function NewsBlockToolbar({
-  onSearch,
-  onParentChange,
-  onAdd,
-  parentOptions = [
-    {
-      id: 1,
-      title: "1. iPhone 15 màu hồng có mấy phiên bản?",
-      image: "image1.jpg",
-      position: 1,
-      news_id: 1,
-    },
-    {
-      id: 2,
-      title: "2. iPhone 15 màu hồng có mấy phiên bản?",
-      image: "image1.jpg",
-      position: 2,
-      news_id: 1,
-    },
-    {
-      id: 3,
-      title: "3. iPhone 15 màu hồng có mấy phiên bản?",
-      image: "image1.jpg",
-      position: 3,
-      news_id: 1,
-    },
-  ],
-}) {
+function NewsBlocksToolbar({ onSearch, onAdd, onSearchResult, onReload }) {
+  const [keyword, setKeyword] = useState("");
+
+  const handleSearchNewsBlocks = async () => {
+    try {
+      if (keyword.trim() === "") {
+        onReload();
+        return;
+      }
+      const data = await searchNewsBlocks(keyword);
+      onSearchResult(data);
+    } catch (error) {
+      console.log("Tìm kiếm thất bại!", error);
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleSearchNewsBlocks();
+    }
+  };
   return (
     <div
       style={{
@@ -44,33 +38,19 @@ function NewsBlockToolbar({
     >
       <Space>
         <Input
-          placeholder="Tìm kiếm bài viết"
+          placeholder="Nhập tiêu đề bài viết vào "
           prefix={<SearchOutlined />}
-          onChange={(e) => onSearch(e.target.value)}
-          style={{ width: 200 }}
-        />
-
-        {/* <Select
-          placeholder="Danh mục cha"
-          onChange={onParentChange}
-          style={{ width: 160 }}
+          // onChange={(e) => onSearch(e.target.value)}
+          style={{ width: 250 }}
+          value={keyword}
+          onChange={(e) => setKeyword(e.target.value)}
+          onKeyDown={handleKeyDown}
           allowClear
-        >
-          <Option value="">Tất cả</Option>
-          {parentOptions.map((item) => (
-            <Option key={item.id} value={item.id}>
-              {item.category_name}
-            </Option>
-          ))}
-        </Select> */}
+        />
       </Space>
-
-      {/* <Button type="primary" icon={<PlusOutlined />} onClick={onAdd}>
-        Thêm danh mục
-      </Button> */}
-      <NewsBlocksModal mode="create" record={{}} />
+      <NewsBlocksModal mode="create" record={{}} onReload={onReload} />
     </div>
   );
 }
 
-export default NewsBlockToolbar;
+export default NewsBlocksToolbar;

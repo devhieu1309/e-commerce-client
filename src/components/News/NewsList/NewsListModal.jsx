@@ -2,24 +2,26 @@ import {
   Button,
   Form,
   Input,
-  InputNumber,
   Modal,
   notification,
-  Select,
   Spin,
-  Switch,
+  Tooltip,
+  Select,
+  Upload,
+  Row,
+  Col,
 } from "antd";
-import { EditOutlined, LoadingOutlined, PlusOutlined } from "@ant-design/icons";
+import { EditOutlined, PlusOutlined, UploadOutlined } from "@ant-design/icons";
 import { useState } from "react";
-
-const { Option } = Select;
+import { editNews, storeNews } from "../../../services/newsServices";
 
 function NewsListModal(props) {
-  const { record, mode } = props;
+  const { record, onReload, mode } = props;
   const [showModal, setShowModal] = useState(false);
   const [form] = Form.useForm();
   const [apiNoti, contextHolder] = notification.useNotification();
   const [spinning, setSpinning] = useState(false);
+  const [fileList, setFileList] = useState([]);
 
   const rules = [
     {
@@ -29,98 +31,148 @@ function NewsListModal(props) {
   ];
 
   const handleShowModal = () => {
+    if (mode === "edit" && record) {
+      form.setFieldsValue({
+        title: record.title,
+      });
+
+      setFileList(
+        record.cover_image
+          ? [
+              {
+                uid: "-1",
+                name: record.cover_image,
+                status: "done",
+                url: `http://127.0.0.1:8000/storage/${record.cover_image}`,
+              },
+            ]
+          : []
+      );
+    } else {
+      form.resetFields();
+      setFileList([]);
+    }
+
     setShowModal(true);
   };
 
   const handleCancel = () => {
     setShowModal(false);
     form.resetFields();
+    setFileList([]);
   };
 
   const handleSubmit = async (values) => {
-    // setSpinning(true);
-    // const response = await updateRoom(record.id, values);
-    // // const response = undefined;
-    // setTimeout(() => {
-    //   if (response) {
-    //     apiNoti.success({
-    //       message: `Notification`,
-    //       description: `Cập nhật sản phẩm ${record.name} thành công!`,
-    //     });
-    //     setShowModal(false);
-    //     onReload();
-    //   } else {
-    //     apiNoti.error({
-    //       message: `Notification`,
-    //       description: `Cập nhật sản phẩm ${record.name} không thành công!`,
-    //     });
-    //   }
-    //   setSpinning(false);
-    // }, 3000);
+    setSpinning(true);
+
+    const formData = new FormData();
+    formData.append("title", values.title);
+
+    if (fileList && fileList.length > 0) {
+      const file = fileList[0];
+      if (file.originFileObj) {
+        formData.append("cover_image", file.originFileObj);
+      }
+    }
+
+    let response;
+    if (mode === "edit") {
+      response = await editNews(record.id, formData);
+    } else {
+      response = await storeNews(formData);
+    }
+
+    if (response) {
+      apiNoti.success({
+        message: "Notification",
+        description: `${
+          mode === "edit" ? "Cập nhật" : "Thêm"
+        } Tin Tức thành công!`,
+      });
+      setShowModal(false);
+      form.resetFields();
+      setFileList([]);
+      onReload();
+    } else {
+      apiNoti.error({
+        message: "Notification",
+        description: `${
+          mode === "edit" ? "Cập nhật" : "Thêm"
+        } Tin Tức thất bại!`,
+      });
+    }
+
+    setSpinning(false);
   };
+
   return (
     <>
       {contextHolder}
       {mode === "edit" ? (
-        <Button
-          size="small"
-          type="primary"
-          icon={<EditOutlined />}
-          onClick={handleShowModal}
-        />
+        <Tooltip title="Cập nhật Tin Tức">
+          <Button
+            size="small"
+            type="primary"
+            icon={<EditOutlined />}
+            onClick={handleShowModal}
+          />
+        </Tooltip>
       ) : (
         <Button
           type="primary"
           icon={<PlusOutlined />}
           onClick={handleShowModal}
         >
-          Thêm tin tức mới
+          Thêm Tin Tức Vào
         </Button>
       )}
 
       <Modal
         open={showModal}
         onCancel={handleCancel}
-        title={mode === "edit" ? "Cập nhật tin tức" : "Thêm tin tức"}
+        title={mode === "edit" ? "Cập nhật Tin Tức" : "Thêm Tin Tức"}
         footer={null}
       >
-        <Spin spinning={spinning} tip="Đang cập nhật...">
+        <Spin
+          spinning={spinning}
+          tip={mode === "edit" ? "Đang cập nhật..." : "Đang tạo mới..."}
+        >
           <Form
             layout="vertical"
-            name="create-room"
+            name="create-banner"
             onFinish={handleSubmit}
             form={form}
-            initialValues={record}
           >
-            <Form.Item label="Tiêu đề" name="title" rules={rules}>
+            <Form.Item
+              label="Tên tiêu đề Tin Tức"
+              name="title"
+              rules={[...rules]}
+            >
               <Input />
             </Form.Item>
 
-            <Form.Item
-              label="Upload ảnh đại diện"
-              name="cover_image"
-              valuePropName="fileList"
-              getValueFromEvent={(e) => {
-                if (Array.isArray(e)) {
-                  return e;
-                }
-                return e?.fileList;
-              }}
-              rules={[{ required: true, message: "Vui lòng chọn ảnh!" }]}
-            >
-              {/* <Upload
-                name="cover_image"
-                listType="picture-card"
-                beforeUpload={() => false} // Ngăn upload tự động
-              >
-                <div>
-                  <PlusOutlined />
-                  <div style={{ marginTop: 8 }}>Upload</div>
-                </div>
-              </Upload> */}
-            </Form.Item>
+            <Row gutter={24}>
+              <Col xs={24} md={12}>
+                <Form.Item label="Ảnh Tin Tức" name="cover_image">
+                  <Upload
+                    listType="picture-card"
+                    beforeUpload={() => false}
+                    maxCount={1}
+                    fileList={fileList}
+                    onChange={({ fileList: newFileList }) =>
+                      setFileList(newFileList)
+                    }
+                  >
+                    <div className="flex flex-col items-center justify-center">
+                      <UploadOutlined className="text-xl text-gray-600" />
+                      <span className="mt-2 text-gray-700">Tải ảnh lên</span>
+                    </div>
+                  </Upload>
+                </Form.Item>
+              </Col>
+            </Row>
 
-            <Form.Item label={null}>
+            <Form.Item>
               <Button type="primary" htmlType="submit">
                 {mode === "edit" ? "Cập nhật" : "Thêm mới"}
               </Button>

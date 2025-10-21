@@ -56,17 +56,17 @@ function MenuSider() {
 
     {
       // label: "Quản lý tin tức và chi tiết tin tức",
-      label: <Link to="">Tin Tức</Link>,
+      label: <Link to="/admin/newslist">Quản lý tin tức</Link>,
       icon: <ReadOutlined />,
       key: "menu-7",
       children: [
         {
-          label: <Link to="/admin/newslist">Quản lý tin tức</Link>,
+          label: <Link to="/admin/newslist"> Tin tức</Link>,
           key: "menu-7-1",
           icon: <ReadOutlined />,
         },
         {
-          label: <Link to="newsblocks">Quản lý chi tiết tin tức</Link>,
+          label: <Link to="newsblocks">Bài viết</Link>,
           key: "menu-7-2",
           icons: <ReadOutlined />,
         },

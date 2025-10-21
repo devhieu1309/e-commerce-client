@@ -1,163 +1,132 @@
-import { Button, Popconfirm, Space, Table } from "antd";
-import { useState } from "react";
+import { Button, Popconfirm, Space, Table, Tooltip } from "antd";
+import { useEffect, useState } from "react";
 
-import NewsListModal from "./NewsBlocksModal";
-import NewsBlockToolbar from "./NewsBlocksToolbar";
 import DeleteNewsBlocks from "./DeleteNewsBlocks";
+import NewsBlocksToolbar from "./NewsBlocksToolbar";
+import NewsBlocksModal from "./NewsBlocksModal";
+import { getNewsBlocks } from "../../../services/newsBlocksServices";
 
 function AdminNewsBlocks() {
-  const [newsblocks] = useState([
-    {
-      id: 1,
-      title: "1. iPhone 15 màu hồng có mấy phiên bản?",
-      content: "Nội dung [......].",
-      image: "image1.jpg",
-      position: 1,
-      news_id: 1,
-    },
-    {
-      id: 2,
-      title: "1. iPhone 15 màu hồng có mấy phiên bản?",
-      content: "Nội dung [......].",
-      image: "image1.jpg",
-      position: 2,
-      news_id: 1,
-    },
-    {
-      id: 3,
-      title: "1. iPhone 15 màu hồng có mấy phiên bản?",
-      image: "image1.jpg",
-      content: "Nội dung [......].",
-      position: 3,
-      news_id: 1,
-    },
-    {
-      id: 4,
-      title: "1. iPhone 15 màu hồng có mấy phiên bản?",
-      content: "Nội dung [......].",
-      image: "image1.jpg",
+  const [news, setNews] = useState([]);
 
-      position: 4,
-      news_id: 1,
-    },
-    {
-      id: 5,
-      title: "1. iPhone 15 màu hồng có mấy phiên bản?",
-      content: "Nội dung [......].",
-      image: "image1.jpg",
-      position: 5,
-      news_id: 1,
-    },
-    {
-      id: 6,
-      title: "1. iPhone 15 màu hồng có mấy phiên bản?",
-      content: "Nội dung [......].",
-      image: "image1.jpg",
-      position: 1,
-      news_id: 2,
-    },
-    {
-      id: 7,
-      title: "1. iPhone 15 màu hồng có mấy phiên bản?",
-      content: "Nội dung [......].",
-      image: "image1.jpg",
-      position: 1,
-      news_id: 2,
-    },
-    {
-      id: 8,
-      title: "1. iPhone 15 màu hồng có mấy phiên bản?",
-      content: "Nội dung [......].",
-      image: "image1.jpg",
-      position: 2,
-      news_id: 2,
-    },
-  ]);
+  const fetchApi = async () => {
+    const result = await getNewsBlocks();
+    setNews(result);
+  };
 
-  const getParentName = (parentId) => {
-    const parent = newsblocks.find((c) => c.id === parentId);
-    return parent ? parent.title : "Không có";
+  // Lấy danh sách bài viết
+  useEffect(() => {
+    fetchApi();
+  }, []);
+
+  // Load lại trang
+  const handleReload = () => {
+    fetchApi();
+  };
+
+  const handleSearchResut = (result) => {
+    setNews(result);
   };
 
   const columns = [
     {
-      title: "ID",
-      dataIndex: "id",
+      title: "STT",
       key: "id",
       width: 80,
+      render: (text, record, index) => index + 1,
     },
-
     {
       title: "Tiêu đề",
       dataIndex: "title",
       key: "title",
+      render: (text) => {
+        if (!text) return "";
+        return text.length > 30 ? text.substring(0, 30) + "..." : text;
+      },
     },
     {
-      title: "Nội dung",
+      title: "Nội dung bài viết",
       dataIndex: "content",
       key: "content",
+      render: (text) => {
+        if (!text) return "";
+        return text.length > 50 ? text.substring(0, 50) + "..." : text;
+      },
     },
     {
-      title: "Hình ảnh ",
+      title: "Ảnh",
       dataIndex: "image",
       key: "image",
       render: (text) => (
         <img
-          src={`/public/tt8.webp`}
-          alt="News "
-          style={{ width: 80, height: 80, objectFit: "cover " }}
+          src={`http://127.0.0.1:8000/storage/${text}`}
+          alt={text}
+          style={{ width: 170, height: 60, objectFit: "cover" }}
         />
       ),
     },
     {
-      title: "Vị trí hiển thị",
+      title: "Thứ tự hiển thị bài viết",
       dataIndex: "position",
       key: "position",
-      width: 120,
     },
     {
-      title: "Mã tin tức",
+      title: "Thuộc tin tức",
       dataIndex: "news_id",
       key: "news_id",
-      // render: (news_id) => getParentName(news_id),
     },
 
-    // {
-    //   title: "Ngày tạo",
-    //   dataIndex: "created_at",
-    //   key: "created_at",
-    // },
-    // {
-    //   title: "Ngày cập nhật",
-    //   dataIndex: "updated_at",
-    //   key: "updated_at",
-    // },
+    {
+      title: "Ngày tạo",
+      dataIndex: "created_at",
+      key: "created_at",
+      render: (text) => {
+        const date = new Date(text);
+        return date.toLocaleDateString("vi-VN");
+      },
+    },
+    {
+      title: "Ngày cập nhật",
+      dataIndex: "updated_at",
+      key: "updated_at",
+      render: (text) => {
+        const date = new Date(text);
+        return date.toLocaleDateString("vi-VN");
+      },
+    },
+
     {
       title: "Hành động",
       key: "action",
       render: (_, record) => (
         <Space>
-          {/* <EditCategory record={record} onReload={onReload} /> */}
-          <NewsListModal mode="edit" record={record} />
+          <NewsBlocksModal
+            mode="edit"
+            record={record}
+            onReload={handleReload}
+          />
           <Popconfirm
             title="Bạn chắc chắn muốn xóa bài viết này không?"
             okText="Xóa"
             cancelText="Hủy"
           >
-            <DeleteNewsBlocks record={record} />
+            <DeleteNewsBlocks record={record} onReload={handleReload} />
           </Popconfirm>
         </Space>
       ),
     },
   ];
-
   return (
     <>
-      <NewsBlockToolbar />
+      <NewsBlocksToolbar
+        onReload={handleReload}
+        onSearchResult={handleSearchResut}
+      />
       <Table
         columns={columns}
-        dataSource={newsblocks}
-        pagination={{ pageSize: 5 }}
+        dataSource={news}
+        rowKey={(record) => record.id}
+        pagination={{ pageSize: 7 }}
       />
     </>
   );
