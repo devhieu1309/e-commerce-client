@@ -1,6 +1,25 @@
 import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { getNews } from "../../../../services/newsServices";
+// import { getNewsBlocks } from "../../../../services/newsBlocksServices";
 
 function NewsList() {
+  const [news, setNews] = useState([]);
+  // const [newsBlocks, setNewsBlocks] = useState([]);
+
+  const fetchApi = async () => {
+    const result = await getNews();
+    setNews(result);
+  };
+
+  useEffect(() => {
+    fetchApi();
+  }, []);
+
+  const handleReload = () => {
+    fetchApi();
+  };
+
   return (
     <>
       <div className="container flex space-x-2 px-[150px] mt-10 pb-[30px]">
@@ -65,8 +84,28 @@ function NewsList() {
 
               <div className="grid grid-cols-3 gap-3">
                 {/* Card 1 */}
+                {news.map((item) => (
+                  <div className="bg-white rounded-lg shadow-md ">
+                    <div className="p-2 border-4 border-white ">
+                      <img
+                        src="https://onewaymobile.vn/upload_images/images/iPhone-15-1.jpg"
+                        alt="Tin 1"
+                        className="object-cover w-full h-48 transition hover:scale-105"
+                      />
+                    </div>
+                    <div className="p-3">
+                      <h3 className="text-lg font-semibold">{item.title}</h3>
+                      {/* <p className="mt-1 text-sm text-gray-600">
+                        Apple ra mắt hai phiên bản màu hồng dành iPhone 15
+                        series gồm dòng thường và dòng Plus. Sắc hồng nhạt quyến
+                        rũ, gam màu nhẹ nhàng, không quá nổi bật nhưng tạo nên
+                        cá tính riêng cho các phái nữ khi sử dụng.
+                      </p> */}
+                    </div>
+                  </div>
+                ))}
 
-                <div className="bg-white rounded-lg shadow-md ">
+                {/* <div className="bg-white rounded-lg shadow-md ">
                   <div className="p-2 border-4 border-white ">
                     <img
                       src="https://onewaymobile.vn/upload_images/images/iPhone-15-1.jpg"
@@ -86,108 +125,9 @@ function NewsList() {
                       riêng cho các phái nữ khi sử dụng.
                     </p>
                   </div>
-                </div>
+                </div> */}
 
                 {/* Card 2 */}
-
-                <div className="overflow-hidden bg-white rounded-lg shadow-md">
-                  <img
-                    src="https://onewaymobile.vn/upload_images/images/iphone-15-mau-sac-1.jpeg"
-                    alt="Tin 2"
-                    className="object-cover w-full h-48"
-                  />
-                  <div className="p-3">
-                    <h3 className="text-lg font-semibold">
-                      iPhone 15 có mấy màu? Màu nào đẹp nhất
-                    </h3>
-                    <p className="mt-1 text-sm text-gray-600">
-                      Ngày 13/09, Apple đã trình làng 4 phiên bản iPhone 15
-                      Series. Mỗi phiên bản đều có những nâng cấp ấn tượng. Hai
-                      phiên bản mới năm nay sở hữu thiết kế ấn tượng với màn
-                      hình đục lỗ, tính năng độc đáo Dynamics Island. Khung thép
-                      không gỉ mang đến sự chắc chắn và bền bỉ.
-                    </p>
-                  </div>
-                </div>
-
-                {/* Card 3 */}
-                <div className="overflow-hidden bg-white rounded-lg shadow-md">
-                  <img
-                    src="https://onewaymobile.vn/upload_images/images/usbc-4.jpg"
-                    alt="Tin 3"
-                    className="object-cover w-full h-48"
-                  />
-                  <div className="p-3">
-                    <h3 className="text-lg font-semibold">
-                      Cổng sạc USB-C IPhone 15 và công dụng
-                    </h3>
-                    <p className="mt-1 text-sm text-gray-600">
-                      Thiết kế cổng sạc iPhone 15 tương tự như các cổng Type C
-                      có sẵn trên thị trường. Apple cung cấp 2 phiên bản USB-C 2
-                      với dòng thường và USB-C 3 với dòng cao cấp như Pro và Pro
-                      Max.
-                    </p>
-                  </div>
-                </div>
-                <div className="overflow-hidden bg-white rounded-lg shadow-md">
-                  <img
-                    src="https://onewaymobile.vn/upload_images/images/ios-171-9.jpg"
-                    alt="Tin 3"
-                    className="object-cover w-full h-48"
-                  />
-                  <div className="p-3">
-                    <h3 className="text-lg font-semibold">
-                      14 cập nhật tính năng trên iOS 17.1
-                    </h3>
-                    <p className="mt-1 text-sm text-gray-600">
-                      Tính năng Airdrop thông qua Wifi và kết nối mạng trên iOS
-                      17.7 đã khả dụng sau khi người dùng kết nối với thiết bị
-                      khác. Việc chuyển đổi dữ liệu dễ dàng hơn mà không gây trở
-                      ngại với số lượng tệp lớn. Một nút tính năng mới “receive
-                      off” cho phép người dùng kích hoạt tính năng này ngay
-                      trong phần cài đặt
-                    </p>
-                  </div>
-                </div>
-
-                <div className="overflow-hidden bg-white rounded-lg shadow-md">
-                  <img
-                    src="https://onewaymobile.vn/upload_images/images/Apple-pencil-2.jpg"
-                    alt="Tin 3"
-                    className="object-cover w-full h-48"
-                  />
-                  <div className="p-3">
-                    <h3 className="text-lg font-semibold">
-                      Nên lựa chọn mẫu Apple Pencil nào trong 3 phiên bản
-                    </h3>
-                    <p className="mt-1 text-sm text-gray-600">
-                      Apple Pencil USB-C là phiên bản mới nhất được Apple cập
-                      nhật ra mắt trong năm nay. Chiếc bút cảm ứng có mức giá rẻ
-                      hơn 600.000VND so với phiên bản Pencil 2. Không chỉ vậy,
-                      chúng còn giữ lại phần lớn những tính năng quan trọng
-                      trong phiên bản cao cấp. Cụ thể:
-                    </p>
-                  </div>
-                </div>
-
-                <div className="overflow-hidden bg-white rounded-lg shadow-md">
-                  <img
-                    src="https://onewaymobile.vn/upload_images/images/usbc-4.jpg"
-                    alt="Tin 3"
-                    className="object-cover w-full h-48"
-                  />
-                  <div className="p-3">
-                    <h3 className="text-lg font-semibold">
-                      Cổng sạc USB-C IPhone 15 và công dụng
-                    </h3>
-                    <p className="mt-1 text-sm text-gray-600">
-                      Thiết kế cổng sạc iPhone 15 tương tự như các cổng Type C
-                      có sẵn trên thị trường. Apple cung cấp 2 phiên bản USB-C 2
-                      với dòng thường và USB-C 3 với dòng cao cấp như Pro và Pro
-                      Max.
-                    </p>
-                  </div>
-                </div>
               </div>
 
               {/* phan trang */}
