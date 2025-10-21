@@ -7,117 +7,69 @@ import {
   InputNumber,
   Modal,
   notification,
-  Select,
   Spin,
-  Switch,
   DatePicker,
-  Space,
 } from "antd";
 import TextArea from "antd/es/input/TextArea";
-import { EditOutlined, LoadingOutlined, PlusOutlined } from "@ant-design/icons";
+import { EditOutlined, PlusOutlined } from "@ant-design/icons";
 import dayjs from 'dayjs';
-import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { storePromotion, editPromotion } from "../../services/promotionServices";
 
 function PromotionModal(props) {
-  // const { record, mode } = props;
-  // const [showModal, setShowModal] = useState(false);
-  // const [form] = Form.useForm();
-  // const [apiNoti, contextHolder] = notification.useNotification();
-  // const [spinning, setSpinning] = useState(false);
+  const { record, onReload, mode } = props;
+  const [showModal, setShowModal] = useState(false);
+  const [form] = Form.useForm();
+  const [spinning, setSpinning] = useState(false);
+  const [apiNoti, contextHolder] = notification.useNotification();
 
-  const onChange = value => { console.log('changed', value); };
+  const dateFormat = 'DD/MM/YYYY';
+
+  // Formatter phần trăm
   const formatter = value => {
     const [start, end] = `${value}`.split('.') || [];
     const v = `${start}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
     return `${end ? `${v}.${end}` : `${v}`} %`;
   };
 
-  // format ngay thang nam  
-  dayjs.extend(customParseFormat);
-  const { RangePicker } = DatePicker;
-  const dateFormatList = ['DD/MM/YYYY'];
-  const customFormat = value => `custom format: ${value.format(dateFormat)}`;
-
-  // const rules = [
-  //   {
-  //     required: true,
-  //     message: "Bắt buộc",
-  //   },
-  // ];
-
-  // const handleShowModal = () => {
-  //   // Nếu là chế độ edit thì convert ngày sang dayjs trước khi set vào form
-  //   if (mode === "edit" && record) {
-  //     form.setFieldsValue({
-  //       ...record,
-  //       start_date: record.start_date ? dayjs(record.start_date) : null,
-  //       end_date: record.end_date ? dayjs(record.end_date) : null,
-  //     });
-  //   } else {
-  //     form.resetFields();
-  //   }
-  //   setShowModal(true);
-  // };
-
-  // const handleCancel = () => {
-  //   setShowModal(false);
-  //   // form.resetFields();
-  // };
-
-  // const handleSubmit = async (values) => {
-  //   // setSpinning(true);
-  //   // const response = await updateRoom(record.id, values);
-  //   // // const response = undefined;
-  //   // setTimeout(() => {
-  //   //   if (response) {
-  //   //     apiNoti.success({
-  //   //       message: `Notification`,
-  //   //       description: `Cập nhật sản phẩm ${record.name} thành công!`,
-  //   //     });
-  //   //     setShowModal(false);
-  //   //     onReload();
-  //   //   } else {
-  //   //     apiNoti.error({
-  //   //       message: `Notification`,
-  //   //       description: `Cập nhật sản phẩm ${record.name} không thành công!`,
-  //   //     });
-  //   //   }
-  //   //   setSpinning(false);
-  //   // }, 3000);
-  // };
-  const { record, onReload, mode } = props;
-  const [showModal, setShowModal] = useState(false);
-  const [form] = Form.useForm();
-  const [apiNoti, contextHolder] = notification.useNotification();
-  const [spinning, setSpinning] = useState(false);
-
+  // Mở modal
   const handleShowModal = () => {
+    if (mode === "edit" && record) {
+      form.setFieldsValue({
+        ...record,
+        start_date: record.start_date ? dayjs(record.start_date, 'YYYY-MM-DD HH:mm:ss') : null,
+        end_date: record.end_date ? dayjs(record.end_date, 'YYYY-MM-DD HH:mm:ss') : null,
+      });
+    } else {
+      form.resetFields(); // create: form rỗng
+    }
     setShowModal(true);
   };
 
+  // Đóng modal
   const handleCancel = () => {
     setShowModal(false);
     form.resetFields();
   };
 
+  // Submit form
   const handleSubmit = async (values) => {
     setSpinning(true);
     try {
-      // Convert ngày sang chuỗi
+      // Chuẩn hóa ngày để gửi API
       const payload = {
         ...values,
-        start_date: values.start_date?.format('YYYY-MM-DD'),
-        end_date: values.end_date?.format('YYYY-MM-DD'),
+        start_date: values.start_date?.format('YYYY-MM-DD HH:mm:ss'),
+        end_date: values.end_date?.format('YYYY-MM-DD HH:mm:ss'),
       };
 
       const response =
         mode === "edit"
-          ? await editPromotion(record.promotion_id, values)
-          : await storePromotion(values);
+          ? await editPromotion(record.promotion_id, payload)
+          : await storePromotion(payload);
+
       if (response) {
         apiNoti.success({
-          message: `Thông báo`,
+          message: 'Thông báo',
           description: response.message,
         });
         setShowModal(false);
@@ -127,98 +79,71 @@ function PromotionModal(props) {
     } catch (error) {
       if (error.response && error.response.status === 422) {
         const serverErrors = error.response.data.errors;
-        Object.keys(serverErrors).forEach((field) => {
-          form.setFields([
-            {
-              name: field,
-              errors: serverErrors[field],
-            },
-          ]);
+        Object.keys(serverErrors).forEach(field => {
+          form.setFields([{ name: field, errors: serverErrors[field] }]);
         });
       }
     } finally {
       setSpinning(false);
     }
   };
+
   return (
     <>
       {contextHolder}
+
+      {/* Nút mở modal */}
       {mode === "edit" ? (
         <Tooltip title="Chỉnh sửa chương trình khuyến mãi">
-          <Button
-            size="small"
-            type="primary"
-            icon={<EditOutlined />}
-            onClick={handleShowModal}
-          />
+          <Button size="small" type="primary" icon={<EditOutlined />} onClick={handleShowModal} />
         </Tooltip>
-
       ) : (
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={handleShowModal}
-        >
+        <Button type="primary" icon={<PlusOutlined />} onClick={handleShowModal}>
           Thêm chương trình khuyến mãi
         </Button>
       )}
 
-
+      {/* Modal */}
       <Modal
         open={showModal}
         onCancel={handleCancel}
         title={mode === "edit" ? "Cập nhật chương trình khuyến mãi" : "Thêm chương trình khuyến mãi"}
         footer={null}
-      // destroyOnClose
-      // afterClose={() => form.resetFields()}
       >
-        <Spin
-          spinning={spinning}
-          tip={mode === "edit" ? "Đang cập nhật..." : "Đang tạo mới..."}
-        >
-          <Form
-            layout="vertical"
-            name="create-room"
-            onFinish={handleSubmit}
-            form={form}
-            initialValues={record}
-          >
-            {/* <Form.Item label="Mã khuyến mãi" name="id" rules={rules}>
-              <Input />
-            </Form.Item> */}
-            <Form.Item label="Tên chương trình khuyến mãi" name="promotion_name" rules={[]}>
+        <Spin spinning={spinning} tip={mode === "edit" ? "Đang cập nhật..." : "Đang tạo mới..."}>
+          <Form layout="vertical" form={form} onFinish={handleSubmit}>
+            <Form.Item
+              label="Tên chương trình khuyến mãi"
+              name="promotion_name"
+              rules={[{ required: true, message: "Vui lòng nhập tên chương trình" }]}
+            >
               <Input />
             </Form.Item>
 
-
-            <Form.Item
-              label="Mô tả"
-              name="description"
-              rules={[
-                {
-                  required: false,
-                  message: "Vui lòng nhập mô tả chương trình khuyến mãi",
-                },
-              ]}
-            >
+            <Form.Item label="Mô tả" name="description">
               <TextArea
                 placeholder="Nhập mô tả chi tiết về chương trình khuyến mãi"
                 autoSize={{ minRows: 3, maxRows: 6 }}
               />
             </Form.Item>
 
-
-            <Form.Item label="Tỷ lệ giảm giá" name="discount_rate" rules={[]}>
-              <InputNumber style={{ width: "100%" }} formatter={formatter} parser={value => value?.replace(/[%\s.]*/g, '')} onChange={onChange} />
-            </Form.Item>
-            <Form.Item label="Ngày bắt đầu" name="start_date" rules={[]}>
-              <DatePicker format={dateFormatList} />
-            </Form.Item>
-            <Form.Item label="Ngày kết thúc" name="end_date" rules={[]}>
-              <DatePicker defaultValue={dayjs('01/01/2015', dateFormatList[0])} format={dateFormatList} />
+            <Form.Item label="Tỷ lệ giảm giá" name="discount_rate">
+              <InputNumber
+                style={{ width: "100%" }}
+                formatter={formatter}
+                parser={value => value?.replace(/[%\s.]*/g, '')}
+              />
             </Form.Item>
 
-            <Form.Item label={null}>
+            <Form.Item label="Ngày bắt đầu" name="start_date">
+              <DatePicker format={dateFormat} />
+            </Form.Item>
+
+            <Form.Item label="Ngày kết thúc" name="end_date">
+              <DatePicker format={dateFormat} />
+            </Form.Item>
+
+            <Form.Item>
               <Button type="primary" htmlType="submit">
                 {mode === "edit" ? "Cập nhật" : "Thêm mới"}
               </Button>
@@ -229,4 +154,5 @@ function PromotionModal(props) {
     </>
   );
 }
+
 export default PromotionModal;
