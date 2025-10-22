@@ -271,19 +271,59 @@ function Header() {
                     />
                   </span>
                   <span className="hover:text-amber-300 group/cart">
-                    <span className="text-[14px]">Giỏ hàng Sản phẩm</span>
-                    <div className="group-hover/cart:flex hidden absolute top-14 right-3 bg-white w-[400px] py-3 px-3 rounded-md flex-col items-center justify-center space-y-3 ring-1 ring-black/10 shadow-[0_0_18px_0_rgba(0,0,0,0.06)]">
-                      <div>
-                        <img
-                          className="w-[30px] h-[30px] object-cover"
-                          src="/icons8-cart-50.png"
-                          alt="Cart"
-                        />
+                    <span className="text-[14px]"><Link to="/cart">Giỏ hàng Sản phẩm</Link></span>
+                    <div className="group-hover/cart:flex hidden absolute top-14 right-3 bg-white w-[400px] py-3 px-4 rounded-md flex-col space-y-4 ring-1 ring-black/10 shadow-[0_0_18px_0_rgba(0,0,0,0.06)] text-sm">
+                      {/* Sản phẩm */}
+                      <div className="flex items-start space-x-3">
+                        {/* Ảnh sản phẩm */}
+                        <div className="w-[25%]">
+                          <img
+                            src="/220309063455-ipad-air-select-wif.webp"
+                            alt="iPad Air 5"
+                            className="w-full h-full object-cover rounded-md"
+                          />
+                        </div>
+
+                        {/* Thông tin sản phẩm */}
+                        <div className="flex-1 space-y-1">
+                          <p className="font-semibold text-gray-900 text-sm">
+                            iPad Air 5 Wifi 64GB - Chính hãng VN/A
+                          </p>
+                          <p className="text-gray-600 text-sm">Trắng</p>
+                          <button className="text-red-500 text-sm hover:underline">Xóa</button>
+
+                          {/* Số lượng và giá */}
+                          <div className="flex justify-between items-center mt-2">
+                            <div className="items-center space-x-2">
+                              <span className="text-gray-700">Số lượng:</span>
+                              <div className='flex space-x-3 justify-between items-center text-center border border-black w-auto h-auto rounded-md'>
+                                <button className='bg-[#000f8f] h-[25px] px-2 text-white m-1 rounded-md'>-</button>
+                                <p className='m-0 text-gray-900 px-2'>1</p>
+                                <button className='bg-[#000f8f] h-[25px] px-2 text-white m-1 rounded-md'>+</button>
+                              </div>
+                            </div>
+                            <p className="font-bold text-red-500 text-base">
+                              13.590.000đ
+                            </p>
+                          </div>
+                        </div>
                       </div>
-                      <p className="text-black text-[14px]">
-                        Không có sản phẩm nào trong giỏ hàng của bạn
-                      </p>
+
+                      {/* Tổng tiền & nút thanh toán */}
+                      <div className="border-t border-gray-200 pt-3 space-y-3">
+                        <div className="flex justify-between items-center">
+                          <p className="font-semibold text-gray-900">Tổng tiền:</p>
+                          <p className="font-bold text-red-500 text-lg">13.590.000đ</p>
+                        </div>
+                        <button
+                          type="submit"
+                          className="w-full rounded-md bg-[#000f8f] px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-amber-300 hover:text-[#000f8f] transition-all"
+                        >
+                          Thanh toán
+                        </button>
+                      </div>
                     </div>
+
                   </span>
                 </li>
               </ul>

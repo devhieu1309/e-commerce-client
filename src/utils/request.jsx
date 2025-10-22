@@ -1,8 +1,9 @@
 //const API_DOMAIN = "https://e-commerce-server.app/api/";
 const API_DOMAIN = "http://127.0.0.1:8000/api/";
 
-export const get = async (path) => {
-  const response = await fetch(API_DOMAIN + path);
+export const get = async (path, params = {}) => {
+  const query = new URLSearchParams(params).toString();
+  const response = await fetch(API_DOMAIN + path + (query ? `?${query}` : ""));
   const result = await response.json();
   return result;
 };

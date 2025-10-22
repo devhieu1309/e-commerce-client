@@ -12,6 +12,8 @@ function VideoReview() {
   const [videoReviews, setVideoReviews] = useState([]);
   const [iconState, setIconState] = useState({});
   const [products, setProducts] = useState([]);
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const [filterVisible, setFilterVisible] = useState("all");
 
   // Lấy danh sách sản phẩm
   const fetchProducts = async () => {
@@ -26,38 +28,22 @@ function VideoReview() {
   };
 
   const loadVideoReviews = async () => {
-    const result = await getVideoReview();
-    
+    const params = {};
+    if (searchKeyword) {
+      params.search = searchKeyword;
+    }
+    if (filterVisible !== "all") {
+      // convert từ chuỗi sang boolean
+      params.is_visible = filterVisible === "visible";
+    }
+    const result = await getVideoReview(params);
     setVideoReviews(result);
-    // try {
-    //   const response = await fetch("http://localhost:8000/api/video-reviews");
-    //   if (!response.ok) {
-    //     const errorData = await response.json().catch(() => ({}));
-    //     const message = errorData.message || "Không thể tải danh sách video review";
-    //     throw new Error(message);
-    //   }
-    //   const data = await response.json();
-    //   setVideoReviews(data);
-    // } catch (error) {
-    //   console.error("Lỗi khi tải danh sách video review:", error);
-    //   apiNoti.error({
-    //     message: "Lỗi tải dữ liệu",
-    //     description: error.message || "Đã xảy ra lỗi không xác định.",
-    //   });
-    // }
   };
 
   useEffect(() => {
     loadVideoReviews();
     fetchProducts();
-  }, []);
-
-  // const handleToggleIcon = (id) => {
-  //   setIconState((prev) => ({AC
-  //     ...prev,
-  //     [id]: !prev[id],
-  //   }));
-  // };
+  }, [searchKeyword, filterVisible]);
 
   const handleToggleIcon = async (record) => {
     try {
@@ -136,14 +122,14 @@ function VideoReview() {
               okText="Đồng ý"
               cancelText="Hủy"
             >
-             {/* <Tooltip title={isVisible ? "Hiện" : "Ẩn"}> */}
+              {/* <Tooltip title={isVisible ? "Hiện" : "Ẩn"}> */}
               <span
                 onClick={() => handleToggleIcon(record)}
                 style={{ fontSize: 18, cursor: "pointer", color: "#1677ff" }}
               >
                 {isVisible ? <EyeOutlined /> : <EyeInvisibleOutlined />}
               </span>
-            {/* </Tooltip> */}
+              {/* </Tooltip> */}
             </Popconfirm>
           </Space>
         );
@@ -153,7 +139,11 @@ function VideoReview() {
 
   return (
     <>
-      <VideoReviewToolbar onReload={loadVideoReviews} />
+      <VideoReviewToolbar
+        onSearch={setSearchKeyword}
+        onFilterChange={setFilterVisible}
+        onReload={loadVideoReviews}
+      />
       <Table
         columns={columns}
         dataSource={videoReviews}
