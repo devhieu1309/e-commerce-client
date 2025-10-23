@@ -42,40 +42,6 @@ function VideoReviewModal(props) {
 
   const handleSubmit = async (values) => {
     setSpinning(true);
-    // if (mode === "edit") {
-    //   const response = await editVideoReview(record.video_id, values);
-    //   if (response) {
-    //     apiNoti.success({
-    //       message: `Notification`,
-    //       description: `Cập nhật video review với title ${response.title} thành công!`,
-    //     });
-    //     setShowModal(false);
-    //     onReload();
-    //   } else {
-    //     apiNoti.error({
-    //       message: `Notification`,
-    //       description: `Cập nhật video review với title ${response.title} không thành công!`,
-    //     });
-    //   }
-    //   setSpinning(false);
-    // } else {
-    //   const response = await storeVideoReview(values);
-    //   if (response) {
-    //     apiNoti.success({
-    //       message: `Notification`,
-    //       description: `Thêm video review với title ${response.title} thành công!`,
-    //     });
-    //     setShowModal(false);
-    //     form.resetFields();
-    //     onReload();
-    //   } else {
-    //     apiNoti.error({
-    //       message: `Notification`,
-    //       description: `Thêm video review với title ${response.title} không thành công!`,
-    //     });
-    //   }
-    //   setSpinning(false);
-    // }
     try {
       const response =
         mode === "edit"
