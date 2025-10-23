@@ -2,11 +2,13 @@ import React from "react";
 import { Input, Button, Space } from "antd";
 import { PlusOutlined, SearchOutlined } from "@ant-design/icons";
 import PromotionModal from "./PromotionModal";
+import { searchPromotion } from "../../services/promotionServices";
 
 // const { Option } = Select;
 function PromotionToolbar({
     onSearch,
-    onAdd
+    onAdd, 
+    onReload,
 }) {
     return (
         <div style={{
@@ -23,7 +25,7 @@ function PromotionToolbar({
             {/* <Button type="primary" icon={<PlusOutlined />} onClick={onAdd}>
             Thêm chương trình khuyến mãi
             </Button> */}
-            <PromotionModal mode="create" record={{  }}/>
+            <PromotionModal mode="create" record={{  }} onReload = {onReload}/>
         </div>
     );
 }

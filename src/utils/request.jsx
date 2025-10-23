@@ -1,5 +1,5 @@
-//const API_DOMAIN = "https://e-commerce-server.app/api/";
-const API_DOMAIN = "http://127.0.0.1:8000/api/";
+const API_DOMAIN = "https://e-commerce-server.app/api/";
+// const API_DOMAIN = "http://127.0.0.1:8000/api/";
 
 export const get = async (path) => {
   const response = await fetch(API_DOMAIN + path);
@@ -49,5 +49,29 @@ export const edit = async (path, options) => {
     body: JSON.stringify(options),
   });
   const result = await response.json();
+  return result;
+};
+
+export const searchPost = async (path, options) => {
+  const response = await fetch(API_DOMAIN + path, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(options),
+  });
+
+  const result = await response.json();
+
+  if (!response.ok) {
+    const error = new Error(result.message || "Search request failed");
+    error.response = {
+      status: response.status,
+      data: result,
+    };
+    throw error;
+  }
+
   return result;
 };
