@@ -27,16 +27,6 @@ function ViriationToolbar(props) {
   const onSearch = (value) => {
     console.log("MINH HIEU: ", value);
     handleSearchVariation(value);
-    // setSearchText(value); 
-
-    // if (!value) {
-    //   setFilteredVariations(variations);
-    // } else {
-    //   const filtered = variations.filter((item) =>
-    //     item.name.toLowerCase().includes(value.toLowerCase())
-    //   );
-    //   setFilteredVariations(filtered);
-    // }
   };
 
   return (
