@@ -5,16 +5,18 @@ import { Link } from "react-router-dom";
 
 const { Option } = Select;
 
-function CategoryToolbar({
-  onSearch,
-  onParentChange,
-  onAdd,
-  parentOptions = [
-    { id: 1, category_name: "Điện thoại" },
-    { id: 2, category_name: "Laptop" },
-    { id: 3, category_name: "Máy tính bảng" },
-  ],
-}) {
+function CategoryToolbar(props) {
+  const { onAdd, categories, handleGetProductByCategory, handleSearchProduct } =
+    props;
+
+  const onSearch = (value) => {
+    handleSearchProduct(value);
+  };
+
+  const onParentChange = (value) => {
+    handleGetProductByCategory(value);
+  };
+
   return (
     <div
       style={{
@@ -38,17 +40,14 @@ function CategoryToolbar({
           allowClear
         >
           <Option value="">Tất cả</Option>
-          {parentOptions.map((item) => (
-            <Option key={item.id} value={item.id}>
+          {categories.map((item) => (
+            <Option key={item.category_id} value={item.category_id}>
               {item.category_name}
             </Option>
           ))}
         </Select>
       </Space>
 
-      {/* <Button type="primary" icon={<PlusOutlined />} onClick={onAdd}>
-        Thêm sản phẩm
-      </Button> */}
       <Link to="create">
         <Button type="primary" icon={<PlusOutlined />}>
           Thêm sản phẩm
