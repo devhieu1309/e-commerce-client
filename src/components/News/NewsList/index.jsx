@@ -99,7 +99,7 @@ function AdminNewsList() {
         columns={columns}
         dataSource={news}
         rowKey={(record) => record.id}
-        pagination={{ pageSize: 7 }}
+        pagination={{ pageSize: 10 }}
       />
     </>
   );
