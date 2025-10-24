@@ -10,7 +10,7 @@ function OrderStatusList() {
 
   const fetchApi = async () => {
     const result = await getOrderStatusList();
-    setOrderStatus(result);
+    setOrderStatus(result.orderStatus.reverse());
   };
 
   // Lấy danh sách phương thanh toán
