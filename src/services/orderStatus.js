@@ -1,29 +1,29 @@
 import { del, edit, get, post } from "../utils/request";
 
 export const getOrderStatusList = async () => {
-  const result = await get("order-status");
-  return result.reverse();
+  const result = await get("orderStatus");
+  return result;
 };
 
 export const storeOrderStatus = async (option) => {
-  const result = await post(`order-status`, option);
+  const result = await post(`orderStatus`, option);
   return result;
 };
 
 export const editOrderStatus = async (id, option) => {
-  const result = await edit(`order-status/${id}`, option);
+  const result = await edit(`orderStatus/${id}`, option);
   return result;
 };
 
 export const deleteOrderStatus = async (id) => {
-  const result = await del(`order-status/${id}`);
+  const result = await del(`orderStatus/${id}`);
   return result;
 };
 
 export const searchOrderStatus = async (status) => {
   try {
     const response = await fetch(
-      `http://127.0.0.1:8000/api/order-status/search?status=${encodeURIComponent(
+      `https://e-commerce-server.app/api/orderStatus/search?status=${encodeURIComponent(
         status
       )}`
     );
