@@ -33,6 +33,7 @@ import PromotionList from "../components/PromotionList";
 import UserList from "../components/UserList";
 import OnOffUserList from "../components/On_Off_User";
 import VideoReview from "../components/VideoReview";
+import Payment from "../pages/User/Payment";
 
 
 export const routes = [
@@ -197,6 +198,10 @@ export const routes = [
         element: <VideoReview/>, 
       },
     ],
+  },
+  {
+    path: "payment",
+    element: <Payment />
   },
 ];
 
