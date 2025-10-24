@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from "react-router-dom";
 
 function cart() {
     return (
@@ -69,7 +70,7 @@ function cart() {
                             <p className='text-[#000f8f] font-bold'>35.970.000đ</p>
                         </div>
                         <div class="">
-                            <button type="submit" class="rounded-md bg-[#000f8f] w-full px-5 py-2 text-sm font-semibold text-white shadow-xs hover:bg-amber-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Thanh toán</button>
+                            <button type="submit" class="rounded-md bg-[#000f8f] w-full px-5 py-2 text-sm font-semibold text-white shadow-xs hover:bg-amber-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"><Link to="/payment">Thanh toán</Link></button>
                         </div>
                     </div>
 
