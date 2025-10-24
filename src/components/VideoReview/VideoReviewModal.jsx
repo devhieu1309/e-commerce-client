@@ -202,8 +202,8 @@ function VideoReviewModal(props) {
                 <Option value="Laptop">Laptop</Option>
                 <Option value="Ipad">Ipad</Option> */}
                 {products.map((p) => (
-                  <Option key={p.id} value={p.id}>
-                    {p.name}
+                  <Option key={p.product_id} value={p.product_id}>
+                    {p.product_name}
                   </Option>
                 ))}
               </Select>
