@@ -3,8 +3,7 @@ import { useEffect, useState, useRef } from "react";
 import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 import UserToolbar from "./UserToolbar";
 import UserDelete from "./UserDelete";
-import UserModal from "./UserModal";
-import UserView from "./UserView";
+import UserModal from "./UserModal";git
 import { getUserList, searchUser } from "../../services/userServices";
 
 function UserList() {
