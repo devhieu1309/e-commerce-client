@@ -46,7 +46,8 @@ function BannerListModal(props) {
                 uid: "-1",
                 name: record.image,
                 status: "done",
-                url: `http://127.0.0.1:8000/storage/${record.image}`,
+                // url: `http://127.0.0.1:8000/storage/${record.image}`,
+                url: `https://e-commerce-server.app/storage/${record.image}`,
               },
             ]
           : []
@@ -79,10 +80,13 @@ function BannerListModal(props) {
       if (file.originFileObj) {
         formData.append("image", file.originFileObj);
       }
+
+      console.log(file.originFileObj instanceof File);
     }
 
     let response;
     if (mode === "edit") {
+      // formData.append("_method", "PATCH");
       response = await editBanner(record.id, formData);
     } else {
       response = await storeBanner(formData);

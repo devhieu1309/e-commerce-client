@@ -14,7 +14,7 @@ function AdminBannerList() {
     setBanner(result);
   };
 
-  // Lấy danh sách danh mục
+  // Lấy danh sách banner
   useEffect(() => {
     fetchApi();
   }, []);
@@ -46,7 +46,7 @@ function AdminBannerList() {
       key: "image",
       render: (text) => (
         <img
-          src={`http://127.0.0.1:8000/storage/${text}`}
+          src={`https://e-commerce-server.app/storage/${text}`}
           alt={text}
           style={{ width: 150, height: 55, objectFit: "cover" }}
         />
