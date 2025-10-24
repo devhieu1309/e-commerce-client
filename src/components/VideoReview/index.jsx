@@ -91,6 +91,12 @@ function VideoReview() {
       key: "title",
     },
     {
+      title: "Nguồn video",
+      dataIndex: "source_type",
+      key: "title",
+    },
+
+    {
       title: "URL video",
       dataIndex: "url",
       key: "url",
