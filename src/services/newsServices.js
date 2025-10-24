@@ -74,3 +74,17 @@ export const searchNews = async (title) => {
     throw error;
   }
 };
+
+//Hien thi tin tuc noi bat moi nhat
+export const getNewsFeatured = async (limit = null) => {
+  try {
+    const response = await axios.get(API_BASE_URL);
+    const data = response.data.sort(
+      (a, b) => new Date(b.created_at) - new Date(a.created_at)
+    );
+    return limit ? data.slice(0, limit) : data;
+  } catch (error) {
+    console.log("Loi khi lay danh sach: ", error);
+    return [];
+  }
+};

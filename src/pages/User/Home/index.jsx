@@ -1,4 +1,4 @@
-import  Policy  from "../../../components/Policy"
+import Policy from "../../../components/Policy"
 import Banner from "../../../components/Banner"
 import PopularCategories from "../../../components/PopularCategories"
 import ProductList from "../../../components/ProductList"
@@ -30,7 +30,7 @@ function Home() {
       <Accessories />
       <IpadProBanner />
       <LatestNews />
-      <ProductReview />
+      <ProductReview limit={4} is_visible={1} showLoadMore={false}/>
       <CustomerFeedback />
     </>
   );

@@ -20,20 +20,6 @@ function MenuSider() {
       label: <Link to="/admin">Thống kê</Link>,
       icon: <PlayCircleOutlined />,
       key: "menu-0",
-      // children: [
-      //     {
-      //         label: <Link to="/">Dashboard</Link>,
-      //         key: "/"
-      //     },
-      //     {
-      //         label: "Menu 1 - 2",
-      //         key: "menu-1-2"
-      //     },
-      //     {
-      //         label: "Menu 1 - 3",
-      //         key: "menu-1-3"
-      //     }
-      // ]
     },
     {
       label: <Link to="/admin/user">Danh sách người dùng</Link>,
@@ -120,6 +106,13 @@ function MenuSider() {
       ),
       icon: <HighlightOutlined />,
       key: "menu-12",
+    },
+    {
+      label: (
+        <Link to="/admin/store-systems">Quản lý chi nhánh cửa hàng</Link>
+      ),
+      icon: <HighlightOutlined />,
+      key: "menu-13",
     },
   ];
 

@@ -1,9 +1,14 @@
-import { del, edit, get, post,  } from "../utils/request";
+import { del, edit, get, post } from "../utils/request";
 
 export const getCategoryList = async () => {
-   const result = await get('categories');
-    return result;
-}
+  const result = await get("categories");
+  return result;
+};
+
+export const getVariationByCategoryId = async (id) => {
+  const result = await get(`categories/${id}/variations`);
+  return result;
+};
 
 export const storeCategory = async (option) => {
   const result = await post(`categories`, option);
@@ -19,4 +24,3 @@ export const deleteCategory = async (id) => {
   const result = await del(`categories/${id}`);
   return result;
 };
-
