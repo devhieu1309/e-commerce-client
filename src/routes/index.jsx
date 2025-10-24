@@ -34,6 +34,7 @@ import UserList from "../components/UserList";
 import OnOffUserList from "../components/On_Off_User";
 import VideoReview from "../components/VideoReview";
 import AdminStoreSystemList from "../components/AdminStoreSystemList";
+import Payment from "../pages/User/Payment";
 
 
 export const routes = [
@@ -202,6 +203,10 @@ export const routes = [
         element: <AdminStoreSystemList/>, 
       },
     ],
+  },
+  {
+    path: "payment",
+    element: <Payment />
   },
 ];
 

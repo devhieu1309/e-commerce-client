@@ -1,7 +1,7 @@
 import { del, edit, get, post, } from "../utils/request";
 
-export const getVideoReview = async () => {
-  const result = await get('video-reviews');
+export const getVideoReview = async (params = {}) => {
+  const result = await get('video-reviews', params);
   return result;
 }
 
