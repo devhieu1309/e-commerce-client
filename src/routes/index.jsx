@@ -33,6 +33,7 @@ import PromotionList from "../components/PromotionList";
 import UserList from "../components/UserList";
 import OnOffUserList from "../components/On_Off_User";
 import VideoReview from "../components/VideoReview";
+import AdminStoreSystemList from "../components/AdminStoreSystemList";
 
 
 export const routes = [
@@ -195,6 +196,10 @@ export const routes = [
       {
         path: "video-review", 
         element: <VideoReview/>, 
+      },
+      {
+        path: "store-systems", 
+        element: <AdminStoreSystemList/>, 
       },
     ],
   },
