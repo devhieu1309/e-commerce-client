@@ -4,6 +4,7 @@ import { DollarOutlined } from "@ant-design/icons";
 import InputField from "../../../components/FieldCustom/InputField";
 import AddressSelect from "../../../components/FieldCustom/AddressSelect";
 import OptionGroup from "../../../components/FieldCustom/OptionGroup";
+import { getShippingMethodList } from "../../../services/shippingMethodServices";
 
 const { TextArea } = Input;
 
@@ -21,13 +22,56 @@ function ShippingInfoForm({ onInfoChange }) {
   const [shippingOptions, setShippingOptions] = useState([]);
   const [paymentOptions, setPaymentOptions] = useState([]);
 
+  // console.log("Shipping options:", shippingOptions);
+
+
+  // const fetchApi = async () => {
+  //   const result = await getShippingMethodList();
+
+  //   //setShippingMethods(result.shippingMethods.reverse());
+  //   setShippingOptions(result);
+  // };
+
+  const fetchApi = async () => {
+    try {
+      const result = await getShippingMethodList();
+      const shippingList = result.shipping_methods.reverse();
+      // setShippingOptions(result.shipping_methods.reverse());
+      console.log(result); 
+
+      const formattedOptions = shippingList.map((item) => ({
+        id: item.shipping_method_id,
+        label: item.shipping_method_name,
+        value: item.shipping_method_name.toLowerCase().replace(/\s+/g, "_"),
+        price: `${Number(item.shipping_method_price).toLocaleString("vi-VN")}₫`,
+      }));
+
+      setShippingOptions(formattedOptions);
+    } catch (err) {
+      console.error("Lỗi tải danh sách phương thức vận chuyển:", err);
+    }
+  };
+
+
+  // Lấy danh sách phương thức vận chuyển
+  useEffect(() => {
+    fetchApi();
+  }, []);
+
+  // Load lại trang
+  const handleReload = () => {
+    fetchApi();
+  };
+
+  
+
   useEffect(() => {
     async function fetchData() {
       try {
-        setShippingOptions([
-          { id: 1, label: "Giao hàng tận nơi", value: "delivery", price: "40.000₫" },
-          { id: 2, label: "Nhận tại cửa hàng", value: "pickup", price: "0₫" },
-        ]);
+        // setShippingOptions([
+        //   { id: 1, label: "Giao hàng tận nơi", value: "delivery", price: "40.000₫" },
+        //   { id: 2, label: "Nhận tại cửa hàng", value: "pickup", price: "0₫" },
+        // ]);
 
         setPaymentOptions([
           {

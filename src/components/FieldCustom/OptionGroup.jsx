@@ -2,6 +2,8 @@ import { Radio, Space } from "antd";
 import { DollarOutlined } from "@ant-design/icons";
 
 function OptionGroup({ title, options, value, onChange }) {
+  // console.log("options:", options);
+
   return (
     <section>
       <div className="section_header mb-[17px] flex items-center font-medium">
@@ -18,16 +20,18 @@ function OptionGroup({ title, options, value, onChange }) {
             {options.map((opt, idx) => (
               <div
                 key={idx}
-                className={`flex justify-between items-center px-3 py-2 ${
-                  idx !== options.length - 1 ? "" : ""
-                }`}
+                className={`flex justify-between w-full px-3 py-2 ${idx !== options.length - 1 ? "" : ""
+                  }`}
               >
+                
                 <Radio value={opt.value}>{opt.label}</Radio>
                 {opt.icon ? (
                   opt.icon
                 ) : opt.price ? (
-                  <span className="text-gray-600 font-medium">{opt.price}</span>
+                  <span className="text-gray-600 font-medium !text-[15px]">{opt.price}</span>
                 ) : null}
+
+
               </div>
             ))}
           </Space>

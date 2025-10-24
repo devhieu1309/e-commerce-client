@@ -30,7 +30,7 @@ function Home() {
       <Accessories />
       <IpadProBanner />
       <LatestNews />
-      <ProductReview limit={4} is_visible={1}/>
+      <ProductReview limit={4} is_visible={1} showLoadMore={false}/>
       <CustomerFeedback />
     </>
   );

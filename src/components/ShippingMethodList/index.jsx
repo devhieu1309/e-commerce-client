@@ -12,8 +12,8 @@ function ShippingMethodList() {
   const fetchApi = async () => {
     const result = await getShippingMethodList();
     
-    //setShippingMethods(result.shippingMethods.reverse());
-    setShippingMethods(result);
+    setShippingMethods(result.shipping_methods.reverse());
+    // setShippingMethods(result);
   };
 //   const fetchApi = async () => {
 //   try {

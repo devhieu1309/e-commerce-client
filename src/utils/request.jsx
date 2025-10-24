@@ -76,3 +76,23 @@ export const searchPost = async (path, options) => {
 
   return result;
 };
+
+export const postFormData = async (path, formData) => {
+  const response = await fetch(API_DOMAIN + path, {
+    method: "POST",
+    body: formData,
+  });
+
+  const result = await response.json();
+
+  if (!response.ok) {
+    const error = new Error(result.message || "Request failed");
+    error.response = {
+      status: response.status,
+      data: result,
+    };
+    throw error;
+  }
+
+  return result;
+};
