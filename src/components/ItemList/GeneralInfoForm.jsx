@@ -63,7 +63,7 @@ function GeneralInfoForm() {
         </Row>
 
         {/* Ảnh sản phẩm */}
-        <Row gutter={24}>
+        {/* <Row gutter={24}>
           <Col xs={24} md={12}>
             <Form.Item
               label="Ảnh sản phẩm"
@@ -84,7 +84,7 @@ function GeneralInfoForm() {
               </Upload>
             </Form.Item>
           </Col>
-        </Row>
+        </Row> */}
       </Form>
     </div>
   );
