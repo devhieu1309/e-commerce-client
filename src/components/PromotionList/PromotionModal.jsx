@@ -56,11 +56,25 @@ function PromotionModal(props) {
     setSpinning(true);
     try {
       // Chuẩn hóa ngày để gửi API
+      // const payload = {
+      //   ...values,
+      //   start_date: values.start_date?.format('YYYY-MM-DD HH:mm:ss'),
+      //   end_date: values.end_date?.format('YYYY-MM-DD HH:mm:ss'),
+      // };
+
       const payload = {
         ...values,
-        start_date: values.start_date?.format('YYYY-MM-DD HH:mm:ss'),
-        end_date: values.end_date?.format('YYYY-MM-DD HH:mm:ss'),
+        discount_rate: values.discount_rate
+          ? Number(values.discount_rate.toString().replace(/[%\s.]*/g, ''))
+          : 0, // default 0 nếu không nhập
+        start_date: values.start_date
+          ? values.start_date.format('YYYY-MM-DD HH:mm:ss')
+          : null,
+        end_date: values.end_date
+          ? values.end_date.format('YYYY-MM-DD HH:mm:ss')
+          : null,
       };
+
 
       const response =
         mode === "edit"
@@ -77,12 +91,32 @@ function PromotionModal(props) {
         onReload();
       }
     } catch (error) {
-      if (error.response && error.response.status === 422) {
-        const serverErrors = error.response.data.errors;
-        Object.keys(serverErrors).forEach(field => {
-          form.setFields([{ name: field, errors: serverErrors[field] }]);
+      // if (error.response && error.response.status === 422) {
+      //   const serverErrors = error.response.data.errors;
+      //   Object.keys(serverErrors).forEach(field => {
+      //     form.setFields([{ name: field, errors: serverErrors[field] }]);
+      //   });
+      // }
+
+      if (error.response) {
+        if (error.response.status === 422) {
+          const serverErrors = error.response.data.errors;
+          Object.keys(serverErrors).forEach(field => {
+            form.setFields([{ name: field, errors: serverErrors[field] }]);
+          });
+        } else {
+          apiNoti.error({
+            message: 'Lỗi server',
+            description: error.response.data.message || 'Đã xảy ra lỗi, vui lòng thử lại',
+          });
+        }
+      } else {
+        apiNoti.error({
+          message: 'Lỗi',
+          description: error.message || 'Đã xảy ra lỗi không xác định',
         });
       }
+
     } finally {
       setSpinning(false);
     }
@@ -127,6 +161,7 @@ function PromotionModal(props) {
               />
             </Form.Item>
 
+
             <Form.Item label="Tỷ lệ giảm giá" name="discount_rate">
               <InputNumber
                 style={{ width: "100%" }}
@@ -134,6 +169,8 @@ function PromotionModal(props) {
                 parser={value => value?.replace(/[%\s.]*/g, '')}
               />
             </Form.Item>
+
+
 
             <Form.Item label="Ngày bắt đầu" name="start_date">
               <DatePicker format={dateFormat} />
