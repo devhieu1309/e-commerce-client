@@ -1,6 +1,5 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { login } from "../../../../services/authServices"; // đường dẫn đúng tới authServices.js
 
 
@@ -8,6 +7,7 @@ import { login } from "../../../../services/authServices"; // đường dẫn đ
 function FromLogin() {
 
     const [showForgot, setShowForgot] = useState(false);
+    const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
         email: "",
@@ -27,20 +27,26 @@ function FromLogin() {
 
         try {
             const response = await login(formData);
-            localStorage.setItem("token", response.data.token);
-            navigate("/home");
-        } catch (error) {
-            if (error.response && error.response.status === 422) {
-                setErrors(error.response.data.errors || {});
-            } else if (error.response && error.response.status === 401) {
-                setErrors({ email: ["Email hoặc mật khẩu không đúng!"] });
+
+            if (response.token) {
+                localStorage.setItem("token", response.token);
+                navigate("/home");
             } else {
-                setErrors({ email: ["Lỗi kết nối server!"] });
+                setErrors({ email: ["Đăng nhập thất bại, vui lòng thử lại."] });
+            }
+        } catch (error) {
+            if (error.errors) {
+                setErrors(error.errors);
+            } else if (error.message) {
+                setErrors({ email: [error.message] });
+            } else {
+                setErrors({ email: ["Email hoặc mật khẩu không đúng!"] });
             }
         } finally {
             setLoading(false);
         }
     };
+
 
 
     return (
