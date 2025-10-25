@@ -12,7 +12,7 @@ function UserView({ open, onCancel, user }) {
             centered
         >
             <Descriptions bordered column={1}>
-                <Descriptions.Item label="ID">{user.id}</Descriptions.Item>
+                <Descriptions.Item label="ID">{user.user_id}</Descriptions.Item>
                 <Descriptions.Item label="Họ và tên">{user.name}</Descriptions.Item>
                 <Descriptions.Item label="Email">{user.email}</Descriptions.Item>
                 <Descriptions.Item label="Số điện thoại">{user.phone}</Descriptions.Item>
