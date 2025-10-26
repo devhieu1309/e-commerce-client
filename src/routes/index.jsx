@@ -38,7 +38,6 @@ import Payment from "../pages/User/Payment";
 import LoGin from "../pages/User/login/Login";
 import RegisTer from "../pages/User/register/Register";
 
-
 export const routes = [
   {
     path: "/",
@@ -77,7 +76,7 @@ export const routes = [
         element: <News />,
       },
       {
-        path: "iphone-15-hong-co-may-phien-ban-5-diem-doc-dao-khien-nhieu-chi-em-yeu-thich",
+        path: "newsdetail/:id",
         element: <NewsDetail />,
       },
       {
@@ -197,26 +196,26 @@ export const routes = [
         element: <UserList />,
       },
       {
-        path: "on_off", 
-        element: <OnOffUserList />, 
+        path: "on_off",
+        element: <OnOffUserList />,
       },
       {
-        path: "promotions", 
-        element: <PromotionList />, 
+        path: "promotions",
+        element: <PromotionList />,
       },
       {
-        path: "video-review", 
-        element: <VideoReview/>, 
+        path: "video-review",
+        element: <VideoReview />,
       },
       {
-        path: "store-systems", 
-        element: <AdminStoreSystemList/>, 
+        path: "store-systems",
+        element: <AdminStoreSystemList />,
       },
     ],
   },
   {
     path: "payment",
-    element: <Payment />
+    element: <Payment />,
   },
 ];
 
