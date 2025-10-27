@@ -22,7 +22,7 @@ function ShippingMethodList() {
 //     // Kiểm tra dữ liệu có tồn tại và là mảng
 //     const data = Array.isArray(res?.data?.data) ? res.data.data : [];
 
-//     const list = data.reverse(); // ✅ Không lỗi
+//     const list = data.reverse(); // 
 //     setShippingMethods(list);
 //   } catch (error) {
 //     console.error("Fetch API error:", error);
