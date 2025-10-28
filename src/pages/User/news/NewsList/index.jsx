@@ -4,13 +4,11 @@ import { Pagination } from "antd";
 import { getNews } from "../../../../services/newsServices";
 import FeaturedNews from "./FeaturedNews";
 import CategoryNesList from "./CategoryNesList";
-// import { getNewsBlocks } from "../../../../services/newsBlocksServices";
 
 function NewsList() {
   const [news, setNews] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 6;
-  // const [newsBlocks, setNewsBlocks] = useState([]);
 
   const fetchApi = async () => {
     try {
