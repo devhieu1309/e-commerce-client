@@ -1,12 +1,9 @@
-import React, { useState } from "react";
-import { PlusOutlined } from "@ant-design/icons";
+import React, { useEffect, useState } from "react";
 import {
   Card,
-  Checkbox,
   Typography,
   Button,
   Table,
-  Input,
   InputNumber,
   Upload,
   Select,
@@ -14,22 +11,21 @@ import {
 
 const { Title } = Typography;
 
-function VariantForm() {
+function VariantForm({ setVariantList, form }) {
   const [selectedColors, setSelectedColors] = useState([]);
   const [selectedStorages, setSelectedStorages] = useState([]);
-  const [variantList, setVariantList] = useState([]);
+  const [variantList, setLocalVariantList] = useState([]);
 
-  // Danh sách thuộc tính
   const colorOptions = [
-    { label: "Đen", value: "black" },
-    { label: "Trắng", value: "white" },
-    { label: "Xanh", value: "blue" },
-    { label: "Hồng", value: "pink" },
+    { label: "Đen", value: 1 },
+    { label: "Trắng", value: 2 },
+    { label: "Xanh", value: 3 },
+    { label: "Hồng", value: 4 },
   ];
 
   const storageOptions = [
-    { label: "128GB", value: "128" },
-    { label: "256GB", value: "256" },
+    { label: "128GB", value: 5 },
+    { label: "256GB", value: 6 },
   ];
 
   // Sinh biến thể
@@ -38,62 +34,101 @@ function VariantForm() {
     selectedColors.forEach((color) => {
       selectedStorages.forEach((storage) => {
         combinations.push({
-          key: `${color}-${storage}`,
-          name: `${color.toUpperCase()} - ${storage}GB`,
-          sku: `SP-${color.toUpperCase()}-${storage}`,
+          SKU: `SP-${color}-${storage}`,
           price: 0,
-          quantity: 0,
+          qty_in_stock: 0,
+          variation_options: [color, storage],
+          image: null,
         });
       });
     });
-    setVariantList(combinations);
+    setLocalVariantList(combinations);
   };
 
-  // Cấu hình bảng hiển thị biến thể
+  // Đồng bộ biến thể về cha
+  useEffect(() => {
+    setVariantList(variantList);
+  }, [variantList]);
+
+  const handleChangeValue = (sku, field, value) => {
+    setLocalVariantList((prev) =>
+      prev.map((item) =>
+        item.SKU === sku ? { ...item, [field]: value } : item
+      )
+    );
+  };
+
+  const handleUpload = (key, info) => {
+    console.log("Upload info:", info);
+    const fileFromFile = info.file && (info.file.originFileObj ?? info.file);
+    const fileFromList =
+      Array.isArray(info.fileList) && info.fileList.length
+        ? info.fileList[0].originFileObj ?? info.fileList[0]
+        : null;
+
+    const file = fileFromFile || fileFromList;
+    if (!file) {
+      console.warn("Không tìm thấy file trong info:", info);
+      return;
+    }
+
+    setLocalVariantList((prev) =>
+      prev.map((item) => (item.SKU === key ? { ...item, image: file } : item))
+    );
+  };
+
   const columns = [
-    { title: "Biến thể", dataIndex: "name", key: "name" },
     {
       title: "Ảnh",
       key: "image",
-      render: () => (
-        <Upload listType="picture-card">
+      render: (_, record) => (
+        <Upload
+          listType="picture-card"
+          beforeUpload={() => false}
+          onChange={(info) => handleUpload(record.SKU, info)}
+        >
           <div>Tải ảnh</div>
         </Upload>
       ),
     },
     {
       title: "SKU",
-      dataIndex: "sku",
-      render: (text) => <Input defaultValue={text} />,
+      dataIndex: "SKU",
     },
     {
       title: "Giá (VNĐ)",
       dataIndex: "price",
-      render: () => (
-        <InputNumber style={{ width: "100%" }} placeholder="Nhập giá" />
+      render: (value, record) => (
+        <InputNumber
+          style={{ width: "100%" }}
+          value={record.price}
+          onChange={(val) => handleChangeValue(record.SKU, "price", val)}
+        />
       ),
     },
     {
       title: "Số lượng",
-      dataIndex: "quantity",
-      render: () => (
-        <InputNumber style={{ width: "100%" }} placeholder="Nhập số lượng" />
+      dataIndex: "qty_in_stock",
+      render: (value, record) => (
+        <InputNumber
+          style={{ width: "100%" }}
+          value={record.qty_in_stock}
+          onChange={(val) => handleChangeValue(record.SKU, "qty_in_stock", val)}
+        />
       ),
     },
   ];
 
   return (
     <div style={{ padding: 20 }}>
-      <Card title="Thuộc tính biến thể sản phẩm" bordered={true}>
+      <Card title="Thuộc tính biến thể sản phẩm">
         <Title level={5}>Màu sắc</Title>
         <Select
           mode="multiple"
-          allowClear
-          placeholder="Chọn màu sắc"
-          style={{ width: "100%", maxWidth: 400 }}
           options={colorOptions}
           value={selectedColors}
           onChange={setSelectedColors}
+          style={{ width: 400 }}
         />
 
         <Title level={5} style={{ marginTop: 16 }}>
@@ -101,12 +136,10 @@ function VariantForm() {
         </Title>
         <Select
           mode="multiple"
-          allowClear
-          placeholder="Chọn dung lượng"
-          style={{ width: "100%", maxWidth: 400 }}
           options={storageOptions}
           value={selectedStorages}
           onChange={setSelectedStorages}
+          style={{ width: 400 }}
         />
 
         <div style={{ marginTop: 20 }}>
@@ -128,7 +161,11 @@ function VariantForm() {
             pagination={false}
             bordered
           />
-          <Button type="primary" >
+          <Button
+            type="primary"
+            style={{ marginTop: 16 }}
+            onClick={() => form.submit()}
+          >
             Tạo mới
           </Button>
         </Card>
