@@ -60,7 +60,6 @@ function AddItem() {
         console.log(pair[0] + ":", pair[1]);
       }
 
-      // 5️⃣ Gửi đến API
       const response = await storeProduct(formData);
       console.log("Thành công:", response);
       apiNoti.success({
@@ -73,7 +72,6 @@ function AddItem() {
     }
   };
 
-  // 6️⃣ Tabs hiển thị
   const items = [
     {
       key: "1",

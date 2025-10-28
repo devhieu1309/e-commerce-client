@@ -1,13 +1,13 @@
-import axios from "axios";
-
 const API_BASE_URL = "http://127.0.0.1:8000/api/newsBlocks";
+// const API_BASE_URL = "https://e-commerce-server.app/api/news";
 
-//  Lấy danh sách bài viết
 export const getNewsBlocks = async () => {
   try {
-    const response = await axios.get(API_BASE_URL);
+    const response = await fetch(API_BASE_URL);
 
-    return response.data.reverse();
+    const data = await response.json();
+
+    return data.reverse();
   } catch (error) {
     console.error("Lỗi khi lấy danh sách bài viết:", error.response?.data);
     throw error;
@@ -15,12 +15,16 @@ export const getNewsBlocks = async () => {
 };
 
 //  Thêm mới bài viết
+
 export const storeNewsBlocks = async (formData) => {
   try {
-    const response = await axios.post(API_BASE_URL, formData, {
-      headers: { "Content-Type": "multipart/form-data" },
+    const response = await fetch(API_BASE_URL, {
+      method: "POST",
+      body: formData, // gửi FormData trực tiếp, KHÔNG cần JSON.stringify
     });
-    return response.data;
+
+    const data = await response.json();
+    return data;
   } catch (error) {
     console.error("Lỗi khi thêm bài viết: ", error.response?.data);
     throw error;
@@ -28,16 +32,17 @@ export const storeNewsBlocks = async (formData) => {
 };
 
 //  Cập nhật tin tức
+
 export const editNewsBlocks = async (id, formData) => {
   try {
-    const response = await axios.post(
-      `${API_BASE_URL}/${id}?_method=PATCH`,
-      formData,
-      {
-        headers: { "Content-Type": "multipart/form-data" },
-      }
-    );
-    return response.data;
+    const url = `${API_BASE_URL}/${id}?_method=PATCH`;
+
+    const response = await fetch(url, {
+      method: "POST",
+      body: formData,
+    });
+
+    return await response.json();
   } catch (error) {
     console.error("Lỗi khi cập nhật bài viết: ", error.response?.data);
     throw error;
@@ -45,10 +50,17 @@ export const editNewsBlocks = async (id, formData) => {
 };
 
 //  Xóa bài viết
+
 export const deleteNewsBlocks = async (id) => {
   try {
-    const response = await axios.delete(`${API_BASE_URL}/${id}`);
-    return response.data;
+    const response = await fetch(`${API_BASE_URL}/${id}`, {
+      method: "DELETE",
+      headers: {
+        Accept: "application/json",
+      },
+    });
+
+    return await response.json();
   } catch (error) {
     console.error("Lỗi khi xóa bài viết:", error.response?.data);
     throw error;

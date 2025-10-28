@@ -24,6 +24,8 @@ function PromotionModal(props) {
 
   const dateFormat = 'DD/MM/YYYY';
 
+
+
   // Formatter phần trăm
   const formatter = value => {
     const [start, end] = `${value}`.split('.') || [];
@@ -36,6 +38,7 @@ function PromotionModal(props) {
     if (mode === "edit" && record) {
       form.setFieldsValue({
         ...record,
+        discount_rate: record.discount_rate,
         start_date: record.start_date ? dayjs(record.start_date, 'YYYY-MM-DD HH:mm:ss') : null,
         end_date: record.end_date ? dayjs(record.end_date, 'YYYY-MM-DD HH:mm:ss') : null,
       });
@@ -55,12 +58,18 @@ function PromotionModal(props) {
   const handleSubmit = async (values) => {
     setSpinning(true);
     try {
-      // Chuẩn hóa ngày để gửi API
+
       const payload = {
         ...values,
-        start_date: values.start_date?.format('YYYY-MM-DD HH:mm:ss'),
-        end_date: values.end_date?.format('YYYY-MM-DD HH:mm:ss'),
+        start_date: values.start_date
+          ? values.start_date.format('YYYY-MM-DD HH:mm:ss')
+          : record?.start_date,
+        end_date: values.end_date
+          ? values.end_date.format('YYYY-MM-DD HH:mm:ss')
+          : record?.end_date,
       };
+
+
 
       const response =
         mode === "edit"
@@ -77,12 +86,25 @@ function PromotionModal(props) {
         onReload();
       }
     } catch (error) {
-      if (error.response && error.response.status === 422) {
-        const serverErrors = error.response.data.errors;
-        Object.keys(serverErrors).forEach(field => {
-          form.setFields([{ name: field, errors: serverErrors[field] }]);
+      if (error.response) {
+        if (error.response.status === 422) {
+          const serverErrors = error.response.data.errors;
+          Object.keys(serverErrors).forEach(field => {
+            form.setFields([{ name: field, errors: serverErrors[field] }]);
+          });
+        } else {
+          apiNoti.error({
+            message: 'Lỗi server',
+            description: error.response.data.message || 'Đã xảy ra lỗi, vui lòng thử lại',
+          });
+        }
+      } else {
+        apiNoti.error({
+          message: 'Lỗi',
+          description: error.message || 'Đã xảy ra lỗi không xác định',
         });
       }
+
     } finally {
       setSpinning(false);
     }
@@ -127,13 +149,16 @@ function PromotionModal(props) {
               />
             </Form.Item>
 
-            <Form.Item label="Tỷ lệ giảm giá" name="discount_rate">
+
+            <Form.Item label="Tỷ lệ giảm giá" name="discount_rate" rules={[]}>
               <InputNumber
                 style={{ width: "100%" }}
                 formatter={formatter}
                 parser={value => value?.replace(/[%\s.]*/g, '')}
               />
             </Form.Item>
+
+
 
             <Form.Item label="Ngày bắt đầu" name="start_date">
               <DatePicker format={dateFormat} />

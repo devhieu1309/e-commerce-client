@@ -1,13 +1,14 @@
-import axios from "axios";
-
 const API_BASE_URL = "http://127.0.0.1:8000/api/news";
+// const API_BASE_URL = "https://e-commerce-server.app/api/news";
 
 //  Lấy danh sách tin tuc
 export const getNews = async () => {
   try {
-    const response = await axios.get(API_BASE_URL);
-    // Đảo ngược để banner mới nhất lên đầu
-    return response.data.reverse();
+    const response = await fetch(API_BASE_URL);
+
+    const data = await response.json();
+
+    return data.reverse();
   } catch (error) {
     console.error("Lỗi khi lấy danh sách tin tuc:", error.response?.data);
     throw error;
@@ -17,10 +18,13 @@ export const getNews = async () => {
 //  Thêm mới tin tức
 export const storeNews = async (formData) => {
   try {
-    const response = await axios.post(API_BASE_URL, formData, {
-      headers: { "Content-Type": "multipart/form-data" },
+    const response = await fetch(API_BASE_URL, {
+      method: "POST",
+      body: formData, // gửi FormData trực tiếp, KHÔNG cần JSON.stringify
     });
-    return response.data;
+
+    const data = await response.json();
+    return data;
   } catch (error) {
     console.error("Lỗi khi thêm tin tức: ", error.response?.data);
     throw error;
@@ -30,14 +34,14 @@ export const storeNews = async (formData) => {
 //  Cập nhật tin tức
 export const editNews = async (id, formData) => {
   try {
-    const response = await axios.post(
-      `${API_BASE_URL}/${id}?_method=PATCH`,
-      formData,
-      {
-        headers: { "Content-Type": "multipart/form-data" },
-      }
-    );
-    return response.data;
+    const url = `${API_BASE_URL}/${id}?_method=PATCH`;
+
+    const response = await fetch(url, {
+      method: "POST",
+      body: formData,
+    });
+
+    return await response.json();
   } catch (error) {
     console.error("Lỗi khi cập nhật tin tức: ", error.response?.data);
     throw error;
@@ -47,8 +51,14 @@ export const editNews = async (id, formData) => {
 //  Xóa tin tức
 export const deleteNews = async (id) => {
   try {
-    const response = await axios.delete(`${API_BASE_URL}/${id}`);
-    return response.data;
+    const response = await fetch(`${API_BASE_URL}/${id}`, {
+      method: "DELETE",
+      headers: {
+        Accept: "application/json",
+      },
+    });
+
+    return await response.json();
   } catch (error) {
     console.error("Lỗi khi xóa tin tức:", error.response?.data);
     throw error;
@@ -73,4 +83,35 @@ export const searchNews = async (title) => {
     console.log("Lỗi khi tìm kiếm tin tức: ", error);
     throw error;
   }
+};
+
+//Hien thi tin tuc noi bat moi nhat
+export const getNewsFeatured = async (limit = null) => {
+  try {
+    const response = await fetch(API_BASE_URL, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+      },
+    });
+
+    // Chuyển dữ liệu sang JSON
+    const data = await response.json();
+
+    // Sắp xếp theo ngày tạo mới nhất
+    const sortedData = data.sort(
+      (a, b) => new Date(b.created_at) - new Date(a.created_at)
+    );
+
+    // Trả về số lượng giới hạn (nếu có)
+    return limit ? sortedData.slice(0, limit) : sortedData;
+  } catch (error) {
+    console.log("Loi khi lay danh sach: ", error);
+    return [];
+  }
+};
+
+export const getDetailNews = async (id) => {
+  const response = await fetch(`${API_BASE_URL}/${id}/blocks`);
+  return await response.json();
 };

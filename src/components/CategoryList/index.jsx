@@ -10,11 +10,11 @@ function CategoryList() {
 
   const fetchApi = async () => {
     const result = await getCategoryList();
-    
+
     setCategories(result.categories.reverse());
   };
 
-  // Lấy danh sách danh mục
+  // Lấy danh sách phuongw thanh toasn
   useEffect(() => {
     fetchApi();
   }, []);
@@ -68,13 +68,13 @@ function CategoryList() {
       key: "action",
       render: (_, record) => (
         <Space>
-          <CategoryModal mode="edit" record={record} onReload={handleReload}/>
+          <CategoryModal mode="edit" record={record} onReload={handleReload} />
           <Popconfirm
             title="Bạn chắc chắn muốn xóa danh mục này?"
             okText="Xóa"
             cancelText="Hủy"
           >
-            <DeleteCategory record={record} onReload={handleReload}/>
+            <DeleteCategory record={record} onReload={handleReload} />
           </Popconfirm>
         </Space>
       ),
@@ -83,7 +83,7 @@ function CategoryList() {
 
   return (
     <>
-      <CategoryToolbar onReload={handleReload}/>
+      <CategoryToolbar onReload={handleReload} />
       <Table
         columns={columns}
         dataSource={categories}

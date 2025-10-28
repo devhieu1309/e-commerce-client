@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 
-function Header() {
+
+function Header({ user, onLogout }) {
   return (
     <>
       <header className="relative group/header">
@@ -271,22 +272,63 @@ function Header() {
                     />
                   </span>
                   <span className="hover:text-amber-300 group/cart">
-                    <span className="text-[14px]">Giỏ hàng Sản phẩm</span>
-                    <div className="group-hover/cart:flex hidden absolute top-14 right-3 bg-white w-[400px] py-3 px-3 rounded-md flex-col items-center justify-center space-y-3 ring-1 ring-black/10 shadow-[0_0_18px_0_rgba(0,0,0,0.06)]">
-                      <div>
-                        <img
-                          className="w-[30px] h-[30px] object-cover"
-                          src="/icons8-cart-50.png"
-                          alt="Cart"
-                        />
+                    <span className="text-[14px]"><Link to="/cart">Giỏ hàng Sản phẩm</Link></span>
+                    <div className="group-hover/cart:flex hidden absolute top-14 right-3 bg-white w-[400px] py-3 px-4 rounded-md flex-col space-y-4 ring-1 ring-black/10 shadow-[0_0_18px_0_rgba(0,0,0,0.06)] text-sm">
+                      {/* Sản phẩm */}
+                      <div className="flex items-start space-x-3">
+                        {/* Ảnh sản phẩm */}
+                        <div className="w-[25%]">
+                          <img
+                            src="/220309063455-ipad-air-select-wif.webp"
+                            alt="iPad Air 5"
+                            className="w-full h-full object-cover rounded-md"
+                          />
+                        </div>
+
+                        {/* Thông tin sản phẩm */}
+                        <div className="flex-1 space-y-1">
+                          <p className="font-semibold text-gray-900 text-sm">
+                            iPad Air 5 Wifi 64GB - Chính hãng VN/A
+                          </p>
+                          <p className="text-gray-600 text-sm">Trắng</p>
+                          <button className="text-red-500 text-sm hover:underline">Xóa</button>
+
+                          {/* Số lượng và giá */}
+                          <div className="flex justify-between items-center mt-2">
+                            <div className="items-center space-x-2">
+                              <span className="text-gray-700">Số lượng:</span>
+                              <div className='flex space-x-3 justify-between items-center text-center border border-black w-auto h-auto rounded-md'>
+                                <button className='bg-[#000f8f] h-[25px] px-2 text-white m-1 rounded-md'>-</button>
+                                <p className='m-0 text-gray-900 px-2'>1</p>
+                                <button className='bg-[#000f8f] h-[25px] px-2 text-white m-1 rounded-md'>+</button>
+                              </div>
+                            </div>
+                            <p className="font-bold text-red-500 text-base">
+                              13.590.000đ
+                            </p>
+                          </div>
+                        </div>
                       </div>
-                      <p className="text-black text-[14px]">
-                        Không có sản phẩm nào trong giỏ hàng của bạn
-                      </p>
+
+                      {/* Tổng tiền & nút thanh toán */}
+                      <div className="border-t border-gray-200 pt-3 space-y-3">
+                        <div className="flex justify-between items-center">
+                          <p className="font-semibold text-gray-900">Tổng tiền:</p>
+                          <p className="font-bold text-red-500 text-lg">13.590.000đ</p>
+                        </div>
+                        <button
+                          type="submit"
+                          className="w-full rounded-md bg-[#000f8f] px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-amber-300 hover:text-[#000f8f] transition-all"
+                        >
+                          Thanh toán
+                        </button>
+                      </div>
                     </div>
+
                   </span>
                 </li>
               </ul>
+
               <div className="bg-[#2E3AA3] flex flex-col justify-center items-center p-2 rounded-sm hover:bg-amber-400 group">
                 <span className="">
                   <img
@@ -295,56 +337,90 @@ function Header() {
                     alt="User"
                   />
                 </span>
-                <span className="relative ">
-                  <span className="flex justify-center text-center text-[14px]">
+                <div className="relative group">
+                  <span className="flex justify-center text-center text-[14px] cursor-pointer">
                     Thông tin
                   </span>
-                  <div className="bg-white absolute top-8 right-[-8px] w-[220px] rounded-md hidden group-hover:flex">
+
+                  <div className="bg-white absolute top-8 right-[-8px] w-[220px] rounded-md hidden md:group-hover:flex flex-col shadow-md border border-gray-200">
                     <ul className="py-1 px-[7px] flex flex-col space-y-2 text-black text-[14px]">
+
+                      {/* Nếu CHƯA đăng nhập */}
+                      {!user ? (
+                        <>
+                          <li className="flex items-center w-full px-4 py-1 space-x-2 hover:bg-gray-200">
+                            <img
+                              className="w-[20px] h-[20px] object-cover"
+                              src="/icons8-login-50.png"
+                              alt=""
+                            />
+                            <Link to="/dang-nhap">
+                              <span>Đăng nhập</span>
+                            </Link>
+                          </li>
+
+                          <li className="flex items-center w-full px-4 py-1 space-x-2 hover:bg-gray-200">
+                            <img
+                              className="w-[20px] h-[20px] object-cover"
+                              src="/icons8-add-24.png"
+                              alt=""
+                            />
+                            <Link to="/dang-ky">
+                              <span>Đăng ký</span>
+                            </Link>
+                          </li>
+                        </>
+                      ) : (
+                        <>
+                          {/* Nếu ĐÃ đăng nhập */}
+                          <li className="flex items-center w-full px-4 py-1 space-x-2 hover:bg-gray-200">
+                            <img
+                              className="w-[20px] h-[20px] object-cover filter brightness-0"
+                              src="/icons8-user-50.png"
+                              alt=""
+                            />
+                            <span>Tài khoản</span>
+                          </li>
+
+                          <li
+                            className="flex items-center w-full px-4 py-1 space-x-2 hover:bg-gray-200 cursor-pointer"
+                            onClick={onLogout}
+                          >
+                            <img
+                              className="w-[20px] h-[20px] object-cover"
+                              src="/icons8-logout-50.png"
+                              alt=""
+                            />
+                            <span>Đăng xuất</span>
+                          </li>
+                        </>
+                      )}
+
+                      {/* Mục chung cho cả 2 trạng thái */}
                       <li className="flex items-center w-full px-4 py-1 space-x-2 hover:bg-gray-200">
-                        <img
-                          className="w-[20px] h-[20px] object-cover"
-                          src="/icons8-login-50.png"
-                          alt=""
-                        />
-                        <span>Đăng nhập</span>
-                      </li>
-                      <li className="flex items-center px-4 py-1 space-x-2 hover:bg-gray-200">
-                        <img
-                          className="w-[20px] h-[20px] object-cover"
-                          src="/icons8-add-24.png"
-                          alt=""
-                        />
-                        <span>Đăng ký</span>
-                      </li>
-                      <li className="flex items-center px-4 py-1 space-x-2 hover:bg-gray-200">
                         <img
                           className="w-[20px] h-[20px] object-cover"
                           src="/icons8-heart-50.png"
                           alt=""
                         />
-                        <Link to="/san-pham-yeu-thich">
-                          <span>
-                            Danh sách yêu thích <span>(0)</span>
-                          </span>
-                        </Link>
+                        <span>Danh sách yêu thích (0)</span>
                       </li>
-                      <li className="flex items-center px-4 py-1 space-x-2 hover:bg-gray-200">
+
+                      <li className="flex items-center w-full px-4 py-1 space-x-2 hover:bg-gray-200">
                         <img
                           className="w-[20px] h-[20px] object-cover"
-                          src="/icons8-renew-50.png"
+                          src="/icons8-compare-50.png"
                           alt=""
                         />
-                        <Link to="so-sanh-san-pham">
-                          <span>
-                            So sánh sản phẩm <span>(0)</span>
-                          </span>
-                        </Link>
+                        <span>So sánh sản phẩm (0)</span>
                       </li>
                     </ul>
                   </div>
-                </span>
+                </div>
+
+
               </div>
+
             </div>
           </div>
         </div>
