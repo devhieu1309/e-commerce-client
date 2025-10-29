@@ -47,7 +47,7 @@ const ItemDetail = () => {
         },
         {
           key: 4,
-          variant: "Trắng – 256GB",
+          variant: "Trắng - 256GB",
           sku: "IP15-WHITE-256",
           price: 28000000,
           quantity: 6,
