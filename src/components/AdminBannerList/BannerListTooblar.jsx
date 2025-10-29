@@ -1,23 +1,12 @@
 import React, { useState } from "react";
-import { Input, Select, Button, Space } from "antd";
+import { Input, Button, Space } from "antd";
 import { PlusOutlined, SearchOutlined } from "@ant-design/icons";
-import BannerListModal from "./BannerListModal";
+import { useNavigate } from "react-router-dom";
 import { searchBanner } from "../../services/bannerServices";
 
-const { Option } = Select;
-
-function BannerListTooblar({
-  onSearch,
-  onAdd,
-  onSearchResult,
-  // parentOptions = [
-  //   { id: 1, status: "Đang xử lý" },
-  //   { id: 2, status: "Giao thành công" },
-  //   { id: 3, status: "Xác nhận đơn hàng" },
-  // ],
-  onReload,
-}) {
+function BannerListTooblar({ onSearchResult, onReload }) {
   const [keyword, setKeyword] = useState("");
+  const navigate = useNavigate(); // ✅ Dùng để điều hướng
 
   const handleSearchBanner = async () => {
     try {
@@ -38,6 +27,12 @@ function BannerListTooblar({
       handleSearchBanner();
     }
   };
+
+  //  Sửa đường dẫn ở đây
+  const handleAddBanner = () => {
+    navigate("/admin/bannerlist/createbanner");
+  };
+
   return (
     <div
       style={{
@@ -48,9 +43,8 @@ function BannerListTooblar({
     >
       <Space>
         <Input
-          placeholder="Nhập tiêu đề Banner "
+          placeholder="Nhập tiêu đề Banner"
           prefix={<SearchOutlined />}
-          // onChange={(e) => onSearch(e.target.value)}
           style={{ width: 250 }}
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
@@ -58,7 +52,10 @@ function BannerListTooblar({
           allowClear
         />
       </Space>
-      <BannerListModal mode="create" record={{}} onReload={onReload} />
+
+      <Button type="primary" icon={<PlusOutlined />} onClick={handleAddBanner}>
+        Thêm Banner
+      </Button>
     </div>
   );
 }

@@ -33,7 +33,7 @@ import PromotionList from "../components/PromotionList";
 import UserList from "../components/UserList";
 import OnOffUserList from "../components/On_Off_User";
 import VideoReview from "../components/VideoReview";
-
+import BannerFormPage from "../components/AdminBannerList/BannerListModal";
 
 export const routes = [
   {
@@ -157,6 +157,14 @@ export const routes = [
         path: "bannerlist",
         element: <AdminBannerList />,
       },
+      {
+        path: "bannerlist/createbanner",
+        element: <BannerFormPage mode="create" />,
+      },
+      {
+        path: "bannerlist/editbanner/:id",
+        element: <BannerFormPage mode="edit" />,
+      },
 
       {
         path: "quantityInStock",
@@ -185,16 +193,16 @@ export const routes = [
         element: <UserList />,
       },
       {
-        path: "on_off", 
-        element: <OnOffUserList />, 
+        path: "on_off",
+        element: <OnOffUserList />,
       },
       {
-        path: "promotions", 
-        element: <PromotionList />, 
+        path: "promotions",
+        element: <PromotionList />,
       },
       {
-        path: "video-review", 
-        element: <VideoReview/>, 
+        path: "video-review",
+        element: <VideoReview />,
       },
     ],
   },

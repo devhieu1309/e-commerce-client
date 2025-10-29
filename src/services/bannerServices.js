@@ -1,63 +1,102 @@
-import { del, edit, get, post } from "../utils/request";
-
-const API_BASE_URL = "https://e-commerce-server.app/api/banner";
-// const API_BASE_URL = "http://127.0.0.1:8000/api/banner";
+// const API_BASE_URL = "https://e-commerce-server.app/api/banner";
+const API_BASE_URL = "http://127.0.0.1:8000/api/banner";
 
 //  Lấy danh sách banner
-// export const getBanner = async () => {
-//   const res = await fetch(API_BASE_URL);
-//   const data = await res.json();
-//   return data.reverse();
-// };
-
 export const getBanner = async () => {
-  const result = await get("banner");
-  return result.reverse();
+  try {
+    const response = await fetch(API_BASE_URL);
+
+    const data = await response.json();
+
+    return data.reverse();
+  } catch (error) {
+    console.error("Lỗi khi lấy danh sách Banner:", error.response?.data);
+    throw error;
+  }
+};
+export const getDetailBanner = async (id) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/${id}`);
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Lỗi khi lấy danh sách Banner:", error.response?.data);
+    throw error;
+  }
 };
 
-//  Thêm mới banner
-// export const storeBanner = async (formData) => {
-//   const res = await fetch(API_BASE_URL, {
-//     method: "POST",
-//     body: formData,
-//   });
-//   return await res.json();
-// };
-export const storeBanner = async (option) => {
-  const result = await post(`banner`, option);
-  return result;
+export const storeBanner = async (formData) => {
+  try {
+    const response = await fetch(API_BASE_URL, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+      },
+      body: formData,
+    });
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Lỗi khi thêm tin tức: ", error.response?.data);
+    throw error;
+  }
 };
 
 //  Cập nhật banner
-// export const editBanner = async (id, formData) => {
-//   const res = await fetch(`${API_BASE_URL}/${id}?_method=PATCH`, {
-//     method: "POST",
-//     body: formData,
-//   });
-//   return await res.json();
-// };
+export const editBanner = async (id, formData) => {
+  try {
+    const url = `${API_BASE_URL}/${id}?_method=PATCH`;
 
-export const editBanner = async (id, option) => {
-  const result = await edit(`banner/${id}`, option);
-  return result;
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+      },
+      body: formData,
+    });
+
+    return await response.json();
+  } catch (error) {
+    console.error("Lỗi khi cập nhật Banner: ", error.response?.data);
+    throw error;
+  }
 };
 
 //  Xóa banner
-// export const deleteBanner = async (id) => {
-//   const res = await fetch(`${API_BASE_URL}/${id}`, {
-//     method: "DELETE",
-//   });
-//   return await res.json();
-// };
 export const deleteBanner = async (id) => {
-  const result = await del(`banner/${id}`);
-  return result;
+  try {
+    const response = await fetch(`${API_BASE_URL}/${id}`, {
+      method: "DELETE",
+      headers: {
+        Accept: "application/json",
+      },
+    });
+
+    return await response.json();
+  } catch (error) {
+    console.error("Lỗi khi xóa tin tức:", error.response?.data);
+    throw error;
+  }
 };
 
 //tìm kiếm baneer theo tiêu đề
 export const searchBanner = async (title) => {
-  const res = await fetch(
-    `${API_BASE_URL}/search?title=${encodeURIComponent(title)}`
-  );
-  return await res.json();
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/search?title=${encodeURIComponent(title)}`
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP lỗi : ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    return data;
+  } catch (error) {
+    console.log("Lỗi khi tìm kiếm Banner: ", error);
+    throw error;
+  }
 };
