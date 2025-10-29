@@ -1,9 +1,16 @@
 import { del, edit, get, post } from "../utils/request";
 
 export const getUserList = async () => {
-   const result = await get('users');
-    return result;
+  const result = await get('users');
+  return result;
 }
+
+// Lấy thông tin 1 user theo ID (cho phần Thông tin tài khoản)
+export const getUserById = async (id) => {
+  const result = await get(`users/${id}`);
+  return result;
+};
+
 
 export const storeUser = async (option) => {
   const result = await post(`users`, option);

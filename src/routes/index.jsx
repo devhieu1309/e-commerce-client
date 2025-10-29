@@ -37,6 +37,8 @@ import AdminStoreSystemList from "../components/AdminStoreSystemList";
 import Payment from "../pages/User/Payment";
 import LoGin from "../pages/User/login/Login";
 import RegisTer from "../pages/User/register/Register";
+import AccountM from "../pages/User/AccountManagement/AccountM";
+import Address from "../pages/User/AccountManagement/Address";
 
 export const routes = [
   {
@@ -110,6 +112,14 @@ export const routes = [
       {
         path: "dang-ky",
         element: <RegisTer />,
+      },
+      {
+        path: "tai-khoan",
+        element: <AccountM />,
+      },
+      {
+        path: "dia-chi",
+        element: <Address />,
       },
       {
         path: "*",

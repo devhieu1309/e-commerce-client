@@ -379,7 +379,9 @@ function Header({ user, onLogout }) {
                               src="/icons8-user-50.png"
                               alt=""
                             />
-                            <span>Tài khoản</span>
+                            <Link to="/tai-khoan">
+                              <span>Tài Khoản</span>
+                            </Link>
                           </li>
 
                           <li
