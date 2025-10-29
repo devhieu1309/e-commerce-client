@@ -5,8 +5,10 @@ import GeneralInfoForm from "./GeneralInfoForm";
 import VariantForm from "./VariantForm";
 import { storeProduct } from "../../services/productServices";
 import { notification } from "antd";
+import { useNavigate } from "react-router-dom";
 
 function AddItem() {
+  const navigate = useNavigate();
   const [apiNoti, contextHolder] = notification.useNotification();
   const [form] = Form.useForm();
   const [variantList, setVariantList] = useState([]);
@@ -66,9 +68,14 @@ function AddItem() {
         message: `Thông báo`,
         description: "Thêm sản phẩm mới thành công!",
       });
+
+      setTimeout(() => {
+        navigate("/admin/products");
+      }, 1000)
     } catch (error) {
       console.error("Lỗi khi thêm sản phẩm:", error);
       message.error("Không thể thêm sản phẩm!");
+    } finally {
     }
   };
 
@@ -102,7 +109,7 @@ function AddItem() {
           layout="vertical"
           onFinish={handleFinish}
           requiredMark={false}
-          encType="multipart/form-data" 
+          encType="multipart/form-data"
         >
           <Tabs defaultActiveKey="1" items={items} />
         </Form>
