@@ -37,6 +37,7 @@ import AdminStoreSystemList from "../components/AdminStoreSystemList";
 import Payment from "../pages/User/Payment";
 import LoGin from "../pages/User/login/Login";
 import RegisTer from "../pages/User/register/Register";
+import BannerFormPage from "../components/AdminBannerList/BannerListModal";
 
 export const routes = [
   {
@@ -167,6 +168,14 @@ export const routes = [
       {
         path: "bannerlist",
         element: <AdminBannerList />,
+      },
+      {
+        path: "bannerlist/createbanner",
+        element: <BannerFormPage mode="create" />,
+      },
+      {
+        path: "bannerlist/editbanner/:id",
+        element: <BannerFormPage mode="edit" />,
       },
 
       {

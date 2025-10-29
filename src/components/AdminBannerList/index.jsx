@@ -1,31 +1,40 @@
-import { Button, Popconfirm, Space, Table, Tooltip } from "antd";
+import { Button, Popconfirm, Space, Table } from "antd";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 
 import DeleteBannerList from "./DeleteBannerList";
 import { getBanner } from "../../services/bannerServices";
 import BannerListToolbar from "./BannerListTooblar";
-import BannerListModal from "./BannerListModal";
+import BannerFormPage from "./BannerListModal";
 
 function AdminBannerList() {
   const [banner, setBanner] = useState([]);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [editRecord, setEditRecord] = useState(null);
+  const navigate = useNavigate();
 
+  // Lấy danh sách banner
   const fetchApi = async () => {
     const result = await getBanner();
     setBanner(result);
   };
 
-  // Lấy danh sách danh mục
   useEffect(() => {
     fetchApi();
   }, []);
 
-  // Load lại trang
+  // Load lại danh sách sau khi sửa hoặc xóa
   const handleReload = () => {
     fetchApi();
   };
 
-  const handleSearchResut = (result) => {
+  const handleSearchResult = (result) => {
     setBanner(result);
+  };
+
+  const handleEditBanner = (id) => {
+    navigate(`/admin/bannerlist/editbanner/${id}`);
   };
 
   const columns = [
@@ -92,19 +101,29 @@ function AdminBannerList() {
         return date.toLocaleDateString("vi-VN");
       },
     },
-
     {
       title: "Hành động",
       key: "action",
       render: (_, record) => (
         <Space>
-          <BannerListModal
-            mode="edit"
-            record={record}
-            onReload={handleReload}
+          {/* Nút Sửa */}
+          <Button
+            type="text"
+            style={{
+              border: "1px solid #1890ff",
+              color: "#1890ff",
+              borderRadius: "4px",
+              padding: "2px 2px",
+              minWidth: "0",
+              height: "24px",
+            }}
+            icon={<EditOutlined />}
+            onClick={() => handleEditBanner(record.id)}
           />
+
+          {/* Nút Xóa */}
           <Popconfirm
-            title="Bạn chắc chắn muốn xóa Banner này không?"
+            title="Bạn chắc chắn muốn xóa Banner này?"
             okText="Xóa"
             cancelText="Hủy"
           >
@@ -114,18 +133,32 @@ function AdminBannerList() {
       ),
     },
   ];
+
   return (
     <>
       <BannerListToolbar
         onReload={handleReload}
-        onSearchResult={handleSearchResut}
+        onSearchResult={handleSearchResult}
       />
+
       <Table
         columns={columns}
         dataSource={banner}
         rowKey={(record) => record.id}
         pagination={{ pageSize: 7 }}
       />
+
+      {/* Modal Sửa Banner */}
+      {/* {isEditOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-[600px] relative">
+            <BannerFormPage mode="edit" record={editRecord} />
+            <div className="flex justify-end mt-4">
+              <Button onClick={() => setIsEditOpen(false)}>Đóng</Button>
+            </div>
+          </div>
+        </div>
+      )} */}
     </>
   );
 }
