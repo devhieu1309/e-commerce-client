@@ -91,21 +91,44 @@ export const searchPost = async (path, options) => {
 };
 
 export const postFormData = async (path, formData) => {
-  const response = await fetch(API_DOMAIN + path, {
+  const res = await fetch(API_DOMAIN + path, {
     method: "POST",
+    headers: {
+      Accept: "application/json",
+    },
     body: formData,
   });
 
-  const result = await response.json();
-
-  if (!response.ok) {
-    const error = new Error(result.message || "Request failed");
-    error.response = {
-      status: response.status,
-      data: result,
-    };
-    throw error;
+  const raw = await res.text();
+  let data;
+  try {
+    data = raw ? JSON.parse(raw) : null;
+  } catch (e) {
+    data = raw;
   }
 
-  return result;
+  if (!res.ok) {
+    console.error("API error:", res.status, data);
+    const err = new Error((data && data.message) || `Status ${res.status}`);
+    err.response = { status: res.status, data, raw };
+    throw err;
+  }
+  return data;
+  // const response = await fetch(API_DOMAIN + path, {
+  //   method: "POST",
+  //   body: formData,
+  // });
+
+  // const result = await response.json();
+
+  // if (!response.ok) {
+  //   const error = new Error(result.message || "Request failed");
+  //   error.response = {
+  //     status: response.status,
+  //     data: result,
+  //   };
+  //   throw error;
+  // }
+
+  // return result;
 };

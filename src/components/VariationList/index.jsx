@@ -11,7 +11,7 @@ function VariationList() {
   const [filterVariations, setFilterVariations] = useState([]);
   const [isFiltering, setIsFiltering] = useState(false);
 
-  // Get variation by variation nam
+  // Get variation by variation name
   const handleSearchVariation = (value) => {
     if (!value) {
       setIsFiltering(false);

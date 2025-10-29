@@ -1,13 +1,16 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useOutletContext } from "react-router-dom";
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { login } from "../../../../services/authServices"; // đường dẫn đúng tới authServices.js
+import { login } from "../../../../services/authServices";
 
 
 
 function FromLogin() {
 
     const [showForgot, setShowForgot] = useState(false);
+    const [error, setError] = useState("");
+    const navigate = useNavigate();
+    const { setUser } = useOutletContext();
+
 
     const [formData, setFormData] = useState({
         email: "",
@@ -22,26 +25,21 @@ function FromLogin() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setLoading(true);
-        setErrors({});
 
-        try {
-            const response = await login(formData);
-            localStorage.setItem("token", response.data.token);
-            navigate("/home");
-        } catch (error) {
-            if (error.response && error.response.status === 422) {
-                setErrors(error.response.data.errors || {});
-            } else if (error.response && error.response.status === 401) {
-                setErrors({ email: ["Email hoặc mật khẩu không đúng!"] });
-            } else {
-                setErrors({ email: ["Lỗi kết nối server!"] });
-            }
-        } finally {
-            setLoading(false);
+        const data = await login(formData.email, formData.password);
+
+        if (data.status) {
+            localStorage.setItem("user", JSON.stringify(data.user));
+            localStorage.setItem("token", data.token);
+
+            setUser(data.user); // Cập nhật user ngay lập tức
+
+            setError("Đăng nhập thành công!");
+            navigate("/");
+        } else {
+            setError(data.message || "Đăng nhập thất bại!");
         }
     };
-
 
     return (
         <>
@@ -98,6 +96,7 @@ function FromLogin() {
                         >
                             {loading ? "Đang xử lý..." : "Đăng nhập"}
                         </button>
+                        {error && <p style={{ color: "red" }}>{error}</p>}
                     </form>
 
 

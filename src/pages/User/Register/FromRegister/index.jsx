@@ -39,7 +39,7 @@ function FromRegister() {
                 setErrors(error.response.data.errors || {});
                 setMessage("Vui lòng kiểm tra lại thông tin!");
             } else {
-                setMessage("Lỗi kết nối server!");
+                setMessage("Có lỗi xảy ra trong quá trình đăng ký!");
             }
         }
         finally {

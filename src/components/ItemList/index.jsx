@@ -1,34 +1,30 @@
 import { Button, Popconfirm, Space, Table, Tag } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 import ItemToolbar from "./ItemToolbar";
 import { Link } from "react-router-dom";
+import { getCategoryList } from "../../services/categoryServices";
 
 function ItemList() {
-  const formatVND = (price) => {
-    return price.toLocaleString("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    });
-  };
-
   const [productList, setProductList] = useState([
     {
       id: 1,
       name: "iPhone 15",
       image:
         "230913032939-iphone-15-green-8c348a34-ebcd-41c6-8b6d-ef888554c4a2.webp",
-      category: "Điện thoại",
+      category_name: "Điện thoại",
+      category_id: 1,
       sku: 15000000,
       price: 30990000,
       stock: 35,
     },
     {
       id: 2,
-      name: "Samsung Galaxy S24 Ultra",
+      name: "Iphone 15 Promax",
       image:
         "230913032939-iphone-15-green-8c348a34-ebcd-41c6-8b6d-ef888554c4a2.webp",
-      category: "Điện thoại",
+      category_name: "Ipad",
+      category_id: 2,
       sku: 15000000,
       price: 28990000,
       stock: 20,
@@ -38,97 +34,107 @@ function ItemList() {
       name: "Samsung Galaxy S24 Ultra",
       image:
         "230913032939-iphone-15-green-8c348a34-ebcd-41c6-8b6d-ef888554c4a2.webp",
-      category: "Điện thoại",
+      category_name: "Phụ kiện",
+      category_id: 3,
       sku: 15000000,
       price: 28990000,
       stock: 0,
     },
     {
       id: 4,
-      name: "Samsung Galaxy S24 Ultra",
+      name: "Samsung A36",
       image:
         "230913032939-iphone-15-green-8c348a34-ebcd-41c6-8b6d-ef888554c4a2.webp",
-      category: "Điện thoại",
+      category_name: "Laptop",
+      category_id: 4,
       sku: 15000000,
       price: 28990000,
       stock: 0,
     },
     {
       id: 5,
-      name: "Samsung Galaxy S24 Ultra",
+      name: "Oppo A12",
       image:
         "230913032939-iphone-15-green-8c348a34-ebcd-41c6-8b6d-ef888554c4a2.webp",
-      category: "Điện thoại",
+      category_name: "Phụ kiện",
+      category_id: 3,
       sku: 15000000,
       price: 28990000,
       stock: 0,
     },
     {
       id: 6,
-      name: "Samsung Galaxy S24 Ultra",
+      name: "Laptop ASUS Vivobook",
       image:
         "230913032939-iphone-15-green-8c348a34-ebcd-41c6-8b6d-ef888554c4a2.webp",
-      category: "Điện thoại",
+      category_name: "Điện thoại",
+      category_id: 1,
       sku: 15000000,
       price: 28990000,
       stock: 0,
     },
     {
       id: 7,
-      name: "Samsung Galaxy S24 Ultra",
+      name: "Samsung Galaxy S23 Ultra",
       image:
         "230913032939-iphone-15-green-8c348a34-ebcd-41c6-8b6d-ef888554c4a2.webp",
-      category: "Điện thoại",
+      category_name: "Phụ kiện",
+      category_id: 3,
       sku: 15000000,
       price: 28990000,
       stock: 0,
     },
     {
       id: 8,
-      name: "Samsung Galaxy S24 Ultra",
+      name: "Iphone 12",
       image:
         "230913032939-iphone-15-green-8c348a34-ebcd-41c6-8b6d-ef888554c4a2.webp",
-      category: "Điện thoại",
+      category_name: "Điện thoại",
+      category_id: 1,
       sku: 15000000,
       price: 28990000,
       stock: 0,
     },
     {
       id: 9,
-      name: "Samsung Galaxy S24 Ultra",
+      name: "Iphone 13",
       image:
         "230913032939-iphone-15-green-8c348a34-ebcd-41c6-8b6d-ef888554c4a2.webp",
-      category: "Điện thoại",
+      category_name: "Điện thoại",
+      category_id: 1,
       sku: 15000000,
       price: 28990000,
       stock: 0,
     },
     {
       id: 10,
-      name: "Samsung Galaxy S24 Ultra",
+      name: "Vivo A12",
       image:
         "230913032939-iphone-15-green-8c348a34-ebcd-41c6-8b6d-ef888554c4a2.webp",
-      category: "Điện thoại",
+      category_name: "Điện thoại",
+      category_id: 1,
       sku: 15000000,
       price: 28990000,
       stock: 0,
     },
     {
       id: 11,
-      name: "Samsung Galaxy S24 Ultra",
+      name: "Dell",
       image:
         "230913032939-iphone-15-green-8c348a34-ebcd-41c6-8b6d-ef888554c4a2.webp",
-      category: "Điện thoại",
+      category_name: "Phụ kiện",
+      category_id: 3,
       sku: 15000000,
       price: 28990000,
       stock: 0,
     },
     {
       id: 12,
-      name: "Samsung Galaxy S24 Ultra",
+      name: "Iphone 17 Promax",
       image:
         "230913032939-iphone-15-green-8c348a34-ebcd-41c6-8b6d-ef888554c4a2.webp",
-      category: "Điện thoại",
+      category_name: "Ipad",
+      category_id: 2,
       sku: 15000000,
       price: 28990000,
       stock: 0,
@@ -138,7 +144,8 @@ function ItemList() {
       name: "Samsung Galaxy S24 Ultra",
       image:
         "230913032939-iphone-15-green-8c348a34-ebcd-41c6-8b6d-ef888554c4a2.webp",
-      category: "Điện thoại",
+      category_name: "Phụ kiện",
+      category_id: 3,
       sku: 15000000,
       price: 28990000,
       stock: 0,
@@ -148,7 +155,8 @@ function ItemList() {
       name: "Samsung Galaxy S24 Ultra",
       image:
         "230913032939-iphone-15-green-8c348a34-ebcd-41c6-8b6d-ef888554c4a2.webp",
-      category: "Điện thoại",
+      category_name: "Điện thoại",
+      category_id: 1,
       sku: 15000000,
       price: 28990000,
       stock: 0,
@@ -158,7 +166,8 @@ function ItemList() {
       name: "Samsung Galaxy S24 Ultra",
       image:
         "230913032939-iphone-15-green-8c348a34-ebcd-41c6-8b6d-ef888554c4a2.webp",
-      category: "Điện thoại",
+      category_name: "Điện thoại",
+      category_id: 1,
       sku: 15000000,
       price: 28990000,
       stock: 0,
@@ -168,7 +177,8 @@ function ItemList() {
       name: "Samsung Galaxy S24 Ultra",
       image:
         "230913032939-iphone-15-green-8c348a34-ebcd-41c6-8b6d-ef888554c4a2.webp",
-      category: "Điện thoại",
+      category_name: "Điện thoại",
+      category_id: 1,
       sku: 15000000,
       price: 28990000,
       stock: 0,
@@ -178,7 +188,8 @@ function ItemList() {
       name: "Samsung Galaxy S24 Ultra",
       image:
         "230913032939-iphone-15-green-8c348a34-ebcd-41c6-8b6d-ef888554c4a2.webp",
-      category: "Điện thoại",
+      category_name: "Ipad",
+      category_id: 2,
       sku: 15000000,
       price: 28990000,
       stock: 0,
@@ -188,7 +199,8 @@ function ItemList() {
       name: "Samsung Galaxy S24 Ultra",
       image:
         "230913032939-iphone-15-green-8c348a34-ebcd-41c6-8b6d-ef888554c4a2.webp",
-      category: "Điện thoại",
+      category_name: "Điện thoại",
+      category_id: 1,
       sku: 15000000,
       price: 28990000,
       stock: 0,
@@ -198,7 +210,8 @@ function ItemList() {
       name: "Samsung Galaxy S24 Ultra",
       image:
         "230913032939-iphone-15-green-8c348a34-ebcd-41c6-8b6d-ef888554c4a2.webp",
-      category: "Điện thoại",
+      category_name: "Điện thoại",
+      category_id: 1,
       sku: 15000000,
       price: 28990000,
       stock: 0,
@@ -208,7 +221,8 @@ function ItemList() {
       name: "Samsung Galaxy S24 Ultra",
       image:
         "230913032939-iphone-15-green-8c348a34-ebcd-41c6-8b6d-ef888554c4a2.webp",
-      category: "Điện thoại",
+      category_name: "Ipad",
+      category_id: 2,
       sku: 15000000,
       price: 28990000,
       stock: 0,
@@ -218,7 +232,8 @@ function ItemList() {
       name: "Samsung Galaxy S24 Ultra",
       image:
         "230913032939-iphone-15-green-8c348a34-ebcd-41c6-8b6d-ef888554c4a2.webp",
-      category: "Điện thoại",
+      category_name: "Điện thoại",
+      category_id: 1,
       sku: 15000000,
       price: 28990000,
       stock: 0,
@@ -228,7 +243,8 @@ function ItemList() {
       name: "Samsung Galaxy S24 Ultra",
       image:
         "230913032939-iphone-15-green-8c348a34-ebcd-41c6-8b6d-ef888554c4a2.webp",
-      category: "Điện thoại",
+      category_name: "Ipad",
+      category_id: 2,
       sku: 15000000,
       price: 28990000,
       stock: 0,
@@ -238,7 +254,8 @@ function ItemList() {
       name: "Samsung Galaxy S24 Ultra",
       image:
         "230913032939-iphone-15-green-8c348a34-ebcd-41c6-8b6d-ef888554c4a2.webp",
-      category: "Điện thoại",
+      category_name: "Laptop",
+      category_id: 4,
       sku: 15000000,
       price: 28990000,
       stock: 0,
@@ -248,16 +265,61 @@ function ItemList() {
       name: "Samsung Galaxy S24 Ultra",
       image:
         "230913032939-iphone-15-green-8c348a34-ebcd-41c6-8b6d-ef888554c4a2.webp",
-      category: "Điện thoại",
+      category_name: "Laptop",
+      category_id: 4,
       sku: 15000000,
       price: 28990000,
       stock: 0,
     },
   ]);
+  const [categories, setCategories] = useState([]); 
+  const [filterProducts, setFilterProducts] = useState([]);
+  const [isFiltering, setIsFiltering] = useState(false);
 
-  const getParentName = (parentId) => {
-    const parent = categories.find((c) => c.id === parentId);
-    return parent ? parent.category_name : "Không có";
+  // Get variation by variation name
+  const handleSearchProduct = (value) => {
+    if (!value) {
+      setIsFiltering(false);
+      setFilterProducts([]);
+      return;
+    }
+
+    setIsFiltering(true);
+    const resultFinal = productList.filter((item) =>
+      item.name.toLowerCase().includes(value.toLowerCase())
+    );
+
+    setFilterProducts(resultFinal);
+  };
+
+  // Filter variation by category
+  const handleGetProductByCategory = (category_id) => {
+    if (!category_id) {
+      setIsFiltering(false);
+      setFilterProducts([]);
+      return;
+    }
+    setIsFiltering(true);
+    const resultFinal = productList.filter(
+      (item) => item.category_id === category_id
+    );
+    setFilterProducts(resultFinal);
+  };
+
+  // Lấy danh sách danh mục
+  useEffect(() => {
+    const fetchApi = async () => {
+      const result = await getCategoryList();
+      setCategories(result.categories);
+    }
+    fetchApi();
+  }, []) 
+
+  const formatVND = (price) => {
+    return price.toLocaleString("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    });
   };
 
   const columns = [
@@ -282,8 +344,8 @@ function ItemList() {
     },
     {
       title: "Danh mục",
-      dataIndex: "category",
-      key: "category",
+      dataIndex: "category_name",
+      key: "category_name",
     },
     {
       title: "Giá thấp nhất",
@@ -333,10 +395,10 @@ function ItemList() {
 
   return (
     <>
-      <ItemToolbar />
+      <ItemToolbar categories={categories} handleSearchProduct={handleSearchProduct} handleGetProductByCategory={handleGetProductByCategory}/>
       <Table
         columns={columns}
-        dataSource={productList}
+        dataSource={isFiltering ? filterProducts : productList}
         pagination={{ pageSize: 10 }}
       />
     </>
