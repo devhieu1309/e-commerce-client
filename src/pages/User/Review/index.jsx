@@ -3,7 +3,7 @@ function Review() {
     return (
         <>
             <div className="mb-10">
-                <ProductReview limit={8} is_visible={undefined}/>
+                <ProductReview limit={8} is_visible={undefined}  showLoadMore={true}/>
             </div>
         </>
     );

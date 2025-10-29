@@ -1,23 +1,13 @@
 import { useEffect, useState } from "react";
 import { getVideoReview } from "../../services/videoreviewServices";
 
-function ProductReview({ limit = 4, is_visible }) {
+function ProductReview({ limit = 4, is_visible, showLoadMore }) {
     const [videoReviews, setVideoReviews] = useState([]);
-    //phan them vao
+
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
     const [loading, setLoading] = useState(false);
-    //   end phan them vao
-
-    // useEffect(() => {
-    //     const load = async () => {
-    //         // Nếu is_visible là undefined, không truyền vào query
-    //         const params = is_visible === undefined ? { limit } : { limit, is_visible };
-    //         const result = await getVideoReview(params);
-    //         setVideoReviews(result);
-    //     };
-    //     load();
-    // }, [limit, is_visible]);
+    const API_DOMAIN = "http://localhost:8000"; 
 
     const loadVideos = async (newPage = 1) => {
         setLoading(true);
@@ -64,32 +54,33 @@ function ProductReview({ limit = 4, is_visible }) {
                         Review sản phẩm
                     </h2>
                     <div className="grid grid-cols-4 gap-4 pt-8">
-                        {/* <div className="group/review cursor-pointer">
-                            <div>
-                                <div className="relative">
-                                    <img className="rounded-md" src="/maxresdefault-10.webp" alt="" />
-                                    <div className="icon absolute top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" className="bi bi-play-circle text-white group-hover/review:text-amber-400" viewBox="0 0 16 16">
-                                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path>
-                                            <path d="M6.271 5.055a.5.5 0 0 1 .52.038l3.5 2.5a.5.5 0 0 1 0 .814l-3.5 2.5A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445z"></path>
-                                        </svg>
-                                    </div>
-                                </div>
-                                <h3 className="text-[20px] font-medium pt-2 group-hover/review:text-amber-400">Review iPhone 15 Pro Max: thay đổi nhỏ (hay lớn)?</h3>
-                            </div>
-                        </div> */}
                         {videoReviews.map((item) => (
                             <div key={item.video_id} className="group/review cursor-pointer">
                                 <div>
                                     <div className="relative">
-                                        {/* <img className="rounded-md" src={item.thumbnail || "/default-thumbnail.jpg"} alt={item.title} /> */}
-                                        <img className="rounded-md" src="../../../public/maxresdefault-8.webp" alt={item.title} />
-                                        <div className="icon absolute top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" className="bi bi-play-circle text-white group-hover/review:text-amber-400" viewBox="0 0 16 16">
-                                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path>
-                                                <path d="M6.271 5.055a.5.5 0 0 1 .52.038l3.5 2.5a.5.5 0 0 1 0 .814l-3.5 2.5A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445z"></path>
-                                            </svg>
+                                        <div className="relative pb-[56.25%] h-0 overflow-hidden rounded-md">
+                                            {item.source_type === "youtube" ? (
+                                                <iframe
+                                                    src={item.url.replace("watch?v=", "embed/")}
+                                                    title={item.title}
+                                                    className="absolute top-0 left-0 w-full h-full rounded-md"
+                                                    frameBorder="0"
+                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                    allowFullScreen
+                                                ></iframe>
+                                            ) : (
+                                                <video
+                                                    src={
+                                                        item.url.startsWith("http")
+                                                            ? item.url
+                                                            : `${API_DOMAIN}${item.url}`
+                                                    }
+                                                    controls
+                                                    className="absolute top-0 left-0 w-full h-full rounded-md"
+                                                ></video>
+                                            )}
                                         </div>
+
                                     </div>
                                     <div className="block content">
                                         <h3 className="text-[20px] font-medium pt-2 group-hover/review:text-amber-400">{item.title}</h3>
@@ -98,7 +89,8 @@ function ProductReview({ limit = 4, is_visible }) {
                                 </div>
                             </div>
                         ))}
-                        {hasMore && !loading && (
+
+                        {showLoadMore && hasMore && !loading && (
                             <div className="col-span-4 flex justify-center mt-3">
                                 <button
                                     onClick={handleLoadMore}

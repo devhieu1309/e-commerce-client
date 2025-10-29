@@ -6,7 +6,6 @@ import UserModal from "./UserModal";
 const { Option } = Select;
 
 function UserToolbar(props) {
-  // console.log("MINH HEu: ", props);
   const { onSearch, onReload } = props;
   return (
     <div

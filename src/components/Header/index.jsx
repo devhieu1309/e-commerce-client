@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 
-function Header() {
+
+function Header({ user, onLogout }) {
   return (
     <>
       <header className="relative group/header">
@@ -327,6 +328,7 @@ function Header() {
                   </span>
                 </li>
               </ul>
+
               <div className="bg-[#2E3AA3] flex flex-col justify-center items-center p-2 rounded-sm hover:bg-amber-400 group">
                 <span className="">
                   <img
@@ -335,56 +337,90 @@ function Header() {
                     alt="User"
                   />
                 </span>
-                <span className="relative ">
-                  <span className="flex justify-center text-center text-[14px]">
+                <div className="relative group">
+                  <span className="flex justify-center text-center text-[14px] cursor-pointer">
                     Thông tin
                   </span>
-                  <div className="bg-white absolute top-8 right-[-8px] w-[220px] rounded-md hidden group-hover:flex">
+
+                  <div className="bg-white absolute top-8 right-[-8px] w-[220px] rounded-md hidden md:group-hover:flex flex-col shadow-md border border-gray-200">
                     <ul className="py-1 px-[7px] flex flex-col space-y-2 text-black text-[14px]">
+
+                      {/* Nếu CHƯA đăng nhập */}
+                      {!user ? (
+                        <>
+                          <li className="flex items-center w-full px-4 py-1 space-x-2 hover:bg-gray-200">
+                            <img
+                              className="w-[20px] h-[20px] object-cover"
+                              src="/icons8-login-50.png"
+                              alt=""
+                            />
+                            <Link to="/dang-nhap">
+                              <span>Đăng nhập</span>
+                            </Link>
+                          </li>
+
+                          <li className="flex items-center w-full px-4 py-1 space-x-2 hover:bg-gray-200">
+                            <img
+                              className="w-[20px] h-[20px] object-cover"
+                              src="/icons8-add-24.png"
+                              alt=""
+                            />
+                            <Link to="/dang-ky">
+                              <span>Đăng ký</span>
+                            </Link>
+                          </li>
+                        </>
+                      ) : (
+                        <>
+                          {/* Nếu ĐÃ đăng nhập */}
+                          <li className="flex items-center w-full px-4 py-1 space-x-2 hover:bg-gray-200">
+                            <img
+                              className="w-[20px] h-[20px] object-cover filter brightness-0"
+                              src="/icons8-user-50.png"
+                              alt=""
+                            />
+                            <span>Tài khoản</span>
+                          </li>
+
+                          <li
+                            className="flex items-center w-full px-4 py-1 space-x-2 hover:bg-gray-200 cursor-pointer"
+                            onClick={onLogout}
+                          >
+                            <img
+                              className="w-[20px] h-[20px] object-cover"
+                              src="/icons8-logout-50.png"
+                              alt=""
+                            />
+                            <span>Đăng xuất</span>
+                          </li>
+                        </>
+                      )}
+
+                      {/* Mục chung cho cả 2 trạng thái */}
                       <li className="flex items-center w-full px-4 py-1 space-x-2 hover:bg-gray-200">
-                        <img
-                          className="w-[20px] h-[20px] object-cover"
-                          src="/icons8-login-50.png"
-                          alt=""
-                        />
-                        <span>Đăng nhập</span>
-                      </li>
-                      <li className="flex items-center px-4 py-1 space-x-2 hover:bg-gray-200">
-                        <img
-                          className="w-[20px] h-[20px] object-cover"
-                          src="/icons8-add-24.png"
-                          alt=""
-                        />
-                        <span>Đăng ký</span>
-                      </li>
-                      <li className="flex items-center px-4 py-1 space-x-2 hover:bg-gray-200">
                         <img
                           className="w-[20px] h-[20px] object-cover"
                           src="/icons8-heart-50.png"
                           alt=""
                         />
-                        <Link to="/san-pham-yeu-thich">
-                          <span>
-                            Danh sách yêu thích <span>(0)</span>
-                          </span>
-                        </Link>
+                        <span>Danh sách yêu thích (0)</span>
                       </li>
-                      <li className="flex items-center px-4 py-1 space-x-2 hover:bg-gray-200">
+
+                      <li className="flex items-center w-full px-4 py-1 space-x-2 hover:bg-gray-200">
                         <img
                           className="w-[20px] h-[20px] object-cover"
-                          src="/icons8-renew-50.png"
+                          src="/icons8-compare-50.png"
                           alt=""
                         />
-                        <Link to="so-sanh-san-pham">
-                          <span>
-                            So sánh sản phẩm <span>(0)</span>
-                          </span>
-                        </Link>
+                        <span>So sánh sản phẩm (0)</span>
                       </li>
                     </ul>
                   </div>
-                </span>
+                </div>
+
+
               </div>
+
             </div>
           </div>
         </div>

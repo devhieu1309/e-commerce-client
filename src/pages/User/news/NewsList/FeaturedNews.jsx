@@ -39,44 +39,46 @@ function FeaturedNews() {
           effect="scrollx"
         >
           {featuredNews.map((item) => (
-            <div key={item.id}>
-              <div className="flex p-3 space-x-4 transition-all duration-300 bg-white rounded-lg shadow hover:shadow-lg">
-                {/* Ảnh */}
-                <div className="w-1/3">
-                  <img
-                    src={`http://127.0.0.1:8000/storage/${item.cover_image}`}
-                    alt={item.title}
-                    className="object-cover w-full rounded-lg h-52"
-                  />
-                </div>
+            <Link key={item.id} to={`/newsdetail/${item.id}`} className="block">
+              <div key={item.id}>
+                <div className="flex p-3 space-x-4 transition-all duration-300 bg-white rounded-lg shadow hover:shadow-lg">
+                  {/* Ảnh */}
+                  <div className="w-1/3">
+                    <img
+                      src={`http://127.0.0.1:8000/storage/${item.cover_image}`}
+                      alt={item.title}
+                      className="object-cover w-full rounded-lg h-52"
+                    />
+                  </div>
 
-                {/* Thông tin */}
-                <div className="w-2/3">
-                  <h2 className="text-xl font-semibold hover:text-yellow-400">
-                    {/* <Link to={`/news/${item.id}`} className="text-yellow-500">
+                  {/* Thông tin */}
+                  <div className="w-2/3">
+                    <h2 className="text-xl font-semibold hover:text-yellow-400">
+                      {/* <Link to={`/news/${item.id}`} className="text-yellow-500">
                       {item.title}
                     </Link> */}
-                    {item.title}
-                  </h2>
-                  <p className="mt-1 text-sm text-gray-500">
-                    Ngày đăng:{" "}
-                    {new Date(item.created_at).toLocaleDateString("vi-VN")}
-                  </p>
-                  <p className="mt-2 text-gray-700 line-clamp-3">
-                    {/* {item.description ||
+                      {item.title}
+                    </h2>
+                    <p className="mt-1 text-sm text-gray-500">
+                      Ngày đăng:{" "}
+                      {new Date(item.created_at).toLocaleDateString("vi-VN")}
+                    </p>
+                    <p className="mt-2 text-gray-700 line-clamp-3">
+                      {/* {item.description ||
                       "Nội dung tin tức đang được cập nhật..."} */}
-                    Ngày 13/09, Apple đã trình làng 4 phiên bản iPhone 15
-                    Series. Mỗi phiên bản đều có những nâng cấp ấn tượng. Hai
-                    phiên bản mới năm nay sở hữu thiết kế ấn tượng với màn hình
-                    đục lỗ, tính năng độc đáo Dynamics Island. Khung thép không
-                    gỉ mang đến sự chắc chắn và bền bỉ. Màn hình cong nhẹ dễ
-                    dàng việc cầm nắm. Lưng iPhone 15 thay thế với chất liệu
-                    kính pha màu với thiết kế mới giúp việc thay thế và sửa chữa
-                    được dễ dàng hơn.
-                  </p>
+                      Ngày 13/09, Apple đã trình làng 4 phiên bản iPhone 15
+                      Series. Mỗi phiên bản đều có những nâng cấp ấn tượng. Hai
+                      phiên bản mới năm nay sở hữu thiết kế ấn tượng với màn
+                      hình đục lỗ, tính năng độc đáo Dynamics Island. Khung thép
+                      không gỉ mang đến sự chắc chắn và bền bỉ. Màn hình cong
+                      nhẹ dễ dàng việc cầm nắm. Lưng iPhone 15 thay thế với chất
+                      liệu kính pha màu với thiết kế mới giúp việc thay thế và
+                      sửa chữa được dễ dàng hơn.
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
         </Carousel>
 

@@ -19,3 +19,9 @@ export const deleteUser = async (id) => {
   const result = await del(`users/${id}`);
   return result;
 };
+
+export const searchUser = async (query) => {
+  const result = await get(`users/search?query=${encodeURIComponent(query)}`);
+  return result;
+};
+

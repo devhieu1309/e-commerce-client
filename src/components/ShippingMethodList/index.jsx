@@ -12,8 +12,8 @@ function ShippingMethodList() {
   const fetchApi = async () => {
     const result = await getShippingMethodList();
     
-    //setShippingMethods(result.shippingMethods.reverse());
-    setShippingMethods(result);
+    setShippingMethods(result.shipping_methods.reverse());
+    // setShippingMethods(result);
   };
 //   const fetchApi = async () => {
 //   try {
@@ -22,7 +22,7 @@ function ShippingMethodList() {
 //     // Kiểm tra dữ liệu có tồn tại và là mảng
 //     const data = Array.isArray(res?.data?.data) ? res.data.data : [];
 
-//     const list = data.reverse(); // ✅ Không lỗi
+//     const list = data.reverse(); // 
 //     setShippingMethods(list);
 //   } catch (error) {
 //     console.error("Fetch API error:", error);

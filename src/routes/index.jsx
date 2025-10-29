@@ -35,7 +35,9 @@ import OnOffUserList from "../components/On_Off_User";
 import VideoReview from "../components/VideoReview";
 import AdminStoreSystemList from "../components/AdminStoreSystemList";
 import Payment from "../pages/User/Payment";
-
+import LoGin from "../pages/User/login/Login";
+import RegisTer from "../pages/User/register/Register";
+import BannerFormPage from "../components/AdminBannerList/BannerListModal";
 
 export const routes = [
   {
@@ -75,7 +77,7 @@ export const routes = [
         element: <News />,
       },
       {
-        path: "iphone-15-hong-co-may-phien-ban-5-diem-doc-dao-khien-nhieu-chi-em-yeu-thich",
+        path: "newsdetail/:id",
         element: <NewsDetail />,
       },
       {
@@ -101,6 +103,14 @@ export const routes = [
       {
         path: "iphone-15-256gb-chinh-hang-vn-a",
         element: <Detail />,
+      },
+      {
+        path: "dang-nhap",
+        element: <LoGin />,
+      },
+      {
+        path: "dang-ky",
+        element: <RegisTer />,
       },
       {
         path: "*",
@@ -159,6 +169,14 @@ export const routes = [
         path: "bannerlist",
         element: <AdminBannerList />,
       },
+      {
+        path: "bannerlist/createbanner",
+        element: <BannerFormPage mode="create" />,
+      },
+      {
+        path: "bannerlist/editbanner/:id",
+        element: <BannerFormPage mode="edit" />,
+      },
 
       {
         path: "quantityInStock",
@@ -187,26 +205,26 @@ export const routes = [
         element: <UserList />,
       },
       {
-        path: "on_off", 
-        element: <OnOffUserList />, 
+        path: "on_off",
+        element: <OnOffUserList />,
       },
       {
-        path: "promotions", 
-        element: <PromotionList />, 
+        path: "promotions",
+        element: <PromotionList />,
       },
       {
-        path: "video-review", 
-        element: <VideoReview/>, 
+        path: "video-review",
+        element: <VideoReview />,
       },
       {
-        path: "store-systems", 
-        element: <AdminStoreSystemList/>, 
+        path: "store-systems",
+        element: <AdminStoreSystemList />,
       },
     ],
   },
   {
     path: "payment",
-    element: <Payment />
+    element: <Payment />,
   },
 ];
 

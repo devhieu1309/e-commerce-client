@@ -21,6 +21,7 @@ function VideoReview() {
       const res = await fetch("http://localhost:8000/api/products");
       if (!res.ok) throw new Error("Lỗi khi lấy danh sách sản phẩm");
       const data = await res.json();
+      //{console.log("Test", data)}
       setProducts(data);
     } catch (error) {
       console.error(error);
@@ -48,7 +49,7 @@ function VideoReview() {
   const handleToggleIcon = async (record) => {
     try {
       const newVisible = !record.is_visible;
-      await fetch(`http://localhost:8000/api/video-reviews/${record.video_id}`, {
+      await fetch(`http://localhost:8000/api/video-reviews/${record.video_id}/toggle`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -81,8 +82,10 @@ function VideoReview() {
       dataIndex: ["product", "name"],
       key: "product_name",
       render: (_, record) => {
-        const product = products.find((p) => p.id === record.product_id);
-        return product ? product.name : `#${record.product_id}`;
+        const product = products.find((p) => p.product_id === record.product_id);
+        //{console.log("Pls",product)}
+        return product ? product.product_name : `#${record.product_id}`;
+       
       },
     },
     {
@@ -90,6 +93,12 @@ function VideoReview() {
       dataIndex: "title",
       key: "title",
     },
+    {
+      title: "Nguồn video",
+      dataIndex: "source_type",
+      key: "title",
+    },
+
     {
       title: "URL video",
       dataIndex: "url",
