@@ -57,70 +57,70 @@ export const del = async (path) => {
   return result;
 };
 
-// export const edit = async (path, options) => {
-//   const response = await fetch(`${API_DOMAIN}${path}`, {
-//     method: "PATCH",
-//     headers: {
-//       Accept: "application/json",
-//       "Content-Type": "application/json",
-//     },
-//     body: JSON.stringify(options),
-//   });
-//   const result = await response.json();
-//   return result;
-// };
-
 export const edit = async (path, options) => {
-  try {
-    const isFormData = options instanceof FormData;
-
-    if (isFormData && !options.has("_method")) {
-      options.append("_method", "PATCH");
-    }
-
-    const response = await fetch(`${API_DOMAIN}${path}`, {
-      method: "POST",
-      headers: isFormData
-        ? { Accept: "application/json" }
-        : {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-      body: isFormData ? options : JSON.stringify(options),
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    return await response.json();
-  } catch (error) {
-    console.log("Lỗi khi fetch API: ", error);
-  }
-};
-
-export const searchPost = async (path, options) => {
-  const response = await fetch(API_DOMAIN + path, {
-    method: "POST",
+  const response = await fetch(`${API_DOMAIN}${path}`, {
+    method: "PATCH",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
     },
     body: JSON.stringify(options),
   });
-
   const result = await response.json();
-
-  if (!response.ok) {
-    const error = new Error(result.message || "Search request failed");
-    error.response = {
-      status: response.status,
-      data: result,
-    };
-    throw error;
-  }
-
   return result;
 };
+
+// export const edit = async (path, options) => {
+//   try {
+//     const isFormData = options instanceof FormData;
+
+//     if (isFormData && !options.has("_method")) {
+//       options.append("_method", "PATCH");
+//     }
+
+//     const response = await fetch(`${API_DOMAIN}${path}`, {
+//       method: "POST",
+//       headers: isFormData
+//         ? { Accept: "application/json" }
+//         : {
+//             Accept: "application/json",
+//             "Content-Type": "application/json",
+//           },
+//       body: isFormData ? options : JSON.stringify(options),
+//     });
+
+//     if (!response.ok) {
+//       throw new Error(`HTTP error! status: ${response.status}`);
+//     }
+//     return await response.json();
+//   } catch (error) {
+//     console.log("Lỗi khi fetch API: ", error);
+//   }
+// };
+
+// export const searchPost = async (path, options) => {
+//   const response = await fetch(API_DOMAIN + path, {
+//     method: "POST",
+//     headers: {
+//       Accept: "application/json",
+//       "Content-Type": "application/json",
+//     },
+//     body: JSON.stringify(options),
+//   });
+
+//   const result = await response.json();
+
+//   if (!response.ok) {
+//     const error = new Error(result.message || "Search request failed");
+//     error.response = {
+//       status: response.status,
+//       data: result,
+//     };
+//     throw error;
+//   }
+
+//   return result;
+// };
 
 export const postFormData = async (path, formData) => {
   const res = await fetch(API_DOMAIN + path, {

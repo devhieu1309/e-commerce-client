@@ -33,7 +33,7 @@ import PromotionList from "../components/PromotionList";
 import UserList from "../components/UserList";
 import OnOffUserList from "../components/On_Off_User";
 import VideoReview from "../components/VideoReview";
-import AdminStoreSystemList from "../components/AdminStoreSystemList";
+import AdminStoreBranchList from "../components/AdminStoreBranchList";
 import Payment from "../pages/User/Payment";
 import LoGin from "../pages/User/login/Login";
 import RegisTer from "../pages/User/register/Register";
@@ -217,8 +217,8 @@ export const routes = [
         element: <VideoReview />,
       },
       {
-        path: "store-systems",
-        element: <AdminStoreSystemList />,
+        path: "store-branches",
+        element: <AdminStoreBranchList />,
       },
     ],
   },
