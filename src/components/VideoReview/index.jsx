@@ -22,7 +22,7 @@ function VideoReview() {
       if (!res.ok) throw new Error("Lỗi khi lấy danh sách sản phẩm");
       const data = await res.json();
       //{console.log("Test", data)}
-      setProducts(data);
+      setProducts(data.data);
     } catch (error) {
       console.error(error);
     }

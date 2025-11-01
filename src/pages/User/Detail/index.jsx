@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import RelatedProducts from "../../../components/RelatedProducts";
 import SamePriceRangeProducts from "../../../components/SamePriceRangeProducts";
 import ViewedProducts from "../../../components/ViewedProducts";
@@ -7,12 +8,61 @@ function Detail() {
   const [expanded, setExpanded] = useState(false);
   const [activeTab, setActiveTab] = useState("mo-ta");
 
+  const { id } = useParams();
+
+  const [productsitem, setProductsItem] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+
+  useEffect(() => {
+    const fetchProductItem = async () => {
+      try {
+        const res = await fetch(`http://127.0.0.1:8000/api/products/${id}`);
+        const data = await res.json();
+        console.log("dataDetail", data);
+        setProductsItem(data.data);
+      } catch (error) {
+        console.error("Lỗi khi lấy chi tiết sản phẩm:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProductItem();
+  }, [id]);
+
+  const handleAddToCart = () => {
+    try {
+      const response = fetch("http://localhost:8000/api/cart", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user_id: 1,
+          product_item_id: productsitem?.product?.items?.[0]?.id,
+          quantity: 1,
+        }),
+      });
+
+      const result = response.json();
+
+      if (response.ok && result.success) {
+        alert("Thêm vào giỏ hàng thành công!");
+      } else {
+        console.error("Lỗi khi thêm vào giỏ hàng:", result.message);
+        alert("Thêm vào giỏ hàng thất bại. Vui lòng thử lại.");
+      }
+    } catch (error) {
+      console.error("Lỗi khi thêm vào giỏ hàng:", error);
+    }
+  };
+
   return (
     <>
       <div className="container mx-auto px-32 py-4">
         <div className="bg-white p-2 rounded-md">
           <h2 className="text-2xl text-black font-medium border-b pb-5">
-            Iphone 15 256GB - Chính hãng VN/A
+            {productsitem?.product_name}
           </h2>
           <div className="flex p-3">
             <div className="h-auto w-1/3">
@@ -110,7 +160,7 @@ function Detail() {
                     <p className="font-medium">Giá bán:</p>
                     <div className="flex items-end space-x-4">
                       <h2 className="text-red-500 text-3xl font-medium">
-                        24.290.000đ
+                        {productsitem?.items[0]?.price}đ
                       </h2>
                       <del className="text-gray-500 text-[17px]">
                         27.990.000đ
@@ -566,7 +616,7 @@ function Detail() {
                   <div
                     className={`transition-all duration-300 overflow-hidden ${
                       expanded ? "max-h-full" : "max-h-[1400px]"
-                    }`}
+                      }`}
                   >
                     <p className="text-[14px] pb-5">
                       Vào ngày 13/09 vừa qua, Apple đã cho ra mắt chiếc iPhone
@@ -814,7 +864,7 @@ function Detail() {
                       Nếu bạn muốn xem giỏ hàng để cập nhật sản phẩm: Bấm vào xem
                       giỏ hàng
                     </p>
-                  <p className="py-2">
+                    <p className="py-2">
                       Nếu bạn muốn đặt hàng và thanh toán cho sản phẩm này vui
                       lòng bấm vào: Đặt hàng và thanh toán
                     </p>

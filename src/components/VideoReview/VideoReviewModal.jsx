@@ -29,7 +29,7 @@ function VideoReviewModal(props) {
         return response.json();
       })
       .then((data) => {
-        setProducts(data);
+        setProducts(data.data);
       })
       .catch((error) => {
         console.error("Lỗi khi lấy danh sách sản phẩm:", error);
