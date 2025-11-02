@@ -5,6 +5,11 @@ export const getProductList = async () => {
   return result;
 };
 
+export const getProductDetail = async (id) => {
+  const result = await get("products/" + id);
+  return result;
+};
+
 // export const getVariationByCategoryId = async (id) => {
 //   const result = await get(`categories/${id}/variations`);
 //   return result;
