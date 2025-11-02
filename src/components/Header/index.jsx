@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { getShoppingCartByUserId, removeFromCart } from "../../services/shoppingCartServices";
 
 
 function Header({ user, onLogout }) {
@@ -7,17 +8,35 @@ function Header({ user, onLogout }) {
 
   const loadCart = async () => {
     const user = JSON.parse(localStorage.getItem("user"));
-    const response = await fetch(`http://127.0.0.1:8000/api/cart/${user.user_id}`);
-    const result = await response.json();
-
-    if (result.success) {
-      setCartItems(result.data || []);
+    if (!user) return;
+    try {
+      const result = await getShoppingCartByUserId(user.user_id);
+      if (result.success) {
+        setCartItems(result.data || []);
+      }
+    } catch (error) {
+      console.error("Lỗi khi tải giỏ hàng:", error);
     }
   };
 
   useEffect(() => {
     loadCart();
   }, []);
+
+  const handleRemoveFromCart = async (cartItemId) => {
+    // const user = JSON.parse(localStorage.getItem("user"));
+    // if (!user) return;
+    try {
+      const result = await removeFromCart(cartItemId);
+      if (result.success) {
+        setCartItems((prev) => prev.filter((item) => item.cart_item_id !== cartItemId));
+      }
+      
+
+    } catch (error) {
+      console.error("Lỗi khi xóa sản phẩm khỏi giỏ hàng:", error);
+    }
+  };
 
   return (
     <>
@@ -280,18 +299,23 @@ function Header({ user, onLogout }) {
                     đơn hàng
                   </span>
                 </li>
-                <li className="flex space-x-1.5 items-center justify-center w-[120px] relative">
-                  <span className="">
+
+                {/* <li className="flex space-x-1.5 items-center justify-center w-[120px] relative"> */}
+                <li className="flex space-x-1.5 items-center justify-center w-[120px] group">
+                  <span classNme="">
                     <img
                       className="h-[50px] w-[50px] object-contain"
                       src="/icons8-cart-100.png"
                       alt="Cart"
                     />
                   </span>
-                  <span className="hover:text-amber-300 group/cart">
-                    <span className="text-[14px]"><Link to="/cart">Giỏ hàng Sản phẩm</Link></span>
-                    <div className="group-hover/cart:flex hidden absolute top-14 right-3 bg-white w-[400px] py-3 px-4 rounded-md flex-col space-y-4 ring-1 ring-black/10 shadow-[0_0_18px_0_rgba(0,0,0,0.06)] text-sm">
-                      {/* Sản phẩm */}
+
+                  <span className="relative group">
+                    <span className="flex justify-center text-center text-[14px] cursor-pointer">
+                      <Link to="/cart">Giỏ hàng Sản phẩm</Link>
+                    </span>
+
+                    <div className="group-hover:flex hidden absolute top-12 right-2 bg-white w-[400px] py-3 px-4 rounded-md flex-col space-y-4 ring-1 ring-black/10 shadow-[0_0_18px_0_rgba(0,0,0,0.06)] text-sm">
 
                       {cartItems.length === 0 ? (
                         <span className="text-center text-gray-500">
@@ -316,7 +340,11 @@ function Header({ user, onLogout }) {
                                   {item.product_name} - {item.variation_options[1].variation_option_name}
                                 </p>
                                 <p className="text-gray-600 text-sm">{item.variation_options[0].variation_option_name}</p>
-                                <button className="text-red-500 text-sm hover:underline">Xóa</button>
+                                <button className="text-red-500 text-sm hover:underline"
+                                  //truyền cart_item_id để xóa
+                                  onClick={() => handleRemoveFromCart(item.cart_item_id)}>
+                                  Xóa
+                                </button>
 
                                 {/* Số lượng và giá */}
                                 <div className="flex justify-between items-center mt-2">
