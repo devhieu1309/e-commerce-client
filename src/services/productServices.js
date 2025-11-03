@@ -1,4 +1,4 @@
-import { get, postFormData } from "../utils/request";
+import { del, get, postFormData } from "../utils/request";
 
 export const getProductList = async () => {
   const result = await get("products");
@@ -25,7 +25,7 @@ export const storeProduct = async (formData) => {
 //   return result;
 // };
 
-// export const deleteCategory = async (id) => {
-//   const result = await del(`categories/${id}`);
-//   return result;
-// };
+export const deleteProduct = async (id) => {
+  const result = await del(`products/${id}`);
+  return result;
+};

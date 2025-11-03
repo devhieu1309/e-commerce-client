@@ -5,6 +5,8 @@ import ItemToolbar from "./ItemToolbar";
 import { Link } from "react-router-dom";
 import { getCategoryList } from "../../services/categoryServices";
 import { getProductList } from "../../services/productServices";
+import { Delete } from "lucide-react";
+import DeleteItem from "./DeleteItem";
 
 function ItemList() {
   // const [productList, setProductList] = useState([
@@ -317,16 +319,20 @@ function ItemList() {
     fetchApi();
   }, []);
 
+  const fetchApi = async () => {
+    const result = await getProductList();
+    setProductList(result.data);
+  };
+
   // Lấy danh sách sản phẩm
   useEffect(() => {
-    const fectApi = async () => {
-      const result = await getProductList();
-      setProductList(result.data);
-      console.log("MINH HIEU: ", result);
-    };
-
-    fectApi();
+    fetchApi();
   }, []);
+
+  // Load lại trang
+  const handleReload = () => {
+    fetchApi();
+  };
 
   const formatVND = (price) => {
     return price.toLocaleString("vi-VN", {
@@ -441,7 +447,11 @@ function ItemList() {
       render: (category_id) => {
         // console.log("TEST Catefory: ", categories);
         const category = categories.find((c) => c.category_id == category_id);
-        return <Tag color="blue">{category ? category.category_name : "Không có"}</Tag>;
+        return (
+          <Tag color="blue">
+            {category ? category.category_name : "Không có"}
+          </Tag>
+        );
       },
     },
     {
@@ -484,13 +494,8 @@ function ItemList() {
           <Link to={`edit/${record.product_id}`}>
             <Button size="small" type="primary" icon={<EditOutlined />} />
           </Link>
-          <Popconfirm
-            title="Bạn chắc chắn muốn xóa sản phẩm này?"
-            okText="Xóa"
-            cancelText="Hủy"
-          >
-            <Button danger size="small" icon={<DeleteOutlined />}></Button>
-          </Popconfirm>
+          {/* <DeleteItem record={record} onReload={handleReload} /> */}
+          <DeleteItem record={record} onReload={handleReload}/>
           <Link to={`${record.product_id}`}>
             <Button size="small" icon={<EyeOutlined />} />
           </Link>
