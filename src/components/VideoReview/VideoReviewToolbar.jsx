@@ -17,7 +17,7 @@ function VideoReviewToolbar({ onSearch, onFilterChange, onReload }) {
         <Input
           placeholder="Tìm kiếm video review"
           prefix={<SearchOutlined />}
-          onChange={(e) => onSearch(e.target.value)}
+          onPressEnter={(e) => onSearch(e.target.value)}
           style={{ width: 200 }}
         />
         <Select

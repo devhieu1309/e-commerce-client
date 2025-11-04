@@ -11,3 +11,12 @@ export const removeFromCart = async (cartItemId) => {
   const result = await del(`cart/${cartItemId}`);
   return result;
 };
+
+// Cập nhật số lượng sản phẩm trong giỏ hàng
+export const updateCartItemQuantity = async (cartItemId, quantity) => {
+  const formData = new FormData();
+  formData.append("quantity", quantity);
+
+  const result = await edit(`cart/${cartItemId}`, { quantity, _method: 'PUT' });
+  return result;
+}

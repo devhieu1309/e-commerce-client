@@ -3,6 +3,7 @@ import { EditOutlined, PlusOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { storeVideoReview, editVideoReview } from '../../services/videoreviewServices';
 import { InboxOutlined } from '@ant-design/icons';
+import { getProductList } from "../../services/productServices";
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -21,19 +22,11 @@ function VideoReviewModal(props) {
 
   // lấy danh sách sản phẩm
   useEffect(() => {
-    fetch("http://localhost:8000/api/products")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network no ok");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setProducts(data.data);
-      })
-      .catch((error) => {
-        console.error("Lỗi khi lấy danh sách sản phẩm:", error);
-      });
+    const fetchProducts = async () => {
+      const result = await getProductList();
+      setProducts(result.data);
+    };
+    fetchProducts();
   }, []);
 
   const handleShowModal = () => {
@@ -105,6 +98,21 @@ function VideoReviewModal(props) {
     }
 
   };
+
+
+  function convertToEmbedUrl(url) {
+    if (!url) return "";
+    if (url.includes("watch?v=")) {
+      const videoId = url.split("watch?v=")[1].split("&")[0];
+      return `https://www.youtube.com/embed/${videoId}`;
+    }
+    if (url.includes("youtu.be/")) {
+      const videoId = url.split("youtu.be/")[1].split("?")[0];
+      return `https://www.youtube.com/embed/${videoId}`;
+    }
+    return url;
+  }
+
 
   useEffect(() => {
     if (mode === "edit" && record && record.source_type) {
@@ -243,7 +251,11 @@ function VideoReviewModal(props) {
                 <Input.TextArea
                   rows={2}
                   placeholder="Ví dụ: https://www.youtube.com/watch?v=xxxxx"
-                  onChange={(e) => setPreviewUrl(e.target.value)}
+                  onChange={(e) => {
+                    const inputUrl = e.target.value;
+                    const embedUrl = convertToEmbedUrl(inputUrl);
+                    setPreviewUrl(embedUrl);
+                  }}
                 />
               </Form.Item>
             )}
@@ -256,56 +268,70 @@ function VideoReviewModal(props) {
                 getValueFromEvent={(e) => (Array.isArray(e) ? e : e && e.fileList)}
                 rules={[{ required: true, message: "Vui lòng chọn file video" }]}
               >
-                <Dragger
-                  key={uploadKey}
-                  name="video"
-                  multiple={false}
-                  beforeUpload={() => false}
-                  accept=".mp4,.mov,.avi"
-                  onChange={(info) => {
-                    const file = info.fileList[0]?.originFileObj;
-                    if (file) {
-                      const preview = URL.createObjectURL(file);
-                      setPreviewUrl(preview);
-                    } else {
+                {!previewUrl ? (
+                  <Dragger
+                    key={uploadKey}
+                    name="video"
+                    multiple={false}
+                    beforeUpload={() => false}
+                    accept=".mp4,.mov,.avi"
+                    onChange={(info) => {
+                      const file = info.fileList[0]?.originFileObj;
+                      if (file) {
+                        const preview = URL.createObjectURL(file);
+                        setPreviewUrl(preview);
+                        form.setFieldsValue({ video: info.fileList });
+                      } else {
+                        setPreviewUrl(null);
+                        form.setFieldsValue({ video: [] });
+                      }
+                    }}
+                    onRemove={() => {
                       setPreviewUrl(null);
-                    }
-                  }}
-                  onRemove={() => {
-                    setPreviewUrl(null);
-                  }}
-                >
-                  <p className="ant-upload-drag-icon">
-                    <InboxOutlined />
-                  </p>
-                  <p className="ant-upload-text">
-                    Kéo hoặc chọn file video (MP4, MOV, AVI)
-                  </p>
-                </Dragger>
+                      form.setFieldsValue({ video: [] });
+                    }}
+                  >
+                    <p className="ant-upload-drag-icon">
+                      <InboxOutlined />
+                    </p>
+                    <p className="ant-upload-text">
+                      Kéo hoặc chọn file video (MP4, MOV, AVI)
+                    </p>
+                  </Dragger>
+                ) : (
+                  <div style={{ textAlign: "center" }}>
+                    <video width="100%" height="250" controls>
+                      <source src={previewUrl} type="video/mp4" />
+                      Trình duyệt không hỗ trợ phát video.
+                    </video>
+                    <Button
+                      type="link"
+                      onClick={() => {
+                        setPreviewUrl(null);
+                        form.setFieldsValue({ video: [] });
+                        setUploadKey(Date.now());
+                      }}
+                    >
+                      Chọn video khác
+                    </Button>
+                  </div>
+                )}
               </Form.Item>
             )}
 
-            {previewUrl && (
-              <div style={{ marginTop: 20, textAlign: "center" }}>
-                {sourceType === "youtube" ? (
-                  <iframe
-                    width="100%"
-                    height="250"
-                    src={previewUrl.replace("watch?v=", "embed/")}
-                    title="Preview"
-                    allowFullScreen
-                  ></iframe>
-                ) : (
-                  <video width="100%" height="250" controls>
-                    <source src={previewUrl} type="video/mp4" />
-                    Trình duyệt không hỗ trợ phát video.
-                  </video>
-                )}
+            {previewUrl && sourceType === "youtube" && (
+              <div style={{ marginBottom: "15px", textAlign: "center" }}>
+                <iframe
+                  width="100%"
+                  height="250"
+                  src={convertToEmbedUrl(previewUrl)}
+                  title="Preview"
+                  allowFullScreen
+                ></iframe>
               </div>
             )}
-
             {/* Button */}
-            <Form.Item>
+            <Form.Item style={{ margin: "0px" }}>
               <Button type="primary" htmlType="submit" block>
                 {mode === "edit" ? "Cập nhật" : "Thêm mới"}
               </Button>
