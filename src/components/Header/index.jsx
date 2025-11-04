@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getShoppingCartByUserId, removeFromCart } from "../../services/shoppingCartServices";
+import { getShoppingCartByUserId, removeFromCart, updateCartItemQuantity } from "../../services/shoppingCartServices";
 
 
 function Header({ user, onLogout }) {
@@ -31,13 +31,49 @@ function Header({ user, onLogout }) {
       if (result.success) {
         setCartItems((prev) => prev.filter((item) => item.cart_item_id !== cartItemId));
       }
-      
+
 
     } catch (error) {
       console.error("Lỗi khi xóa sản phẩm khỏi giỏ hàng:", error);
     }
   };
 
+  const handleupdateQuantity = async (cartItemId, currentQuantity, newQuantity) => {
+    if (newQuantity < 1) return;
+
+    try {
+      setCartItems(prevItems =>
+        prevItems.map(item =>
+          item.cart_item_id === cartItemId
+            ? { ...item, quantity: newQuantity }
+            : item
+        )
+      );
+
+      const result = await updateCartItemQuantity(cartItemId, newQuantity);
+      
+      // Nếu API thất bại, khôi phục lại giá trị cũ
+      if (!result?.success) {
+        setCartItems(prevItems =>
+          prevItems.map(item =>
+            item.cart_item_id === cartItemId
+              ? { ...item, quantity: currentQuantity }
+              : item
+          )
+        );
+      }
+    } catch (error) {
+      console.error("Lỗi khi cập nhật số lượng:", error);
+      // Khôi phục lại giá trị cũ nếu có lỗi
+      setCartItems(prevItems =>
+        prevItems.map(item =>
+          item.cart_item_id === cartItemId
+            ? { ...item, quantity: currentQuantity }
+            : item
+        )
+      );
+    }
+};
   return (
     <>
       <header className="relative group/header">
@@ -351,9 +387,19 @@ function Header({ user, onLogout }) {
                                   <div className="items-center space-x-2">
                                     <span className="text-gray-700">Số lượng:</span>
                                     <div className='flex space-x-3 justify-between items-center text-center border border-black w-auto h-auto rounded-md'>
-                                      <button className='bg-[#000f8f] h-[25px] px-2 text-white m-1 rounded-md'>-</button>
+                                      <button className='bg-[#000f8f] h-[25px] px-2 text-white m-1 rounded-md'
+                                        onClick={() =>
+                                          handleupdateQuantity(item.cart_item_id, item.quantity, item.quantity - 1)
+                                        }>
+                                        -
+                                      </button>
                                       <p className='m-0 text-gray-900 px-2'>{item.quantity}</p>
-                                      <button className='bg-[#000f8f] h-[25px] px-2 text-white m-1 rounded-md'>+</button>
+                                      <button className='bg-[#000f8f] h-[25px] px-2 text-white m-1 rounded-md'
+                                        onClick={() =>
+                                          handleupdateQuantity(item.cart_item_id, item.quantity, item.quantity + 1)
+                                        }>
+                                        +
+                                      </button>
                                     </div>
                                   </div>
                                   <p className="font-bold text-red-500 text-base">

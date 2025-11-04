@@ -6,6 +6,7 @@ import DeleteVideoReview from "./DeleteVideoReview";
 import VideoReviewToolbar from "./VideoReviewToolbar";
 import VideoReviewModal from "./VideoReviewModal";
 import { getVideoReview } from "../../services/videoreviewServices";
+import { getProductList } from "../../services/productServices";
 
 
 function VideoReview() {
@@ -17,15 +18,9 @@ function VideoReview() {
 
   // Lấy danh sách sản phẩm
   const fetchProducts = async () => {
-    try {
-      const res = await fetch("http://localhost:8000/api/products");
-      if (!res.ok) throw new Error("Lỗi khi lấy danh sách sản phẩm");
-      const data = await res.json();
-      //{console.log("Test", data)}
-      setProducts(data.data);
-    } catch (error) {
-      console.error(error);
-    }
+    const result = await getProductList();
+    setProducts(result.data);
+
   };
 
   const loadVideoReviews = async () => {
@@ -35,7 +30,7 @@ function VideoReview() {
     }
     if (filterVisible !== "all") {
       // convert từ chuỗi sang boolean
-      params.is_visible = filterVisible === "visible";
+      params.is_visible = filterVisible === "visible" ? 1 : 0;
     }
     const result = await getVideoReview(params);
     setVideoReviews(result);
@@ -85,7 +80,7 @@ function VideoReview() {
         const product = products.find((p) => p.product_id === record.product_id);
         //{console.log("Pls",product)}
         return product ? product.product_name : `#${record.product_id}`;
-       
+
       },
     },
     {
