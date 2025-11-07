@@ -15,11 +15,9 @@ const ItemDetail = () => {
   const [variants, setVariants] = useState([]);
 
   useEffect(() => {
-    // Giả lập API – thay bằng API thật từ backend của bạn
     const fetchData = async () => {
       const response = await getProductDetail(id);
-
-      // 💡 Chuyển đổi dữ liệu nhận được thành 2 biến mong muốn:
+      // Chuyển đổi dữ liệu nhận được thành 2 biến mong muốn:
       const product = response.product;
 
       const productData = {
