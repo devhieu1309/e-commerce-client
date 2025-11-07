@@ -38,6 +38,7 @@ import Payment from "../pages/User/Payment";
 import LoGin from "../pages/User/login/Login";
 import RegisTer from "../pages/User/register/Register";
 import BannerFormPage from "../components/AdminBannerList/BannerListModal";
+import AddStoreBranch from "../components/AdminStoreBranchList/AddStoreBranch";
 
 export const routes = [
   {
@@ -219,6 +220,10 @@ export const routes = [
       {
         path: "store-branches",
         element: <AdminStoreBranchList />,
+      },
+      {
+        path: "store-branches/create",
+        element: <AddStoreBranch />,
       },
     ],
   },

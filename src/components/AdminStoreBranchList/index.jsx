@@ -6,7 +6,7 @@ import { getStoreBranchList } from "../../services/storeBranchServices"; // impo
 import Search from "antd/es/input/Search";
 
 function AdminStoreBranchList() {
-    const [branches, setBranches] = useState([]);
+    const [storeBranches, setBranches] = useState([]);
     const [filterBranches, setFilterBranches] = useState([]);
     const [isFiltering, setIsFiltering] = useState(false);
 
@@ -15,7 +15,8 @@ function AdminStoreBranchList() {
         const fetchApi = async () => {
             try {
                 const result = await getStoreBranchList();
-                setBranches(result.data);
+                // console.log("Kết quả getProvinces:", result);
+                setBranches(result.storeBranches);
             } catch (error) {
                 console.error("Lỗi khi tải danh sách chi nhánh:", error);
             }
@@ -146,7 +147,7 @@ function AdminStoreBranchList() {
             {/* Bảng hiển thị chi nhánh */}
             <Table
                 columns={columns}
-                dataSource={isFiltering ? filterBranches : branches}
+                dataSource={isFiltering ? filterBranches : storeBranches}
                 rowKey="store_branch_id"
                 pagination={{ pageSize: 5 }}
             />

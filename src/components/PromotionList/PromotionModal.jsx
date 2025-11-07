@@ -68,9 +68,6 @@ function PromotionModal(props) {
           ? values.end_date.format('YYYY-MM-DD HH:mm:ss')
           : record?.end_date,
       };
-
-
-
       const response =
         mode === "edit"
           ? await editPromotion(record.promotion_id, payload)
