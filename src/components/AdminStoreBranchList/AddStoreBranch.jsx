@@ -3,7 +3,7 @@ import { Form, Input, Button, Select, notification, Card, message } from "antd";
 import { storeStoreBranch } from "../../services/storeBranchServices";
 import { getProvinces, getWardsByProvince } from "../../services/addressServices";
 import { useNavigate } from "react-router-dom";
-import { notification } from "antd";
+// import { notification } from "antd";
 
 const { Option } = Select;
 
@@ -15,7 +15,7 @@ function AddStoreBranch() {
   const [provinces, setProvinces] = useState([]);
   const [wards, setWards] = useState([]);
   const [loading, setLoading] = useState(false);
-  
+
 
   // Lấy danh sách tỉnh khi load trang
   // useEffect(() => {
@@ -33,8 +33,8 @@ function AddStoreBranch() {
     try {
       const result = await getProvinces();
       setProvinces(result.provinces.reverse());
-    } catch (err) {
-      notification.error({ message: "Lỗi khi tải danh sách tỉnh" });
+    } catch (error) {
+      notification.error({ message: "Lỗi khi tải danh sách tỉnh", error });
     }
   };
 
@@ -53,7 +53,7 @@ function AddStoreBranch() {
       setWards(res.wards);
       // setWards(res.data || res);
     } catch (err) {
-      notification.error({ message: "Lỗi khi tải danh sách phường/xã" });
+      notification.error({ message: "Lỗi khi tải danh sách phường/xã", err });
     }
   };
 
@@ -116,27 +116,17 @@ function AddStoreBranch() {
       console.log("Response from API:", res); // Debug: xem backend trả về gì
 
       // Hiển thị notification thành công trước khi navigate
-      notification.success({
-        message: "Thêm chi nhánh thành công!",
-        description: "Chi nhánh đã được thêm vào hệ thống.",
-        duration: 2, // Thời gian hiển thị notification
+      apiNoti.success({
+        message: `Thông báo`,
+        description: "Thêm chi nhánh mới thành công!",
       });
 
-      // Delay navigate để notification có thời gian hiện
       setTimeout(() => {
         navigate("/admin/store-branches");
-      }, 1500);
-
-      // Nếu muốn reset form
-      // form.resetFields();
-
-    } catch (err) {
-      console.error("Error adding store branch:", err);
-      notification.error({
-        message: "Lỗi khi thêm chi nhánh",
-        description: err.response?.data?.message || err.message,
-        duration: 3,
-      });
+      }, 500)
+    } catch (error) {
+      console.error("Lỗi khi thêm chi nhánh:", error);
+      message.error("Không thể thêm chi nhánh!");
     } finally {
       setLoading(false);
     }
@@ -144,115 +134,118 @@ function AddStoreBranch() {
 
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <Card title="Thêm chi nhánh mới" bordered={false} className="max-w-3xl mx-auto shadow-md">
-        <Form
-          form={form}
-          layout="vertical"
-          onFinish={handleSubmit}
-          initialValues={{
-            name: "",
-            phone_number: "",
-            email: "",
-            opening_hours: "",
-            detailed_address: "",
-            provinces_id: null,
-            wards_id: null,
-          }}
-        >
-          <Form.Item
-            label="Tên chi nhánh"
-            name="name"
-            rules={[{ required: true, message: "Vui lòng nhập tên chi nhánh" }]}
+    <>
+      {contextHolder}
+      <div className="p-6 bg-gray-50 min-h-screen">
+        <Card title="Thêm chi nhánh mới" bordered={false} className="max-w-3xl mx-auto shadow-md">
+          <Form
+            form={form}
+            layout="vertical"
+            onFinish={handleSubmit}
+            initialValues={{
+              name: "",
+              phone_number: "",
+              email: "",
+              opening_hours: "",
+              detailed_address: "",
+              provinces_id: null,
+              wards_id: null,
+            }}
           >
-            <Input placeholder="VD: Vy Food - Quận 1" />
-          </Form.Item>
-
-          <Form.Item
-            label="Số điện thoại"
-            name="phone_number"
-            rules={[{ required: true, message: "Vui lòng nhập số điện thoại" }]}
-          >
-            <Input placeholder="VD: 0901234567" />
-          </Form.Item>
-
-          <Form.Item
-            label="Email"
-            name="email"
-            rules={[
-              { required: true, message: "Vui lòng nhập email" },
-              { type: "email", message: "Email không hợp lệ" },
-            ]}
-          >
-            <Input placeholder="VD: contact@vyfood.vn" />
-          </Form.Item>
-
-          <Form.Item
-            label="Giờ mở cửa"
-            name="opening_hours"
-            rules={[{ required: true, message: "Vui lòng nhập giờ mở cửa" }]}
-          >
-            <Input placeholder="VD: 08:00 - 22:00" />
-          </Form.Item>
-
-          <Form.Item
-            label="Tỉnh / Thành phố"
-            name="provinces_id"
-            rules={[{ required: true, message: "Vui lòng chọn tỉnh/thành phố" }]}
-          >
-            <Select
-              showSearch
-              placeholder="Chọn tỉnh/thành phố"
-              onChange={handleProvinceChange}
-              filterOption={(input, option) =>
-                option.children.toLowerCase().includes(input.toLowerCase())
-              }
+            <Form.Item
+              label="Tên chi nhánh"
+              name="name"
+              rules={[{ required: true, message: "Vui lòng nhập tên chi nhánh" }]}
             >
-              {provinces.map((p) => (
-                <Option key={p.provinces_id} value={p.provinces_id}>
-                  {p.full_name}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
+              <Input placeholder="VD: Vy Food - Quận 1" />
+            </Form.Item>
 
-          <Form.Item
-            label="Phường / Xã"
-            name="wards_id"
-            rules={[{ required: true, message: "Vui lòng chọn phường/xã" }]}
-          >
-            <Select placeholder="Chọn phường/xã">
-              {wards.map((w) => (
-                <Option key={w.wards_id} value={w.wards_id}>
-                  {w.name}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
+            <Form.Item
+              label="Số điện thoại"
+              name="phone_number"
+              rules={[{ required: true, message: "Vui lòng nhập số điện thoại" }]}
+            >
+              <Input placeholder="VD: 0901234567" />
+            </Form.Item>
 
-          <Form.Item
-            label="Địa chỉ chi tiết"
-            name="detailed_address"
-            rules={[{ required: true, message: "Vui lòng nhập địa chỉ chi tiết" }]}
-          >
-            <Input placeholder="VD: 25 Nguyễn Huệ, P. Bến Nghé, Q.1" />
-          </Form.Item>
+            <Form.Item
+              label="Email"
+              name="email"
+              rules={[
+                { required: true, message: "Vui lòng nhập email" },
+                { type: "email", message: "Email không hợp lệ" },
+              ]}
+            >
+              <Input placeholder="VD: contact@vyfood.vn" />
+            </Form.Item>
 
-          <Form.Item label="Link bản đồ" name="map_link">
-            <Input placeholder="VD: https://goo.gl/maps/xyz" />
-          </Form.Item>
+            <Form.Item
+              label="Giờ mở cửa"
+              name="opening_hours"
+              rules={[{ required: true, message: "Vui lòng nhập giờ mở cửa" }]}
+            >
+              <Input placeholder="VD: 08:00 - 22:00" />
+            </Form.Item>
 
-          <Form.Item>
-            <div className="flex justify-end gap-3">
-              <Button onClick={() => navigate("/admin/store-branches")}>Hủy</Button>
-              <Button type="primary" htmlType="submit" loading={loading}>
-                Thêm chi nhánh
-              </Button>
-            </div>
-          </Form.Item>
-        </Form>
-      </Card>
-    </div>
+            <Form.Item
+              label="Tỉnh / Thành phố"
+              name="provinces_id"
+              rules={[{ required: true, message: "Vui lòng chọn tỉnh/thành phố" }]}
+            >
+              <Select
+                showSearch
+                placeholder="Chọn tỉnh/thành phố"
+                onChange={handleProvinceChange}
+                filterOption={(input, option) =>
+                  option.children.toLowerCase().includes(input.toLowerCase())
+                }
+              >
+                {provinces.map((p) => (
+                  <Option key={p.provinces_id} value={p.provinces_id}>
+                    {p.full_name}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+
+            <Form.Item
+              label="Phường / Xã"
+              name="wards_id"
+              rules={[{ required: true, message: "Vui lòng chọn phường/xã" }]}
+            >
+              <Select placeholder="Chọn phường/xã">
+                {wards.map((w) => (
+                  <Option key={w.wards_id} value={w.wards_id}>
+                    {w.name}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+
+            <Form.Item
+              label="Địa chỉ chi tiết"
+              name="detailed_address"
+              rules={[{ required: true, message: "Vui lòng nhập địa chỉ chi tiết" }]}
+            >
+              <Input placeholder="VD: 25 Nguyễn Huệ, P. Bến Nghé, Q.1" />
+            </Form.Item>
+
+            <Form.Item label="Link bản đồ" name="map_link">
+              <Input placeholder="VD: https://goo.gl/maps/xyz" />
+            </Form.Item>
+
+            <Form.Item>
+              <div className="flex justify-end gap-3">
+                <Button onClick={() => navigate("/admin/store-branches")}>Hủy</Button>
+                <Button type="primary" htmlType="submit" loading={loading}>
+                  Thêm chi nhánh
+                </Button>
+              </div>
+            </Form.Item>
+          </Form>
+        </Card>
+      </div>
+    </>
   );
 }
 
