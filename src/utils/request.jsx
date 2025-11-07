@@ -1,5 +1,5 @@
-//const API_DOMAIN = "https://e-commerce-server.app/api/";
-const API_DOMAIN = "http://127.0.0.1:8000/api/";
+const API_DOMAIN = "https://e-commerce-server.app/api/";
+// const API_DOMAIN = "http://127.0.0.1:8000/api/";
 
 // export const get = async (path, params = {}) => {
 //   const query = new URLSearchParams(params).toString();
@@ -8,7 +8,6 @@ const API_DOMAIN = "http://127.0.0.1:8000/api/";
 //   return result;
 // };
 export const get = async (path) => {
-  
   const response = await fetch(API_DOMAIN + path);
   const result = await response.json();
   return result;
@@ -29,7 +28,6 @@ export const get = async (path) => {
 
 export const post = async (path, options) => {
   const isFormData = options instanceof FormData;
-
   const response = await fetch(API_DOMAIN + path, {
     method: "POST",
     headers: isFormData
@@ -84,6 +82,7 @@ export const edit = async (path, options) => {
       options.append("_method", "PATCH");
     }
 
+    console.log("Options being sent in edit:", `${API_DOMAIN}${path}`);
     const response = await fetch(`${API_DOMAIN}${path}`, {
       method: "POST",
       headers: isFormData
@@ -152,21 +151,32 @@ export const postFormData = async (path, formData) => {
     throw err;
   }
   return data;
-  // const response = await fetch(API_DOMAIN + path, {
-  //   method: "POST",
-  //   body: formData,
-  // });
+};
 
-  // const result = await response.json();
+export const editFormData = async (path, formData, method = "PUT") => {
+  formData.append("_method", "PUT");
+  const res = await fetch(API_DOMAIN + path, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+    },
+    body: formData,
+  });
 
-  // if (!response.ok) {
-  //   const error = new Error(result.message || "Request failed");
-  //   error.response = {
-  //     status: response.status,
-  //     data: result,
-  //   };
-  //   throw error;
-  // }
+  const raw = await res.text();
+  let data;
+  try {
+    data = raw ? JSON.parse(raw) : null;
+  } catch (e) {
+    data = raw;
+  }
 
-  // return result;
+  if (!res.ok) {
+    console.error("API error:", res.status, data);
+    const err = new Error((data && data.message) || `Status ${res.status}`);
+    err.response = { status: res.status, data, raw };
+    throw err;
+  }
+
+  return data;
 };
