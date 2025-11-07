@@ -1,7 +1,79 @@
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { getShoppingCartByUserId, removeFromCart, updateCartItemQuantity } from "../../services/shoppingCartServices";
 
 
 function Header({ user, onLogout }) {
+  const [cartItems, setCartItems] = useState([]);
+
+  const loadCart = async () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user) return;
+    try {
+      const result = await getShoppingCartByUserId(user.user_id);
+      if (result.success) {
+        setCartItems(result.data || []);
+      }
+    } catch (error) {
+      console.error("Lỗi khi tải giỏ hàng:", error);
+    }
+  };
+
+  useEffect(() => {
+    loadCart();
+  }, []);
+
+  const handleRemoveFromCart = async (cartItemId) => {
+    // const user = JSON.parse(localStorage.getItem("user"));
+    // if (!user) return;
+    try {
+      const result = await removeFromCart(cartItemId);
+      if (result.success) {
+        setCartItems((prev) => prev.filter((item) => item.cart_item_id !== cartItemId));
+      }
+
+
+    } catch (error) {
+      console.error("Lỗi khi xóa sản phẩm khỏi giỏ hàng:", error);
+    }
+  };
+
+  const handleupdateQuantity = async (cartItemId, currentQuantity, newQuantity) => {
+    if (newQuantity < 1) return;
+
+    try {
+      setCartItems(prevItems =>
+        prevItems.map(item =>
+          item.cart_item_id === cartItemId
+            ? { ...item, quantity: newQuantity }
+            : item
+        )
+      );
+
+      const result = await updateCartItemQuantity(cartItemId, newQuantity);
+      
+      // Nếu API thất bại, khôi phục lại giá trị cũ
+      if (!result?.success) {
+        setCartItems(prevItems =>
+          prevItems.map(item =>
+            item.cart_item_id === cartItemId
+              ? { ...item, quantity: currentQuantity }
+              : item
+          )
+        );
+      }
+    } catch (error) {
+      console.error("Lỗi khi cập nhật số lượng:", error);
+      // Khôi phục lại giá trị cũ nếu có lỗi
+      setCartItems(prevItems =>
+        prevItems.map(item =>
+          item.cart_item_id === cartItemId
+            ? { ...item, quantity: currentQuantity }
+            : item
+        )
+      );
+    }
+};
   return (
     <>
       <header className="relative group/header">
@@ -263,66 +335,98 @@ function Header({ user, onLogout }) {
                     đơn hàng
                   </span>
                 </li>
-                <li className="flex space-x-1.5 items-center justify-center w-[120px] relative">
-                  <span className="">
+
+                {/* <li className="flex space-x-1.5 items-center justify-center w-[120px] relative"> */}
+                <li className="flex space-x-1.5 items-center justify-center w-[120px] group">
+                  <span classNme="">
                     <img
                       className="h-[50px] w-[50px] object-contain"
                       src="/icons8-cart-100.png"
                       alt="Cart"
                     />
                   </span>
-                  <span className="hover:text-amber-300 group/cart">
-                    <span className="text-[14px]"><Link to="/cart">Giỏ hàng Sản phẩm</Link></span>
-                    <div className="group-hover/cart:flex hidden absolute top-14 right-3 bg-white w-[400px] py-3 px-4 rounded-md flex-col space-y-4 ring-1 ring-black/10 shadow-[0_0_18px_0_rgba(0,0,0,0.06)] text-sm">
-                      {/* Sản phẩm */}
-                      <div className="flex items-start space-x-3">
-                        {/* Ảnh sản phẩm */}
-                        <div className="w-[25%]">
-                          <img
-                            src="/220309063455-ipad-air-select-wif.webp"
-                            alt="iPad Air 5"
-                            className="w-full h-full object-cover rounded-md"
-                          />
-                        </div>
 
-                        {/* Thông tin sản phẩm */}
-                        <div className="flex-1 space-y-1">
-                          <p className="font-semibold text-gray-900 text-sm">
-                            iPad Air 5 Wifi 64GB - Chính hãng VN/A
-                          </p>
-                          <p className="text-gray-600 text-sm">Trắng</p>
-                          <button className="text-red-500 text-sm hover:underline">Xóa</button>
+                  <span className="relative group">
+                    <span className="flex justify-center text-center text-[14px] cursor-pointer">
+                      <Link to="/cart">Giỏ hàng Sản phẩm</Link>
+                    </span>
 
-                          {/* Số lượng và giá */}
-                          <div className="flex justify-between items-center mt-2">
-                            <div className="items-center space-x-2">
-                              <span className="text-gray-700">Số lượng:</span>
-                              <div className='flex space-x-3 justify-between items-center text-center border border-black w-auto h-auto rounded-md'>
-                                <button className='bg-[#000f8f] h-[25px] px-2 text-white m-1 rounded-md'>-</button>
-                                <p className='m-0 text-gray-900 px-2'>1</p>
-                                <button className='bg-[#000f8f] h-[25px] px-2 text-white m-1 rounded-md'>+</button>
+                    <div className="group-hover:flex hidden absolute top-12 right-2 bg-white w-[400px] py-3 px-4 rounded-md flex-col space-y-4 ring-1 ring-black/10 shadow-[0_0_18px_0_rgba(0,0,0,0.06)] text-sm">
+
+                      {cartItems.length === 0 ? (
+                        <span className="text-center text-gray-500">
+                          Giỏ hàng của bạn đang trống
+                        </span>
+                      ) : (
+                        <>
+                          {cartItems.map((item) => (
+                            <div key={item.cart_item_id} className="flex items-start space-x-3">
+                              {/* Ảnh sản phẩm */}
+                              <div className="w-[25%]">
+                                <img
+                                  src={item.image}
+                                  alt={item.product_name}
+                                  className="w-full h-full object-cover rounded-md"
+                                />
+                              </div>
+
+                              {/* Thông tin sản phẩm */}
+                              <div className="flex-1 space-y-1">
+                                <p className="font-semibold text-gray-900 text-sm">
+                                  {item.product_name} - {item.variation_options[1].variation_option_name}
+                                </p>
+                                <p className="text-gray-600 text-sm">{item.variation_options[0].variation_option_name}</p>
+                                <button className="text-red-500 text-sm hover:underline"
+                                  //truyền cart_item_id để xóa
+                                  onClick={() => handleRemoveFromCart(item.cart_item_id)}>
+                                  Xóa
+                                </button>
+
+                                {/* Số lượng và giá */}
+                                <div className="flex justify-between items-center mt-2">
+                                  <div className="items-center space-x-2">
+                                    <span className="text-gray-700">Số lượng:</span>
+                                    <div className='flex space-x-3 justify-between items-center text-center border border-black w-auto h-auto rounded-md'>
+                                      <button className='bg-[#000f8f] h-[25px] px-2 text-white m-1 rounded-md'
+                                        onClick={() =>
+                                          handleupdateQuantity(item.cart_item_id, item.quantity, item.quantity - 1)
+                                        }>
+                                        -
+                                      </button>
+                                      <p className='m-0 text-gray-900 px-2'>{item.quantity}</p>
+                                      <button className='bg-[#000f8f] h-[25px] px-2 text-white m-1 rounded-md'
+                                        onClick={() =>
+                                          handleupdateQuantity(item.cart_item_id, item.quantity, item.quantity + 1)
+                                        }>
+                                        +
+                                      </button>
+                                    </div>
+                                  </div>
+                                  <p className="font-bold text-red-500 text-base">
+                                    {Number(item.price).toLocaleString()}đ
+                                  </p>
+                                </div>
                               </div>
                             </div>
-                            <p className="font-bold text-red-500 text-base">
-                              13.590.000đ
-                            </p>
-                          </div>
-                        </div>
-                      </div>
+                          ))}
 
-                      {/* Tổng tiền & nút thanh toán */}
-                      <div className="border-t border-gray-200 pt-3 space-y-3">
-                        <div className="flex justify-between items-center">
-                          <p className="font-semibold text-gray-900">Tổng tiền:</p>
-                          <p className="font-bold text-red-500 text-lg">13.590.000đ</p>
-                        </div>
-                        <button
-                          type="submit"
-                          className="w-full rounded-md bg-[#000f8f] px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-amber-300 hover:text-[#000f8f] transition-all"
-                        >
-                          Thanh toán
-                        </button>
-                      </div>
+                          {/* Tổng tiền & nút thanh toán */}
+                          <div className="border-t border-gray-200 pt-3 space-y-3">
+                            <div className="flex justify-between items-center">
+                              <p className="font-semibold text-gray-900">Tổng tiền:</p>
+                              <p className="font-bold text-red-500 text-lg">
+                                {cartItems.reduce((sum, i) => sum + i.quantity * i.price, 0).toLocaleString()}đ
+                              </p>
+                            </div>
+                            <button
+                              type="submit"
+                              className="w-full rounded-md bg-[#000f8f] px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-amber-300 hover:text-[#000f8f] transition-all"
+                            >
+                              Thanh toán
+                            </button>
+                          </div>
+                        </>
+                      )}
                     </div>
 
                   </span>

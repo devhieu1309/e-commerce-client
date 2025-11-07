@@ -2,6 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Table, Card, Typography, Button, Image, Space } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
+import {
+  getProductDetail,
+  getProductList,
+} from "../../services/productServices";
 
 const { Title } = Typography;
 
@@ -11,49 +15,28 @@ const ItemDetail = () => {
   const [variants, setVariants] = useState([]);
 
   useEffect(() => {
-    // Giả lập API – thay bằng API thật từ backend của bạn
     const fetchData = async () => {
-      // Ví dụ dữ liệu trả về
+      const response = await getProductDetail(id);
+      // Chuyển đổi dữ liệu nhận được thành 2 biến mong muốn:
+      const product = response.product;
+
       const productData = {
-        id: id,
-        name: "iPhone 15",
-        category_name: "Điện thoại",
+        id: product.product_id,
+        name: product.product_name,
+        category_name: product.category,
       };
 
-      const itemsData = [
-        {
-          key: 1,
-          variant: "Đen – 128GB",
-          sku: "IP15-BLACK-128",
-          price: 25000000,
-          quantity: 10,
-          image:  "230913032939-iphone-15-green-8c348a34-ebcd-41c6-8b6d-ef888554c4a2.webp",
-        },
-        {
-          key: 2,
-          variant: "Đen – 256GB",
-          sku: "IP15-BLACK-256",
-          price: 28000000,
-          quantity: 8,
-          image:  "230913032939-iphone-15-green-8c348a34-ebcd-41c6-8b6d-ef888554c4a2.webp",
-        },
-        {
-          key: 3,
-          variant: "Trắng – 128GB",
-          sku: "IP15-WHITE-128",
-          price: 25000000,
-          quantity: 12,
-          image:  "230913032939-iphone-15-green-8c348a34-ebcd-41c6-8b6d-ef888554c4a2.webp",
-        },
-        {
-          key: 4,
-          variant: "Trắng - 256GB",
-          sku: "IP15-WHITE-256",
-          price: 28000000,
-          quantity: 6,
-          image:  "230913032939-iphone-15-green-8c348a34-ebcd-41c6-8b6d-ef888554c4a2.webp",
-        },
-      ];
+      const itemsData = product.items.map((item) => ({
+        key: item.product_item_id,
+        variant: item.variant_name,
+        sku: item.sku,
+        price: parseFloat(item.price.replace(/\./g, "").replace(" đ", "")),
+        quantity: item.qty_in_stock,
+        image: item.image ? item.image : "no-image.jpg",
+      }));
+
+      console.log("Product data MINH HIEU:", productData);
+      console.log("Items data MINH HIEU:", itemsData);
 
       setProduct(productData);
       setVariants(itemsData);
@@ -83,8 +66,8 @@ const ItemDetail = () => {
     {
       title: "Ảnh",
       dataIndex: "image",
-       render: (image) => (
-        <img src={`/public/${image}`} alt={image} style={{ width: 80 }} />
+      render: (image) => (
+        <img src={`${image}`} alt={image} style={{ width: 80 }} />
       ),
     },
   ];
@@ -109,7 +92,12 @@ const ItemDetail = () => {
         )}
 
         <Title level={4}>Danh sách biến thể</Title>
-        <Table columns={columns} dataSource={variants} pagination={false} bordered />
+        <Table
+          columns={columns}
+          dataSource={variants}
+          pagination={false}
+          bordered
+        />
       </Space>
     </Card>
   );

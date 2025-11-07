@@ -1,7 +1,12 @@
-import { get, postFormData } from "../utils/request";
+import { del, edit, editFormData, get, postFormData } from "../utils/request";
 
 export const getProductList = async () => {
   const result = await get("products");
+  return result;
+};
+
+export const getProductDetail = async (id) => {
+  const result = await get("products/" + id);
   return result;
 };
 
@@ -15,12 +20,12 @@ export const storeProduct = async (formData) => {
   return result;
 };
 
-// export const editCategory = async (id, option) => {
-//   const result = await edit(`categories/${id}`, option);
-//   return result;
-// };
+export const editProduct = async (id, option) => {
+  const result = await editFormData(`products/${id}`, option);
+  return result;
+};
 
-// export const deleteCategory = async (id) => {
-//   const result = await del(`categories/${id}`);
-//   return result;
-// };
+export const deleteProduct = async (id) => {
+  const result = await del(`products/${id}`);
+  return result;
+};
