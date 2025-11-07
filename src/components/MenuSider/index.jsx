@@ -10,6 +10,7 @@ import {
   DatabaseOutlined,
   CreditCardOutlined,
   EditOutlined,
+  CalendarOutlined,
 } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { icons } from "antd/es/image/PreviewGroup";
@@ -113,6 +114,26 @@ function MenuSider() {
       ),
       icon: <HighlightOutlined />,
       key: "menu-13",
+    },
+    {
+      label: <Link to="/admin/shopping-order">Danh sách đơn hàng</Link>,
+      icon: <CalendarOutlined />,
+      key: "menu-14",
+      children: [
+        {
+          label: <Link to="/admin/shopping-order">Danh sách đơn hàng</Link>,
+          key: "menu-14-1",
+        },
+        {
+          label: <Link to="">Chi tiết đơn hàng</Link>,
+          key: "menu-14-2",
+        },
+        {
+          label: <Link to="">Quản lý bảo hành</Link>,
+          key: "menu-14-3",
+
+        },
+      ],
     },
   ];
 
