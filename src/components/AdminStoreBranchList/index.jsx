@@ -4,6 +4,7 @@ import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { getStoreBranchList } from "../../services/storeBranchServices"; // import service API
 import Search from "antd/es/input/Search";
+import DeleteStoreBranch from "./DeleteStoreBranch";
 
 function AdminStoreBranchList() {
     const [storeBranches, setBranches] = useState([]);
@@ -11,18 +12,32 @@ function AdminStoreBranchList() {
     const [isFiltering, setIsFiltering] = useState(false);
 
     // Lấy danh sách chi nhánh từ API
+    // useEffect(() => {
+    //     const fetchApi = async () => {
+    //         try {
+    //             const result = await getStoreBranchList();
+    //             // console.log("Kết quả getProvinces:", result);
+    //             setBranches(result.storeBranches);
+    //         } catch (error) {
+    //             console.error("Lỗi khi tải danh sách chi nhánh:", error);
+    //         }
+    //     };
+    //     fetchApi();
+    // }, []);
+
+    const fetchApi = async () => {
+        const result = await getStoreBranchList();
+        // console.log("Kết quả getProvinces:", result);
+        setBranches(result.storeBranches);
+    }
     useEffect(() => {
-        const fetchApi = async () => {
-            try {
-                const result = await getStoreBranchList();
-                // console.log("Kết quả getProvinces:", result);
-                setBranches(result.storeBranches);
-            } catch (error) {
-                console.error("Lỗi khi tải danh sách chi nhánh:", error);
-            }
-        };
         fetchApi();
     }, []);
+
+    // Load lại trang
+    const handleReload = () => {
+        fetchApi();
+    };
 
     // Tìm kiếm chi nhánh theo tên
     const handleSearch = (value) => {
@@ -32,7 +47,7 @@ function AdminStoreBranchList() {
             return;
         }
 
-        const filtered = branches.filter((branch) =>
+        const filtered = storeBranches.filter((branch) =>
             branch.name.toLowerCase().includes(value.toLowerCase())
         );
         setIsFiltering(true);
@@ -114,13 +129,8 @@ function AdminStoreBranchList() {
                     <Link to={`edit/${record.store_branch_id}`}>
                         <Button size="small" type="primary" icon={<EditOutlined />} />
                     </Link>
-                    <Popconfirm
-                        title="Bạn chắc chắn muốn xóa chi nhánh này?"
-                        okText="Xóa"
-                        cancelText="Hủy"
-                    >
-                        <Button danger size="small" icon={<DeleteOutlined />}></Button>
-                    </Popconfirm>
+                        {/* <Button danger size="small" icon={<DeleteOutlined />}></Button> */}
+                        <DeleteStoreBranch record={record} onReload={handleReload} />
                     <Link to={`${record.store_branch_id}`}>
                         <Button size="small" icon={<EyeOutlined />} />
                     </Link>
