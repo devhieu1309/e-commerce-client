@@ -38,6 +38,7 @@ import Payment from "../pages/User/Payment";
 import LoGin from "../pages/User/login/Login";
 import RegisTer from "../pages/User/register/Register";
 import BannerFormPage from "../components/AdminBannerList/BannerListModal";
+import ShoppingOrder from "../components/ShoppingOrder";
 
 export const routes = [
   {
@@ -224,6 +225,10 @@ export const routes = [
         path: "store-systems",
         element: <AdminStoreSystemList />,
       },
+      {
+        path: "shopping-order",
+        element: <ShoppingOrder />,
+      }
     ],
   },
   {
