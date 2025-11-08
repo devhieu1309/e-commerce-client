@@ -32,7 +32,7 @@ function AddStoreBranch() {
   const fetchApi = async () => {
     try {
       const result = await getProvinces();
-      setProvinces(result.provinces.reverse());
+      setProvinces(result.provinces);
     } catch (error) {
       notification.error({ message: "Lỗi khi tải danh sách tỉnh", error });
     }

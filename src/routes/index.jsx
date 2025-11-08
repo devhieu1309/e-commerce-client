@@ -40,6 +40,7 @@ import RegisTer from "../pages/User/register/Register";
 import BannerFormPage from "../components/AdminBannerList/BannerListModal";
 import AddStoreBranch from "../components/AdminStoreBranchList/AddStoreBranch";
 import ShoppingOrder from "../components/ShoppingOrder";
+import EditStoreBranch from "../components/AdminStoreBranchList/EditStoreBranch";
 
 export const routes = [
   {
@@ -229,6 +230,10 @@ export const routes = [
       {
         path: "store-branches/create",
         element: <AddStoreBranch />,
+      },
+      {
+        path: "store-branches/edit/:id",
+        element: <EditStoreBranch />,
       },
       {
         path: "shopping-order",

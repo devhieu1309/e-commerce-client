@@ -61,33 +61,47 @@ export const del = async (path) => {
   return result;
 };
 
+
+// export const edit = async (path, options) => {
+//   try {
+//     const isFormData = options instanceof FormData;
+
+//     if (isFormData && !options.has("_method")) {
+//       options.append("_method", "PATCH");
+//     }
+
+//     console.log("Options being sent in edit:", `${API_DOMAIN}${path}`);
+//     const response = await fetch(`${API_DOMAIN}${path}`, {
+//       method: "POST",
+//       headers: isFormData
+//         ? { Accept: "application/json" }
+//         : {
+//             Accept: "application/json",
+//             "Content-Type": "application/json",
+//           },
+//       body: isFormData ? options : JSON.stringify(options),
+//     });
+
+//     if (!response.ok) {
+//       throw new Error(`HTTP error! status: ${response.status}`);
+//     }
+//     return await response.json();
+//   } catch (error) {
+//     console.log("Lỗi khi fetch API: ", error);
+//   }
+// };
+
 export const edit = async (path, options) => {
-  try {
-    const isFormData = options instanceof FormData;
-
-    if (isFormData && !options.has("_method")) {
-      options.append("_method", "PATCH");
-    }
-
-    console.log("Options being sent in edit:", `${API_DOMAIN}${path}`);
-    const response = await fetch(`${API_DOMAIN}${path}`, {
-      method: "POST",
-      headers: isFormData
-        ? { Accept: "application/json" }
-        : {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-      body: isFormData ? options : JSON.stringify(options),
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    return await response.json();
-  } catch (error) {
-    console.log("Lỗi khi fetch API: ", error);
-  }
+  const response = await fetch(`${API_DOMAIN}${path}`, {
+    method: "PATCH",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(options),
+  });
+  const result = await response.json();
+  return result;
 };
 
 // export const searchPost = async (path, options) => {

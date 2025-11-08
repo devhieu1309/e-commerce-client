@@ -19,3 +19,8 @@ export const deleteStoreBranch = async (id) => {
   const result = await del(`store_branches/${id}`);
   return result;
 };
+
+export const getStoreBranchById = async (id) => {
+  const result = await get("store_branches/" + id);
+  return result;
+}
