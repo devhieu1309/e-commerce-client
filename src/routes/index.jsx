@@ -33,12 +33,14 @@ import PromotionList from "../components/PromotionList";
 import UserList from "../components/UserList";
 import OnOffUserList from "../components/On_Off_User";
 import VideoReview from "../components/VideoReview";
-import AdminStoreSystemList from "../components/AdminStoreSystemList";
+import AdminStoreBranchList from "../components/AdminStoreBranchList";
 import Payment from "../pages/User/Payment";
 import LoGin from "../pages/User/login/Login";
 import RegisTer from "../pages/User/register/Register";
 import BannerFormPage from "../components/AdminBannerList/BannerListModal";
+import AddStoreBranch from "../components/AdminStoreBranchList/AddStoreBranch";
 import ShoppingOrder from "../components/ShoppingOrder";
+import EditStoreBranch from "../components/AdminStoreBranchList/EditStoreBranch";
 
 export const routes = [
   {
@@ -222,8 +224,16 @@ export const routes = [
         element: <VideoReview />,
       },
       {
-        path: "store-systems",
-        element: <AdminStoreSystemList />,
+        path: "store-branches",
+        element: <AdminStoreBranchList />,
+      },
+      {
+        path: "store-branches/create",
+        element: <AddStoreBranch />,
+      },
+      {
+        path: "store-branches/edit/:id",
+        element: <EditStoreBranch />,
       },
       {
         path: "shopping-order",

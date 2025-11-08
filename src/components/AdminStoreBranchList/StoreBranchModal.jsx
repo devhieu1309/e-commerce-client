@@ -15,8 +15,8 @@ import { EditOutlined, PlusOutlined } from "@ant-design/icons";
 import dayjs from 'dayjs';
 
 
-function StoreSystemModal(props) {
+function StoreBranchModal(props) {
   
 }
 
-export default StoreSystemModal;
+export default StoreBranchModal;
