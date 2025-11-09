@@ -1,13 +1,14 @@
-import './App.css'
-import AllRoute from './AllRoute'
+import "./App.css";
+import AllRoute from "./AllRoute";
+import ScrollToTop from "./ScrollToTop";
 
 function App() {
-
   return (
     <>
-      <AllRoute/>
+      <ScrollToTop />
+      <AllRoute />
     </>
-  )
+  );
 }
 
-export default App
+export default App;

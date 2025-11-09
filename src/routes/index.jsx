@@ -106,7 +106,7 @@ export const routes = [
         element: <PreOrderPage />,
       },
       {
-        path: "iphone-15-256gb-chinh-hang-vn-a",
+        path: "product/:id",
         element: <Detail />,
       },
       {

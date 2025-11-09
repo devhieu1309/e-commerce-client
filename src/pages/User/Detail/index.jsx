@@ -1,408 +1,454 @@
-import { useState } from "react";
 import RelatedProducts from "../../../components/RelatedProducts";
 import SamePriceRangeProducts from "../../../components/SamePriceRangeProducts";
 import ViewedProducts from "../../../components/ViewedProducts";
+import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import {
+  getProductDetail,
+  getProductList,
+} from "../../../services/productServices";
+import { all } from "axios";
 
 function Detail() {
+  const { id } = useParams();
+  const [similarPriceProducts, setSimilarPriceProducts] = useState([]);
+  const [relatedProducts, setRelatedProducts] = useState([]);
+  const [product, setProduct] = useState({});
+  const [selectedItem, setSelectedItem] = useState({});
   const [expanded, setExpanded] = useState(false);
   const [activeTab, setActiveTab] = useState("mo-ta");
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      let response = await getProductDetail(id);
+      let product_id = response.product.product_id;
+      let category_id = response.product.category_id;
+      setProduct(response.product);
+      setSelectedItem(response.product.items[0]);
+      let currentProduct = response.product.items[0];
+
+      response = await getProductList();
+      const allProducts = response.data;
+
+      if (category_id) {
+        const filtered = allProducts.filter(
+          (p) => p.category_id === category_id && p.product_id !== product_id
+        );
+        setRelatedProducts(filtered); 
+      }
+
+      console.log("MINH HIEU TEST ALL PRODUCT: ", allProducts);
+
+      if (currentProduct) {
+        const currentPrice = parseInt(
+          currentProduct.price.replace(/[^\d]/g, ""),
+          10
+        );
+
+        const minPrice = currentPrice * 0.8; // thấp hơn 10%
+        const maxPrice = currentPrice * 1.2; // cao hơn 10%
+
+        const samePrice = allProducts.filter(
+          (p) =>
+            p.product_id !== product.product_id && 
+            p.items?.[0] && 
+            Number(p.items[0].price) >= minPrice &&
+            Number(p.items[0].price) <= maxPrice
+        );
+        setSimilarPriceProducts(samePrice);
+      }
+    };
+
+    fetchProduct();
+  }, [id]);
+
+  // console.log("MINH HIEU TEST PRODUCT: ", product);
+  // console.log("MINH HIEU TEST SELECTED ITEM: ", selectedItem);
 
   return (
     <>
       <div className="container mx-auto px-32 py-4">
-        <div className="bg-white p-2 rounded-md">
-          <h2 className="text-2xl text-black font-medium border-b pb-5">
-            Iphone 15 256GB - Chính hãng VN/A
-          </h2>
-          <div className="flex p-3">
-            <div className="h-auto w-1/3">
-              <div className="flex flex-col items-center space-y-10">
-                <div className="h-[394px] w-[394px] relative">
-                  <div className="absolute top-2 flex flex-col space-y-1">
-                    <div className="flex space-x-2 py-[2px] bg-[#000F8F] w-[70px] p-1 ">
-                      <img
-                        className="h-[20px] w-[20px]"
-                        src="/title_image_1_tag.webp"
-                        alt=""
-                      />
-                      <span className="text-white text-[13px]">Mới</span>
+        {product && (
+          <div className="bg-white p-2 rounded-md">
+            <h2 className="text-2xl text-black font-medium border-b pb-5">
+              {product.product_name}
+            </h2>
+            <div className="flex p-3">
+              <div className="h-auto w-1/3">
+                <div className="flex flex-col items-center space-y-10">
+                  <div className="h-[394px] w-[394px] relative">
+                    <div className="absolute top-2 flex flex-col space-y-1">
+                      <div className="flex space-x-2 py-[2px] bg-[#000F8F] w-[70px] p-1 ">
+                        <img
+                          className="h-[20px] w-[20px]"
+                          src="/title_image_1_tag.webp"
+                          alt=""
+                        />
+                        <span className="text-white text-[13px]">Mới</span>
+                      </div>
+                      <div className="flex space-x-2 py-[2px] bg-[#f3d054] w-[90px] p-1 ">
+                        <img
+                          className="h-[20px] w-[20px]"
+                          src="/title_image_2_tag.webp"
+                          alt=""
+                        />
+                        <span className="text-white text-[13px]">Nổi bật</span>
+                      </div>
                     </div>
-                    <div className="flex space-x-2 py-[2px] bg-[#f3d054] w-[90px] p-1 ">
-                      <img
-                        className="h-[20px] w-[20px]"
-                        src="/title_image_2_tag.webp"
-                        alt=""
-                      />
-                      <span className="text-white text-[13px]">Nổi bật</span>
-                    </div>
+                    <img
+                      className="object-cover w-[394px] h-[394px] rounded-xl"
+                      src={selectedItem.image}
+                      alt={product.product_name}
+                    />
                   </div>
-                  <img
-                    className="object-cover items-center justify-center"
-                    src="/230913033139-iphone-15-yellow-fcaa0de0-7a3f-4644-917f-af79b2510437.webp"
-                    alt=""
-                  />
-                </div>
 
-                <div className="flex items-center space-x-2">
-                  <div className="w-[87px] h-[87px] border border-gray-300 rounded-md">
-                    <img
-                      className="object-cover w-full h-full p-1"
-                      src="/230913032939-iphone-15-green-8c348a34-ebcd-41c6-8b6d-ef888554c4a2.webp"
-                      alt=""
-                    />
-                  </div>
-                  <div className="w-[87px] h-[87px] border border-gray-300 rounded-md">
-                    <img
-                      className="object-cover w-full h-full p-1"
-                      src="/230913033139-iphone-15-yellow-fcaa0de0-7a3f-4644-917f-af79b2510437.webp"
-                      alt=""
-                    />
-                  </div>
-                  <div className="w-[87px] h-[87px] border border-gray-300 rounded-md">
-                    <img
-                      className="object-cover w-full h-full p-1"
-                      src="/230913033012-iphone-15-blue-0a8fe4bf-a849-4391-a941-aed061618099.webp"
-                      alt=""
-                    />
-                  </div>
-                  <div className="w-[87px] h-[87px] border border-gray-300 rounded-md">
-                    <img
-                      className="object-cover w-full h-full p-1"
-                      src="/230913032939-iphone-15-green-8c348a34-ebcd-41c6-8b6d-ef888554c4a2.webp"
-                      alt=""
-                    />
+                  <div className="flex items-center space-x-2">
+                    {product.items &&
+                      product.items.map((item, index) => (
+                        <div
+                          key={index}
+                          className={`cursor-pointer w-[87px] h-[87px] rounded-md border 
+                        ${
+                          selectedItem?.product_item_id == item.product_item_id
+                            ? "border-blue-500"
+                            : "border-gray-300"
+                        }`}
+                          onClick={() => setSelectedItem(item)}
+                        >
+                          <img
+                            className="object-cover w-full h-full p-1"
+                            src={item.image}
+                            alt=""
+                          />
+                        </div>
+                      ))}
                   </div>
                 </div>
               </div>
-            </div>
-            <div className="h-auto flex-1 flex">
-              <div className="flex-1 p-2">
-                <div className="flex items-center justify-between mb-7">
-                  <div>
-                    <p className="text-gray-800">
-                      Loại:{" "}
-                      <span className="text-[#3F4AAB] font-medium">
-                        Điện thoại
-                      </span>
-                    </p>
-                    <p className="text-gray-800">
-                      Tình trạng:{" "}
-                      <span className="text-[#3F4AAB] font-medium">
-                        Còn hàng
-                      </span>
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-gray-800">
-                      Thương hiệu:{" "}
-                      <span className="text-[#3F4AAB] font-medium">Apple</span>
-                    </p>
-                    <p className="text-gray-800">
-                      Mã sản phẩm:{" "}
-                      <span className="text-[#3F4AAB] font-medium">
-                        Đang cập nhật
-                      </span>
-                    </p>
-                  </div>
-                </div>
-                <div className="mb-7">
-                  <div>
-                    <p className="font-medium">Giá bán:</p>
-                    <div className="flex items-end space-x-4">
-                      <h2 className="text-red-500 text-3xl font-medium">
-                        24.290.000đ
-                      </h2>
-                      <del className="text-gray-500 text-[17px]">
-                        27.990.000đ
-                      </del>
+              <div className="h-auto flex-1 flex">
+                <div className="flex-1 p-2">
+                  <div className="flex items-center justify-between mb-7">
+                    <div>
+                      <p className="text-gray-800">
+                        Loại:
+                        <span className="text-[#3F4AAB] font-medium">
+                          {product.category_name}
+                        </span>
+                      </p>
+                      <p className="text-gray-800">
+                        Tình trạng:
+                        <span className="text-[#3F4AAB] font-medium">
+                          {selectedItem.qty_in_stock > 0
+                            ? "Còn hàng"
+                            : "Hết hàng"}
+                        </span>
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-gray-800">
+                        Thương hiệu:
+                        <span className="text-[#3F4AAB] font-medium">
+                          Apple
+                        </span>
+                      </p>
+                      <p className="text-gray-800">
+                        Mã sản phẩm:
+                        <span className="text-[#3F4AAB] font-medium">
+                          Đang cập nhật
+                        </span>
+                      </p>
                     </div>
                   </div>
-                </div>
-                <div className="flex space-x-3 pb-5">
-                  <div className="relative w-[150px] flex flex-col items-center border border-[#000f8f] rounded-lg p-2">
-                    {/* Góc trên bên trái */}
-                    <div className="absolute top-0 left-0 w-[18px] h-[12px] bg-[#000f8f] rounded-t-sm rounded-br-[10px] text-white text-[8px] flex items-center justify-center">
-                      ✓
+                  <div className="mb-7">
+                    <div>
+                      <p className="font-medium">Giá bán:</p>
+                      <div className="flex items-end space-x-4">
+                        <h2 className="text-red-500 text-3xl font-medium">
+                          {selectedItem.price?.toLocaleString("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                          })}
+                        </h2>
+                      </div>
                     </div>
+                  </div>
+                  <div className="grid grid-cols-3 gap-3 pb-5">
+                    {product.items &&
+                      product.items.map((item, index) => (
+                        <div
+                          key={index}
+                          onClick={() => setSelectedItem(item)}
+                          className={`cursor-pointer flex items-center justify-between rounded-md px-2 py-1 w-[150px] border transition-all duration-200
+        ${
+          selectedItem?.product_item_id === item.product_item_id
+            ? "border-blue-500 bg-blue-50"
+            : "border-gray-300 hover:border-blue-300"
+        }`}
+                        >
+                          {/* Dung lượng + Giá */}
+                          <div className="flex flex-col leading-tight">
+                            <span className="font-semibold text-[13px]">
+                              {item.variant_name[1]}
+                            </span>
+                            <span className="text-red-500 font-medium text-[11px]">
+                              {item.price?.toLocaleString("vi-VN", {
+                                style: "currency",
+                                currency: "VND",
+                              })}
+                            </span>
+                          </div>
 
-                    <span className="font-medium">512GB</span>
-                    <span className="text-red-500 font-medium">
-                      29.990.000đ
-                    </span>
+                          {/* Ảnh + màu */}
+                          <div className="flex items-center space-x-1">
+                            <img
+                              className="h-[30px] w-[30px] object-cover rounded"
+                              src={item.image}
+                              alt={item.variant_name[0]}
+                            />
+                            <p className="text-gray-700 text-[12px]">
+                              {item.variant_name[0]}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
                   </div>
-                  <div className="w-[150px] flex flex-col items-center border border-gray-300 px-3 py-1 rounded-lg">
-                    <span className="font-medium">256GB</span>
-                    <span className="text-red-500 font-medium">
-                      24.290.000đ
-                    </span>
-                  </div>
-                  <div className="w-[150px] flex flex-col items-center border border-gray-300 px-3 py-1 rounded-lg">
-                    <span className="font-medium">128GB</span>
-                    <span className="text-red-500 font-medium">
-                      21.990.000đ
-                    </span>
-                  </div>
-                </div>
-                <div className="pb-5">
-                  <h3 className="font-medium pb-3">
-                    Màu sắc: <span className="text-[#3F4AAB]">Vàng</span>
-                  </h3>
-                  <div className="grid grid-cols-4 gap-y-3">
-                    <div className="relative flex items-center space-x-2 border border-[#000f8f] w-[110px] px-3 py-1 rounded-lg">
-                      <div className="absolute top-0 left-0 w-[18px] h-[12px] bg-[#000f8f] rounded-t-sm rounded-br-[10px] text-white text-[8px] flex items-center justify-center">
-                        ✓
-                      </div>
-                      <div>
-                        <img
-                          className="h-[47px] w-[47px] object-cover"
-                          src="/230913033139-iphone-15-yellow.webp"
-                          alt=""
-                        />
-                      </div>
-                      <p className="text-gray-700">Vàng</p>
+                  {/* <div className="pb-5">
+                    <h3 className="font-medium pb-3">
+                      Màu sắc:
+                      <span className="text-[#3F4AAB]">
+                      </span>
+                    </h3>
+                    <div className="grid grid-cols-4 gap-y-3">
+                      {product.items &&
+                        product.items.map((item, index) => (
+                          <div className="relative flex items-center space-x-2 border border-[#000f8f] w-[110px] px-3 py-1 rounded-lg">
+                            <div className="absolute top-0 left-0 w-[18px] h-[12px] bg-[#000f8f] rounded-t-sm rounded-br-[10px] text-white text-[8px] flex items-center justify-center">
+                              ✓
+                            </div>
+                            <div>
+                              <img
+                                className="h-[47px] w-[47px] object-cover"
+                                src={item.image}
+                                alt=""
+                              />
+                            </div>
+                            <p className="text-gray-700">
+                              {item.variant_name[0]}
+                            </p>
+                          </div>
+                        ))}
                     </div>
-                    <div className="flex items-center space-x-2 border border-gray-300 w-[110px] px-3 py-1 rounded-lg">
-                      <div>
-                        <img
-                          className="h-[47px] w-[47px] object-cover"
-                          src="/230913033227-iphone-15-pink-1.webp"
-                          alt=""
-                        />
-                      </div>
-                      <p className="text-gray-700">Hồng</p>
-                    </div>
-                    <div className="flex items-center space-x-2 border border-gray-300 w-[110px] px-3 py-1 rounded-lg">
-                      <div>
-                        <img
-                          className="h-[47px] w-[47px] object-cover"
-                          src="/230913033012-iphone-15-blue-0a8fe4bf-a849-4391-a941-aed061618099.webp"
-                          alt=""
-                        />
-                      </div>
-                      <p className="text-gray-700">Trắng</p>
-                    </div>
-                    <div className="flex items-center space-x-2 border border-gray-300 w-[110px] px-3 py-1 rounded-lg">
-                      <div>
-                        <img
-                          className="h-[47px] w-[47px] object-cover"
-                          src="/230913032939-iphone-15-green-8c348a34-ebcd-41c6-8b6d-ef888554c4a2.webp"
-                          alt=""
-                        />
-                      </div>
-                      <p className="text-gray-700">Xanh</p>
-                    </div>
-                    <div className="flex items-center space-x-2 border border-gray-300 w-[110px] px-3 py-1 rounded-lg">
-                      <div>
-                        <img
-                          className="h-[47px] w-[47px] object-cover"
-                          src="/230913032427-iphone-15-black.webp"
-                          alt=""
-                        />
-                      </div>
-                      <p className="text-gray-700">Đen</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="pb-5">
-                  <h3 className="font-medium pb-2">Số lượng: </h3>
-                  <div className="flex p-1 border border-[#0008F8] w-[140px] rounded-sm">
-                    <button
-                      type="button"
-                      aria-label="Giảm số lượng"
-                      class="inline-flex items-center justify-center w-9 h-9 text-white text-2xl rounded-md border border-gray-200 bg-[#0008f8]"
-                    >
-                      -
-                    </button>
-                    <input
-                      type="text"
-                      class="block h-[35px] w-[60px] rounded-lg border-0 px-[2px] text-center text-[15px] outline-0"
-                    />
+                  </div> */}
+                  <div className="pb-5">
+                    <h3 className="font-medium pb-2">Số lượng: </h3>
+                    <div className="flex p-1 border border-[#0008F8] w-[140px] rounded-sm">
+                      <button
+                        type="button"
+                        aria-label="Giảm số lượng"
+                        class="inline-flex items-center justify-center w-9 h-9 text-white text-2xl rounded-md border border-gray-200 bg-[#0008f8]"
+                      >
+                        -
+                      </button>
+                      <input
+                        type="text"
+                        class="block h-[35px] w-[60px] rounded-lg border-0 px-[2px] text-center text-[15px] outline-0"
+                      />
 
-                    <button
-                      type="button"
-                      aria-label="Giảm số lượng"
-                      class="inline-flex items-center justify-center w-9 h-9 text-white text-2xl rounded-md border border-gray-200 bg-[#0008f8]"
-                    >
-                      +
+                      <button
+                        type="button"
+                        aria-label="Giảm số lượng"
+                        class="inline-flex items-center justify-center w-9 h-9 text-white text-2xl rounded-md border border-gray-200 bg-[#0008f8]"
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+                  <div className="py-2">
+                    <button className="text-white bg-amber-400 w-full rounded-sm py-1">
+                      <h3 className="text-[18px] font-medium p-0">
+                        Thêm vào giỏ hàng
+                      </h3>
+                      <p className="font-medium text-[14px]">
+                        Giao hàng tận nơi miễn phí
+                      </p>
                     </button>
                   </div>
-                </div>
-                <div className="py-2">
-                  <button className="text-white bg-amber-400 w-full rounded-sm py-1">
-                    <h3 className="text-[18px] font-medium p-0">Thêm vào giỏ hàng</h3>
-                    <p className="font-medium text-[14px]">Giao hàng tận nơi miễn phí</p>
-                  </button>
-                </div>
-                <div className="flex items-center justify-between space-x-2 py-3">
-                  <button className="text-white bg-[#000f8f] w-1/2 rounded-sm font-medium py-[13px] uppercase">Mua ngay</button>
-                  <button className="text-white bg-[#000f8f] w-1/2 rounded-sm font-medium py-1">
-                    <p className="text-[12px]">Liên hệ <span className="text-[17px]">1900 6750</span></p>
-                    <p className="text-[12px]">Để được tư vấn và hỗ trợ ngay!!!</p>
-                  </button>
-                </div>
-                <div className="border border-[#0008f8] rounded-sm">
-                  <div className="flex items-center bg-[#0008f8] space-x-2 px-3">
-                    <svg
-                      className="w-5 h-5 fill-current text-white"
-                      xmlns="http://www.w3.org/2000/svg"
-                      height="1em"
-                      viewBox="0 0 512 512"
-                    >
-                      <path d="M190.5 68.8L225.3 128H224 152c-22.1 0-40-17.9-40-40s17.9-40 40-40h2.2c14.9 0 28.8 7.9 36.3 20.8zM64 88c0 14.4 3.5 28 9.6 40H32c-17.7 0-32 14.3-32 32v64c0 17.7 14.3 32 32 32H480c17.7 0 32-14.3 32-32V160c0-17.7-14.3-32-32-32H438.4c6.1-12 9.6-25.6 9.6-40c0-48.6-39.4-88-88-88h-2.2c-31.9 0-61.5 16.9-77.7 44.4L256 85.5l-24.1-41C215.7 16.9 186.1 0 154.2 0H152C103.4 0 64 39.4 64 88zm336 0c0 22.1-17.9 40-40 40H288h-1.3l34.8-59.2C329.1 55.9 342.9 48 357.8 48H360c22.1 0 40 17.9 40 40zM32 288V464c0 26.5 21.5 48 48 48H224V288H32zM288 512H432c26.5 0 48-21.5 48-48V288H288V512z"></path>
-                    </svg>
-                    <h3 className="text-white font-medium text-xl">
-                      Ưu đãi khi mua hàng
-                    </h3>
+                  <div className="flex items-center justify-between space-x-2 py-3">
+                    <button className="text-white bg-[#000f8f] w-1/2 rounded-sm font-medium py-[13px] uppercase">
+                      Mua ngay
+                    </button>
+                    <button className="text-white bg-[#000f8f] w-1/2 rounded-sm font-medium py-1">
+                      <p className="text-[12px]">
+                        Liên hệ <span className="text-[17px]">1900 6750</span>
+                      </p>
+                      <p className="text-[12px]">
+                        Để được tư vấn và hỗ trợ ngay!!!
+                      </p>
+                    </button>
                   </div>
-                  <div className="flex flex-col space-y-2 p-3">
-                    <p className="text-[14px]">
-                      ✔️ Hỗ trợ trả góp 0% chỉ cần CCCD gắn chip hoặc 0% qua thẻ
-                      tín dụng
-                    </p>
-                    <p className="text-[14px]">
-                      ✔️ Nhập mã <span className="font-bold">ZALOPAYMT</span>{" "}
-                      giảm ngay 1% tối đa{" "}
-                      <span className="font-bold">200.000đ</span> khi thanh toán
-                      qua Zalo Pay
-                    </p>
-                    <p className="text-[14px]">
-                      ✔️ Giảm 50% tối đa{" "}
-                      <span className="font-bold">100.000đ</span> cho thành viên
-                      mới của Kredivo
-                    </p>
-                    <p className="text-[14px]">
-                      ✔️ Giảm 5% tối đa{" "}
-                      <span className="font-bold">200.000đ</span>, áp dụng kỳ
-                      hạn 6/12 tháng khi thanh toán qua Kredivo
-                    </p>
-                    <p className="text-[14px]">
-                      ✔️ Giảm 50% tối đa 100.000đ, áp dụng cho đơn hàng từ{" "}
-                      <span className="font-bold">200.000đ</span> cho người dùng
-                      mới của Home Pay Later
-                    </p>
-                    <p className="text-[14px]">
-                      ✔️ Giảm 5% tối đa{" "}
-                      <span className="font-bold">200.000đ</span> cho đơn từ{" "}
-                      <span className="font-bold">200.000đ</span> khi thanh toán
-                      qua Home PayLater
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div className="w-2/5 flex flex-col space-y-6">
-                <div className="border border-[#0008f8] rounded-sm">
-                  <div className="flex items-center bg-[#0008f8] space-x-2 px-3">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="bi bi-bookmarks-fill w-5 h-5 fill-current text-white"
-                      height="1em"
-                      viewBox="0 0 576 512"
-                    >
-                      <path d="M408 120c0 54.6-73.1 151.9-105.2 192c-7.7 9.6-22 9.6-29.6 0C241.1 271.9 168 174.6 168 120C168 53.7 221.7 0 288 0s120 53.7 120 120zm8 80.4c3.5-6.9 6.7-13.8 9.6-20.6c.5-1.2 1-2.5 1.5-3.7l116-46.4C558.9 123.4 576 135 576 152V422.8c0 9.8-6 18.6-15.1 22.3L416 503V200.4zM137.6 138.3c2.4 14.1 7.2 28.3 12.8 41.5c2.9 6.8 6.1 13.7 9.6 20.6V451.8L32.9 502.7C17.1 509 0 497.4 0 480.4V209.6c0-9.8 6-18.6 15.1-22.3l122.6-49zM327.8 332c13.9-17.4 35.7-45.7 56.2-77V504.3L192 449.4V255c20.5 31.3 42.3 59.6 56.2 77c20.5 25.6 59.1 25.6 79.6 0zM288 152a40 40 0 1 0 0-80 40 40 0 1 0 0 80z"></path>
-                    </svg>
-                    <h3 className="text-white font-medium text-xl">
-                      Hệ thống cửa hàng
-                    </h3>
-                  </div>
-                  <div className="p-2">
-                    <div className="flex items-center justify-between">
-                      <div className="bg-[#0008f8] text-[14px] p-1 rounded-md">
-                        <select className="outline-none text-white font-medium">
-                          <option className="text-gray-700" value="">
-                            Chọn tỉnh thành
-                          </option>
-                          <option className="text-gray-700" value="">
-                            Hà Nội
-                          </option>
-                          <option className="text-gray-700" value="">
-                            Hồ Chí Minh
-                          </option>
-                          <option className="text-gray-700" value="">
-                            Đà Nẵng
-                          </option>
-                          <option className="text-gray-700" value="">
-                            Cần Thơ
-                          </option>
-                          <option className="text-gray-700" value="">
-                            Bình Dương
-                          </option>
-                        </select>
-                      </div>
-                      <div className="border border-[#0008f8] text-[14px] p-1 rounded-md">
-                        <select className="outline-none text-gray-600 font-medium">
-                          <option className="text-gray-700" value="">
-                            Chọn quận/huyện
-                          </option>
-                          <option className="text-gray-700" value="">
-                            Quận 1
-                          </option>
-                          <option className="text-gray-700" value="">
-                            Thủ Đức
-                          </option>
-                          <option className="text-gray-700" value="">
-                            Bình Thạnh
-                          </option>
-                        </select>
-                      </div>
+                  <div className="border border-[#0008f8] rounded-sm">
+                    <div className="flex items-center bg-[#0008f8] space-x-2 px-3">
+                      <svg
+                        className="w-5 h-5 fill-current text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        height="1em"
+                        viewBox="0 0 512 512"
+                      >
+                        <path d="M190.5 68.8L225.3 128H224 152c-22.1 0-40-17.9-40-40s17.9-40 40-40h2.2c14.9 0 28.8 7.9 36.3 20.8zM64 88c0 14.4 3.5 28 9.6 40H32c-17.7 0-32 14.3-32 32v64c0 17.7 14.3 32 32 32H480c17.7 0 32-14.3 32-32V160c0-17.7-14.3-32-32-32H438.4c6.1-12 9.6-25.6 9.6-40c0-48.6-39.4-88-88-88h-2.2c-31.9 0-61.5 16.9-77.7 44.4L256 85.5l-24.1-41C215.7 16.9 186.1 0 154.2 0H152C103.4 0 64 39.4 64 88zm336 0c0 22.1-17.9 40-40 40H288h-1.3l34.8-59.2C329.1 55.9 342.9 48 357.8 48H360c22.1 0 40 17.9 40 40zM32 288V464c0 26.5 21.5 48 48 48H224V288H32zM288 512H432c26.5 0 48-21.5 48-48V288H288V512z"></path>
+                      </svg>
+                      <h3 className="text-white font-medium text-xl">
+                        Ưu đãi khi mua hàng
+                      </h3>
                     </div>
-                    <div className="p-2 flex flex-col space-y-2 h-[220px] overflow-x-auto">
-                      <div className="text-[14px]">
-                        <p className="text-[#0008f8] font-medium">
-                          Dola Hà Nội
-                        </p>
-                        <p>
-                          <span className="font-bold">Địa chỉ: </span>Tầng 6 -
-                          266 Đội Cấn, Phường Liễu Giai, Quận Ba Đình, Hà Nội
-                        </p>
-                      </div>
-                      <div className="text-[14px]">
-                        <p className="text-[#0008f8] font-medium">
-                          Dola Hà Nội
-                        </p>
-                        <p>
-                          <span className="font-bold">Địa chỉ: </span>Tầng 6 -
-                          266 Đội Cấn, Phường Liễu Giai, Quận Ba Đình, Hà Nội
-                        </p>
-                      </div>
-                      <div className="text-[14px]">
-                        <p className="text-[#0008f8] font-medium">
-                          Dola Hà Nội
-                        </p>
-                        <p>
-                          <span className="font-bold">Địa chỉ: </span>Tầng 6 -
-                          266 Đội Cấn, Phường Liễu Giai, Quận Ba Đình, Hà Nội
-                        </p>
-                      </div>
-                      <div className="text-[14px]">
-                        <p className="text-[#0008f8] font-medium">
-                          Dola Hà Nội
-                        </p>
-                        <p>
-                          <span className="font-bold">Địa chỉ: </span>Tầng 6 -
-                          266 Đội Cấn, Phường Liễu Giai, Quận Ba Đình, Hà Nội
-                        </p>
-                      </div>
-                      <div className="text-[14px]">
-                        <p className="text-[#0008f8] font-medium">
-                          Dola Hà Nội
-                        </p>
-                        <p>
-                          <span className="font-bold">Địa chỉ: </span>Tầng 6 -
-                          266 Đội Cấn, Phường Liễu Giai, Quận Ba Đình, Hà Nội
-                        </p>
-                      </div>
-                      <div className="text-[14px]">
-                        <p className="text-[#0008f8] font-medium">
-                          Dola Hà Nội
-                        </p>
-                        <p>
-                          <span className="font-bold">Địa chỉ: </span>Tầng 6 -
-                          266 Đội Cấn, Phường Liễu Giai, Quận Ba Đình, Hà Nội
-                        </p>
-                      </div>
+                    <div className="flex flex-col space-y-2 p-3">
+                      <p className="text-[14px]">
+                        ✔️ Hỗ trợ trả góp 0% chỉ cần CCCD gắn chip hoặc 0% qua
+                        thẻ tín dụng
+                      </p>
+                      <p className="text-[14px]">
+                        ✔️ Nhập mã <span className="font-bold">ZALOPAYMT</span>{" "}
+                        giảm ngay 1% tối đa{" "}
+                        <span className="font-bold">200.000đ</span> khi thanh
+                        toán qua Zalo Pay
+                      </p>
+                      <p className="text-[14px]">
+                        ✔️ Giảm 50% tối đa{" "}
+                        <span className="font-bold">100.000đ</span> cho thành
+                        viên mới của Kredivo
+                      </p>
+                      <p className="text-[14px]">
+                        ✔️ Giảm 5% tối đa{" "}
+                        <span className="font-bold">200.000đ</span>, áp dụng kỳ
+                        hạn 6/12 tháng khi thanh toán qua Kredivo
+                      </p>
+                      <p className="text-[14px]">
+                        ✔️ Giảm 50% tối đa 100.000đ, áp dụng cho đơn hàng từ{" "}
+                        <span className="font-bold">200.000đ</span> cho người
+                        dùng mới của Home Pay Later
+                      </p>
+                      <p className="text-[14px]">
+                        ✔️ Giảm 5% tối đa{" "}
+                        <span className="font-bold">200.000đ</span> cho đơn từ{" "}
+                        <span className="font-bold">200.000đ</span> khi thanh
+                        toán qua Home PayLater
+                      </p>
                     </div>
                   </div>
-                  {/* <div className="flex flex-col space-y-2 p-1">
+                </div>
+                <div className="w-2/5 flex flex-col space-y-6">
+                  <div className="border border-[#0008f8] rounded-sm">
+                    <div className="flex items-center bg-[#0008f8] space-x-2 px-3">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="bi bi-bookmarks-fill w-5 h-5 fill-current text-white"
+                        height="1em"
+                        viewBox="0 0 576 512"
+                      >
+                        <path d="M408 120c0 54.6-73.1 151.9-105.2 192c-7.7 9.6-22 9.6-29.6 0C241.1 271.9 168 174.6 168 120C168 53.7 221.7 0 288 0s120 53.7 120 120zm8 80.4c3.5-6.9 6.7-13.8 9.6-20.6c.5-1.2 1-2.5 1.5-3.7l116-46.4C558.9 123.4 576 135 576 152V422.8c0 9.8-6 18.6-15.1 22.3L416 503V200.4zM137.6 138.3c2.4 14.1 7.2 28.3 12.8 41.5c2.9 6.8 6.1 13.7 9.6 20.6V451.8L32.9 502.7C17.1 509 0 497.4 0 480.4V209.6c0-9.8 6-18.6 15.1-22.3l122.6-49zM327.8 332c13.9-17.4 35.7-45.7 56.2-77V504.3L192 449.4V255c20.5 31.3 42.3 59.6 56.2 77c20.5 25.6 59.1 25.6 79.6 0zM288 152a40 40 0 1 0 0-80 40 40 0 1 0 0 80z"></path>
+                      </svg>
+                      <h3 className="text-white font-medium text-xl">
+                        Hệ thống cửa hàng
+                      </h3>
+                    </div>
+                    <div className="p-2">
+                      <div className="flex items-center justify-between">
+                        <div className="bg-[#0008f8] text-[14px] p-1 rounded-md">
+                          <select className="outline-none text-white font-medium">
+                            <option className="text-gray-700" value="">
+                              Chọn tỉnh thành
+                            </option>
+                            <option className="text-gray-700" value="">
+                              Hà Nội
+                            </option>
+                            <option className="text-gray-700" value="">
+                              Hồ Chí Minh
+                            </option>
+                            <option className="text-gray-700" value="">
+                              Đà Nẵng
+                            </option>
+                            <option className="text-gray-700" value="">
+                              Cần Thơ
+                            </option>
+                            <option className="text-gray-700" value="">
+                              Bình Dương
+                            </option>
+                          </select>
+                        </div>
+                        <div className="border border-[#0008f8] text-[14px] p-1 rounded-md">
+                          <select className="outline-none text-gray-600 font-medium">
+                            <option className="text-gray-700" value="">
+                              Chọn quận/huyện
+                            </option>
+                            <option className="text-gray-700" value="">
+                              Quận 1
+                            </option>
+                            <option className="text-gray-700" value="">
+                              Thủ Đức
+                            </option>
+                            <option className="text-gray-700" value="">
+                              Bình Thạnh
+                            </option>
+                          </select>
+                        </div>
+                      </div>
+                      <div className="p-2 flex flex-col space-y-2 h-[220px] overflow-x-auto">
+                        <div className="text-[14px]">
+                          <p className="text-[#0008f8] font-medium">
+                            Dola Hà Nội
+                          </p>
+                          <p>
+                            <span className="font-bold">Địa chỉ: </span>Tầng 6 -
+                            266 Đội Cấn, Phường Liễu Giai, Quận Ba Đình, Hà Nội
+                          </p>
+                        </div>
+                        <div className="text-[14px]">
+                          <p className="text-[#0008f8] font-medium">
+                            Dola Hà Nội
+                          </p>
+                          <p>
+                            <span className="font-bold">Địa chỉ: </span>Tầng 6 -
+                            266 Đội Cấn, Phường Liễu Giai, Quận Ba Đình, Hà Nội
+                          </p>
+                        </div>
+                        <div className="text-[14px]">
+                          <p className="text-[#0008f8] font-medium">
+                            Dola Hà Nội
+                          </p>
+                          <p>
+                            <span className="font-bold">Địa chỉ: </span>Tầng 6 -
+                            266 Đội Cấn, Phường Liễu Giai, Quận Ba Đình, Hà Nội
+                          </p>
+                        </div>
+                        <div className="text-[14px]">
+                          <p className="text-[#0008f8] font-medium">
+                            Dola Hà Nội
+                          </p>
+                          <p>
+                            <span className="font-bold">Địa chỉ: </span>Tầng 6 -
+                            266 Đội Cấn, Phường Liễu Giai, Quận Ba Đình, Hà Nội
+                          </p>
+                        </div>
+                        <div className="text-[14px]">
+                          <p className="text-[#0008f8] font-medium">
+                            Dola Hà Nội
+                          </p>
+                          <p>
+                            <span className="font-bold">Địa chỉ: </span>Tầng 6 -
+                            266 Đội Cấn, Phường Liễu Giai, Quận Ba Đình, Hà Nội
+                          </p>
+                        </div>
+                        <div className="text-[14px]">
+                          <p className="text-[#0008f8] font-medium">
+                            Dola Hà Nội
+                          </p>
+                          <p>
+                            <span className="font-bold">Địa chỉ: </span>Tầng 6 -
+                            266 Đội Cấn, Phường Liễu Giai, Quận Ba Đình, Hà Nội
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    {/* <div className="flex flex-col space-y-2 p-1">
                     <div className="flex items-center space-x-2">
                       <img
                         className="h-[20px] w-[20px] object-cover"
@@ -436,127 +482,150 @@ function Detail() {
                       </p>
                     </div>
                   </div> */}
-                </div>
-                <div className="border border-[#0008f8] rounded-sm">
-                  <div className="flex items-center bg-[#0008f8] space-x-2 px-3">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="bi bi-bookmarks-fill w-5 h-5 fill-current text-white"
-                      viewBox="0 0 16 16"
-                    >
-                      <path d="M2 4a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v11.5a.5.5 0 0 1-.777.416L7 13.101l-4.223 2.815A.5.5 0 0 1 2 15.5V4z"></path>
-                      <path d="M4.268 1A2 2 0 0 1 6 0h6a2 2 0 0 1 2 2v11.5a.5.5 0 0 1-.777.416L13 13.768V2a1 1 0 0 0-1-1H4.268z"></path>
-                    </svg>
-                    <h3 className="text-white font-medium text-xl">
-                      Cam kết bán hàng
-                    </h3>
                   </div>
-                  <div className="flex flex-col space-y-2 p-1">
-                    <div className="flex items-center space-x-2">
-                      <img
-                        className="h-[20px] w-[20px] object-cover"
-                        src="/camket_1.webp"
-                        alt=""
-                      />
-                      <p className="text-[14px] text-gray-800">
-                        Hàng chính hãng. Nguồn gốc rõ ràng
-                      </p>
+                  <div className="border border-[#0008f8] rounded-sm">
+                    <div className="flex items-center bg-[#0008f8] space-x-2 px-3">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="bi bi-bookmarks-fill w-5 h-5 fill-current text-white"
+                        viewBox="0 0 16 16"
+                      >
+                        <path d="M2 4a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v11.5a.5.5 0 0 1-.777.416L7 13.101l-4.223 2.815A.5.5 0 0 1 2 15.5V4z"></path>
+                        <path d="M4.268 1A2 2 0 0 1 6 0h6a2 2 0 0 1 2 2v11.5a.5.5 0 0 1-.777.416L13 13.768V2a1 1 0 0 0-1-1H4.268z"></path>
+                      </svg>
+                      <h3 className="text-white font-medium text-xl">
+                        Cam kết bán hàng
+                      </h3>
                     </div>
-                    <div className="flex items-center space-x-2">
-                      <img
-                        className="h-[20px] w-[20px] object-cover"
-                        src="/camket_2.webp"
-                        alt=""
-                      />
-                      <p className="text-[14px] text-gray-800">
-                        Tặng máy nếu phát hiện máy sữa chửa
-                      </p>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <img
-                        className="h-[20px] w-[20px] object-cover"
-                        src="/camket_3.webp"
-                        alt=""
-                      />
-                      <p className="text-[14px] text-gray-800">
-                        Giao hàng ngay (nội thành TPHCM)
-                      </p>
-                    </div>
-                    <div className="flex items-center space-x-2 pb-2">
-                      <img
-                        className="h-[20px] w-[20px] object-cover"
-                        src="/camket_4.webp"
-                        alt=""
-                      />
-                      <p className="text-[14px] text-gray-800">
-                        Dùng thử 7 ngày miễn phí
-                      </p>
+                    <div className="flex flex-col space-y-2 p-1">
+                      <div className="flex items-center space-x-2">
+                        <img
+                          className="h-[20px] w-[20px] object-cover"
+                          src="/camket_1.webp"
+                          alt=""
+                        />
+                        <p className="text-[14px] text-gray-800">
+                          Hàng chính hãng. Nguồn gốc rõ ràng
+                        </p>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <img
+                          className="h-[20px] w-[20px] object-cover"
+                          src="/camket_2.webp"
+                          alt=""
+                        />
+                        <p className="text-[14px] text-gray-800">
+                          Tặng máy nếu phát hiện máy sữa chửa
+                        </p>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <img
+                          className="h-[20px] w-[20px] object-cover"
+                          src="/camket_3.webp"
+                          alt=""
+                        />
+                        <p className="text-[14px] text-gray-800">
+                          Giao hàng ngay (nội thành TPHCM)
+                        </p>
+                      </div>
+                      <div className="flex items-center space-x-2 pb-2">
+                        <img
+                          className="h-[20px] w-[20px] object-cover"
+                          src="/camket_4.webp"
+                          alt=""
+                        />
+                        <p className="text-[14px] text-gray-800">
+                          Dùng thử 7 ngày miễn phí
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className="border border-[#0008f8] rounded-sm">
-                  <div className="flex items-center bg-[#0008f8] space-x-2 px-3">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="bi bi-bookmarks-fill w-5 h-5 fill-current text-white"
-                      viewBox="0 0 16 16"
-                    >
-                      <path d="M5.52.359A.5.5 0 0 1 6 0h4a.5.5 0 0 1 .474.658L8.694 6H12.5a.5.5 0 0 1 .395.807l-7 9a.5.5 0 0 1-.873-.454L6.823 9.5H3.5a.5.5 0 0 1-.48-.641l2.5-8.5z"></path>
-                    </svg>
-                    <h3 className="text-white font-medium text-xl">
-                      Danh sách khuyến mãi
-                    </h3>
-                  </div>
-                  <div className="flex flex-col space-y-2 p-1">
-                    <div className="flex items-center space-x-2">
-                      <img
-                        className="h-[20px] w-[20px] object-cover"
-                        src="/km_product1.webp"
-                        alt=""
-                      />
-                      <p className="text-[14px] text-gray-800">
-                        Áp dụng Phiếu quà tặng/ Mã giảm giá theo sản phẩm.
-                      </p>
+                  <div className="border border-[#0008f8] rounded-sm">
+                    <div className="flex items-center bg-[#0008f8] space-x-2 px-3">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="bi bi-bookmarks-fill w-5 h-5 fill-current text-white"
+                        viewBox="0 0 16 16"
+                      >
+                        <path d="M5.52.359A.5.5 0 0 1 6 0h4a.5.5 0 0 1 .474.658L8.694 6H12.5a.5.5 0 0 1 .395.807l-7 9a.5.5 0 0 1-.873-.454L6.823 9.5H3.5a.5.5 0 0 1-.48-.641l2.5-8.5z"></path>
+                      </svg>
+                      <h3 className="text-white font-medium text-xl">
+                        Danh sách khuyến mãi
+                      </h3>
                     </div>
-                    <div className="flex items-center space-x-2">
-                      <img
-                        className="h-[20px] w-[20px] object-cover"
-                        src="/km_product1.webp"
-                        alt=""
-                      />
-                      <p className="text-[14px] text-gray-800">
-                        Giảm 10% khi mua từ 5 sản phẩm trở lênn
-                      </p>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <img
-                        className="h-[20px] w-[20px] object-cover"
-                        src="/km_product3.webp"
-                        alt=""
-                      />
-                      <p className="text-[14px] text-gray-800">
-                        Tặng 100.000đ mua hàng tại website thành viên Dola
-                        Phone, áp dụng khi mua Online tại Hồ Chí Minh và 1 số
-                        khu vực khác.
-                      </p>
+                    <div className="flex flex-col space-y-2 p-1">
+                      <div className="flex items-center space-x-2">
+                        <img
+                          className="h-[20px] w-[20px] object-cover"
+                          src="/km_product1.webp"
+                          alt=""
+                        />
+                        <p className="text-[14px] text-gray-800">
+                          Áp dụng Phiếu quà tặng/ Mã giảm giá theo sản phẩm.
+                        </p>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <img
+                          className="h-[20px] w-[20px] object-cover"
+                          src="/km_product1.webp"
+                          alt=""
+                        />
+                        <p className="text-[14px] text-gray-800">
+                          Giảm 10% khi mua từ 5 sản phẩm trở lênn
+                        </p>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <img
+                          className="h-[20px] w-[20px] object-cover"
+                          src="/km_product3.webp"
+                          alt=""
+                        />
+                        <p className="text-[14px] text-gray-800">
+                          Tặng 100.000đ mua hàng tại website thành viên Dola
+                          Phone, áp dụng khi mua Online tại Hồ Chí Minh và 1 số
+                          khu vực khác.
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
+
         <div className="py-7">
           <div className="flex space-x-7">
             <div className="h-auto bg-white rounded-sm w-3/5 p-2">
               <div className="flex space-x-3 pb-4">
-                <button onClick={() => setActiveTab("mo-ta")} className={`font-medium text-[17px] py-2 px-4 rounded-md cursor-pointer ${activeTab === 'mo-ta' ? 'bg-[#000F8F] text-white' : 'border border-gray-700'}`}>
+                <button
+                  onClick={() => setActiveTab("mo-ta")}
+                  className={`font-medium text-[17px] py-2 px-4 rounded-md cursor-pointer ${
+                    activeTab === "mo-ta"
+                      ? "bg-[#000F8F] text-white"
+                      : "border border-gray-700"
+                  }`}
+                >
                   Mô tả sản phẩm
                 </button>
-                <button onClick={() => setActiveTab("huong-dan")} className={`font-medium text-[17px] py-2 px-4 rounded-md cursor-pointer ${activeTab === 'huong-dan' ? 'bg-[#000F8F] text-white' : 'border border-gray-700'}`}>
+                <button
+                  onClick={() => setActiveTab("huong-dan")}
+                  className={`font-medium text-[17px] py-2 px-4 rounded-md cursor-pointer ${
+                    activeTab === "huong-dan"
+                      ? "bg-[#000F8F] text-white"
+                      : "border border-gray-700"
+                  }`}
+                >
                   Hướng dẫn mua hàng
                 </button>
-                <button onClick={() => setActiveTab("danh-gia")} className={`font-medium text-[17px] py-2 px-4 rounded-md cursor-pointer ${activeTab === 'danh-gia' ? 'bg-[#000F8F] text-white' : 'border border-gray-700'}`}>
+                <button
+                  onClick={() => setActiveTab("danh-gia")}
+                  className={`font-medium text-[17px] py-2 px-4 rounded-md cursor-pointer ${
+                    activeTab === "danh-gia"
+                      ? "bg-[#000F8F] text-white"
+                      : "border border-gray-700"
+                  }`}
+                >
                   Đánh giá sản phẩm
                 </button>
               </div>
@@ -794,7 +863,7 @@ function Detail() {
                   </div>
                 </div>
               )}
-              {activeTab === 'huong-dan' && (
+              {activeTab === "huong-dan" && (
                 // Hướng dẫn mua hàng
                 <div>
                   <p className="text-[15px] py-2">
@@ -811,10 +880,10 @@ function Detail() {
                       hàng để lựa chọn thêm sản phẩm vào giỏ hàng
                     </p>
                     <p className="py-2">
-                      Nếu bạn muốn xem giỏ hàng để cập nhật sản phẩm: Bấm vào xem
-                      giỏ hàng
+                      Nếu bạn muốn xem giỏ hàng để cập nhật sản phẩm: Bấm vào
+                      xem giỏ hàng
                     </p>
-                  <p className="py-2">
+                    <p className="py-2">
                       Nếu bạn muốn đặt hàng và thanh toán cho sản phẩm này vui
                       lòng bấm vào: Đặt hàng và thanh toán
                     </p>
@@ -829,10 +898,10 @@ function Detail() {
                       thống
                     </p>
                     <p className="py-2">
-                      Nếu bạn chưa có tài khoản và muốn đăng ký tài khoản vui lòng
-                      điền các thông tin cá nhân để tiếp tục đăng ký tài khoản.
-                      Khi có tài khoản bạn sẽ dễ dàng theo dõi được đơn hàng của
-                      mình
+                      Nếu bạn chưa có tài khoản và muốn đăng ký tài khoản vui
+                      lòng điền các thông tin cá nhân để tiếp tục đăng ký tài
+                      khoản. Khi có tài khoản bạn sẽ dễ dàng theo dõi được đơn
+                      hàng của mình
                     </p>
                     <p className="py-2">
                       Nếu bạn muốn mua hàng mà không cần tài khoản vui lòng nhấp
@@ -850,18 +919,19 @@ function Detail() {
                   </p>
                   <p className="text-[15px] py-2">
                     Sau khi nhận được đơn hàng bạn gửi chúng tôi sẽ liên hệ bằng
-                    cách gọi điện lại để xác nhận lại đơn hàng và địa chỉ của bạn.
+                    cách gọi điện lại để xác nhận lại đơn hàng và địa chỉ của
+                    bạn.
                   </p>
                   <p className="text-[15px] py-2">Trân trọng cảm ơn.</p>
                 </div>
               )}
-              {activeTab === 'danh-gia' && (
+              {activeTab === "danh-gia" && (
                 // Đánh giá sản phẩm
                 <div>
                   <p className="bg-[#D1ECF1] p-3 text-[15px] rounded-md border border-[#2db8d1]">
                     Bạn tiến hàng mua và cài app{" "}
-                    <span className="text-red-500">Đánh giá sản phẩm </span>mới sử
-                    dụng được tính năng này!
+                    <span className="text-red-500">Đánh giá sản phẩm </span>mới
+                    sử dụng được tính năng này!
                   </p>
                 </div>
               )}
@@ -1144,11 +1214,11 @@ function Detail() {
           </div>
         </div>
         {/* Sản phẩm liên quan */}
-        <RelatedProducts/>
+        <RelatedProducts relatedProducts={relatedProducts} />
         {/* Cùng phân khúc giá */}
-        <SamePriceRangeProducts/>
+        <SamePriceRangeProducts similarPriceProducts={similarPriceProducts} />
         {/* Sản phẩm đã xem */}
-        <ViewedProducts/>
+        <ViewedProducts />
       </div>
     </>
   );
