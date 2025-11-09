@@ -110,7 +110,7 @@ function MenuSider() {
     },
     {
       label: (
-        <Link to="/admin/store-systems">Quản lý chi nhánh cửa hàng</Link>
+        <Link to="/admin/store-branches">Quản lý chi nhánh cửa hàng</Link>
       ),
       icon: <HighlightOutlined />,
       key: "menu-13",

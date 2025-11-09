@@ -1,14 +1,14 @@
 import React from "react";
 import { Input, Button, Space } from "antd";
 import { PlusOutlined, SearchOutlined } from "@ant-design/icons";
-import StoreSystemModal from "./StoreSystemModal";
+import StoreSystemModal from "./StoreBranchModal";
 
 // const { Option } = Select;
-function StoreSystemToolbar({
+function StoreBranchToolbar({
     onSearch,
     onAdd, 
     onReload,
 }) {
     
 }
-export default StoreSystemToolbar;
+export default StoreBranchToolbar;
