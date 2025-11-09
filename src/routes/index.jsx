@@ -37,6 +37,8 @@ import AdminStoreSystemList from "../components/AdminStoreSystemList";
 import Payment from "../pages/User/Payment";
 import LoGin from "../pages/User/login/Login";
 import RegisTer from "../pages/User/register/Register";
+import Information from "../pages/User/Information-customer/Information";
+import Address from "../pages/User/Address-customer/Address";
 import BannerFormPage from "../components/AdminBannerList/BannerListModal";
 
 export const routes = [
@@ -115,6 +117,14 @@ export const routes = [
       {
         path: "dang-ky",
         element: <RegisTer />,
+      },
+      {
+        path: "thong-tin-khach-hang",
+        element: <Information />,
+      },
+      {
+        path: "dia-chi-khach-hang",
+        element: <Address />,
       },
       {
         path: "*",

@@ -37,7 +37,7 @@ function ShippingInfoForm({ onInfoChange }) {
       const result = await getShippingMethodList();
       const shippingList = result.shipping_methods.reverse();
       // setShippingOptions(result.shipping_methods.reverse());
-      console.log(result); 
+      console.log(result);
 
       const formattedOptions = shippingList.map((item) => ({
         id: item.shipping_method_id,
@@ -63,7 +63,7 @@ function ShippingInfoForm({ onInfoChange }) {
     fetchApi();
   };
 
-  
+
 
   useEffect(() => {
     async function fetchData() {

@@ -8,7 +8,7 @@ const API_DOMAIN = "http://127.0.0.1:8000/api/";
 //   return result;
 // };
 export const get = async (path) => {
-  
+
   const response = await fetch(API_DOMAIN + path);
   const result = await response.json();
   return result;
@@ -27,18 +27,43 @@ export const get = async (path) => {
 //     return result;
 // }
 
-export const post = async (path, options) => {
-  const isFormData = options instanceof FormData;
 
+// export const post = async (path, options) => {
+//   const isFormData = options instanceof FormData;
+
+//   const response = await fetch(API_DOMAIN + path, {
+//     method: "POST",
+//     headers: isFormData
+//       ? {}
+//       : {
+//           Accept: "application/json",
+//           "Content-Type": "application/json",
+//         },
+//     body: isFormData ? options : JSON.stringify(options),
+//   });
+
+//   const result = await response.json();
+
+//   if (!response.ok) {
+//     const error = new Error(result.message || "Request failed");
+//     error.response = {
+//       status: response.status,
+//       data: result,
+//     };
+//     throw error;
+//   }
+
+//   return result;
+// };
+
+export const post = async (path, options = {}) => {
   const response = await fetch(API_DOMAIN + path, {
     method: "POST",
-    headers: isFormData
-      ? {}
-      : {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-    body: isFormData ? options : JSON.stringify(options),
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(options),
   });
 
   const result = await response.json();
@@ -55,13 +80,47 @@ export const post = async (path, options) => {
   return result;
 };
 
+
+// export const del = async (path) => {
+//   const response = await fetch(API_DOMAIN + path, {
+//     method: "DELETE",
+//   });
+//   const result = await response.json();
+//   return result;
+// };
 export const del = async (path) => {
   const response = await fetch(API_DOMAIN + path, {
     method: "DELETE",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
   });
-  const result = await response.json();
+
+  // Một số API xóa trả 204 hoặc không có body
+  if (response.status === 204) {
+    return { message: "Xóa thành công (204 No Content)" };
+  }
+
+  let result = null;
+  try {
+    const text = await response.text(); // đọc raw
+    result = text ? JSON.parse(text) : null; // parse nếu có
+  } catch (e) {
+    result = null;
+  }
+
+  if (!response.ok) {
+    const err = new Error(result?.message || `Request failed: ${response.status}`);
+    err.response = { status: response.status, data: result };
+    throw err;
+  }
+
   return result;
 };
+
+
+
 
 // export const edit = async (path, options) => {
 //   const response = await fetch(`${API_DOMAIN}${path}`, {
@@ -89,9 +148,9 @@ export const edit = async (path, options) => {
       headers: isFormData
         ? { Accept: "application/json" }
         : {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
       body: isFormData ? options : JSON.stringify(options),
     });
 
@@ -169,4 +228,55 @@ export const postFormData = async (path, formData) => {
   // }
 
   // return result;
+};
+
+export const patch = async (path, options = {}) => {
+  try {
+    const response = await fetch(API_DOMAIN + path, {
+      method: "PATCH",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(options),
+    });
+
+    const result = await response.json();
+    if (!response.ok) {
+      const error = new Error(result.message || "PATCH request failed");
+      error.response = { status: response.status, data: result };
+      throw error;
+    }
+
+    return result;
+  } catch (error) {
+    console.error("❌ Lỗi khi gọi PATCH:", error);
+    throw error;
+  }
+};
+
+export const put = async (path, options = {}) => {
+  try {
+    const response = await fetch(API_DOMAIN + path, {
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(options),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      const error = new Error(result.message || "PUT request failed");
+      error.response = { status: response.status, data: result };
+      throw error;
+    }
+
+    return result;
+  } catch (error) {
+    console.error("❌ Lỗi khi gọi PUT:", error);
+    throw error;
+  }
 };

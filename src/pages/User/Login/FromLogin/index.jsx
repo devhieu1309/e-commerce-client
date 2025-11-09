@@ -35,7 +35,7 @@ function FromLogin() {
             setUser(data.user); // Cập nhật user ngay lập tức
 
             setError("Đăng nhập thành công!");
-            navigate("/");
+            navigate("/thong-tin-khach-hang");
         } else {
             setError(data.message || "Đăng nhập thất bại!");
         }
