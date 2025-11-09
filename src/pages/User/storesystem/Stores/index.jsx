@@ -1,4 +1,144 @@
+import React, { useState, useEffect } from "react";
+import { getStoreBranchList } from "../../../../services/storeBranchServices";
+import { getProvinces } from "../../../../services/addressServices";
+
 function Stores() {
+  const [storeBranches, setStoreBranches] = useState([]);
+  const [provinces, setProvinces] = useState([]);
+  const [filterStoreBranches, setFilterStoreBranches] = useState([]);
+  const [selectedBranch, setSelectedBranch] = useState(null);
+  const [selectedMap, setSelectedMap] = useState("");
+  const [selectedProvince, setSelectedProvince] = useState("");
+  const [searchText, setSearchText] = useState("");
+  const [isFiltering, setIsFiltering] = useState(false);
+
+  const fetchApi = async () => {
+    const result = await getStoreBranchList();
+    // console.log("Kết quả getProvinces:", result);
+    setStoreBranches(result.storeBranches);
+    setFilterStoreBranches(result.storeBranches);
+    if (result.storeBranches.length > 0) {
+      setSelectedMap(result.storeBranches[0].map_link);
+      setSelectedBranch(result.storeBranches[0]);
+    }
+  }
+  useEffect(() => {
+    fetchApi();
+  }, []);
+
+  // Lấy danh sách tỉnh thành
+  useEffect(() => {
+    const fetchApi = async () => {
+      const result = await getProvinces();
+      // console.log("Danh sách provinces từ API:", result.provinces);
+      setProvinces(result.provinces);
+    };
+    fetchApi();
+  }, []);
+
+  // Load lại trang
+  const handleReload = () => {
+    fetchApi();
+    // setSelectedProvince("");
+  };
+  // ✅ Hàm chuyển link rút gọn hoặc địa chỉ thành link embed Google Maps
+  const convertToEmbedLink = (link, branch) => {
+    if (!link) return "";
+
+    // Nếu là link rút gọn (maps.app.goo.gl) → dùng địa chỉ text fallback
+    if (link.includes("maps.app.goo.gl")) {
+      const encodedAddress = encodeURIComponent(
+        branch?.address?.detailed_address ||
+        branch?.name ||
+        "Việt Nam"
+      );
+      return `https://www.google.com/maps?q=${encodedAddress}&output=embed`;
+    }
+
+    // Nếu link có dạng ...maps?q=...
+    if (link.includes("maps?q=")) return link + "&output=embed";
+
+    // Nếu link có dạng /maps/place/...
+    if (link.includes("/maps/place/"))
+      return link.replace("/maps/place/", "/maps/embed?pb=");
+
+    // Nếu là link /maps (fallback)
+    if (link.includes("/maps"))
+      return link.replace("/maps", "/maps/embed");
+
+    // Fallback cuối cùng
+    return "https://www.google.com/maps/embed";
+  };
+  // Tìm kiếm chi nhánh theo tên
+  const handleSearchStoreBranch = (value) => {
+    if (!value) {
+      setIsFiltering(false);
+      setFilterStoreBranches(storeBranches);
+      return;
+    }
+
+    setIsFiltering(true);
+
+    const result = storeBranches.filter((storeBranch) =>
+      storeBranch.name.toLowerCase().includes(value.toLowerCase())
+    );
+    setFilterStoreBranches(result);
+    if (result.length > 0) {
+      setSelectedMap(result[0].map_link);
+    setSelectedBranch(result[0]);
+    }
+  };
+  //Lọc theo tỉnh
+  // const handleFilterByProvince = (e) => {
+  //   const provinceId = e.target.value;
+  //   setSelectedProvince(provinceId);
+
+  //   if (!provinceId) {
+  //     setIsFiltering(false);
+  //     setFilterStoreBranches(storeBranches);
+  //     return;
+  //   }
+
+  //   const resultFinal = storeBranches.filter(
+  //     (branch) =>
+  //       branch.address?.provinces_id === provinceId
+  //   );
+
+  //   setFilterStoreBranches(resultFinal);
+  //   if (resultFinal.length > 0) setSelectedMap(resultFinal[0].map_link);
+  // };
+
+  const handleFilterByProvince = (provinceName) => {
+    setSelectedProvince(provinceName);
+
+    if (!provinceName) {
+      setIsFiltering(false);
+      setFilterStoreBranches(storeBranches);
+      return;
+    }
+
+    const resultFinal = storeBranches.filter(
+      (branch) => branch.address?.province === provinceName
+    );
+
+    setFilterStoreBranches(resultFinal);
+    if (resultFinal.length > 0) {
+      setSelectedMap(resultFinal[0].map_link);
+      setSelectedBranch(resultFinal[0]);
+    }
+  };
+  // Format số điện thoại
+  const formatPhone = (phone) => {
+    return phone?.replace(/(\d{4})(\d{3})(\d{3})/, "$1.$2.$3");
+  };
+
+  // format địa chỉ
+  const formatFullAddress = (address) => {
+    if (!address) return "Chưa có địa chỉ";
+    // Ghép các phần của địa chỉ, bỏ phần undefined/null
+    return [address.detailed_address, address.ward, address.province].filter(Boolean).join(", ");
+  };
+
   return (
     <>
       <div className="container m-auto mt-8 mb-8 pl-30 pr-30">
@@ -64,37 +204,39 @@ function Stores() {
           {/* Bộ lọc */}
           <div className="p-4 mb-5 bg-gray-100 rounded-lg ">
             <h4 className="mb-2 text-gray-600">Tỉnh / Thành</h4>
-            <select className="w-full p-2 mb-3 text-base text-white bg-blue-800 rounded-md">
-              <option className="text-black bg-white" value="">
-                Chọn tỉnh thành
-              </option>
-              <option className="text-black bg-white" value="1">
-                TP HCM
-              </option>
-              <option className="text-black bg-white" value="2">
-                Hà Nội
-              </option>
-              <option className="text-black bg-white" value="3">
-                Đồng Nai
-              </option>
+            <select
+              className="w-full p-2 mb-3 text-base text-white bg-blue-800 rounded-md"
+              value={selectedProvince}
+              onChange={(e) => handleFilterByProvince(e.target.value)}
+            >
+              <option value="">Tất cả</option>
+              {provinces.map((item) => (
+                // <option key={item.provinces_id} value={item.provinces_id}>
+                //   {item.full_name}
+                // </option>
+                <option key={item.full_name} value={item.full_name}>
+                  {item.full_name}
+                </option>
+              ))}
             </select>
-
             <h4 className="text-gray-600">Nhập tên cửa hàng</h4>
             <input
               type="text"
               className="w-full p-2 mt-2 text-gray-600 border border-blue-300 rounded-md"
               placeholder="Nhập tên cửa hàng"
+              onChange={(e) => handleSearchStoreBranch(e.target.value)}
             />
           </div>
 
           {/* Danh sách cửa hàng */}
-          {[1, 2, 3, 4].map((i) => (
+          {/* {[1, 2, 3, 4].map((i) => ( */}
+          {filterStoreBranches.map((storeBranch, id) => (
             <div
-              key={i}
+              key={id}
               className="w-full p-4 mb-4 transition border border-gray-300 rounded-lg hover:border-blue-600"
             >
               <p className="text-base font-semibold text-blue-500">
-                Dola Sài Gòn
+                {storeBranch.name}
               </p>
               <p className="flex mt-2 text-gray-700">
                 <svg
@@ -110,7 +252,7 @@ function Stores() {
                     fill="#949494"
                   />
                 </svg>
-                Tầng 3, 70 Lữ Gia, Q.11, TP. HCM
+                {formatFullAddress(storeBranch.address)}
               </p>
               <p className="flex mt-2 text-blue-800">
                 <svg
@@ -126,19 +268,26 @@ function Stores() {
                     fill="#949494"
                   />
                 </svg>
-                1900 6750
+                {formatPhone(storeBranch.phone_number)}
               </p>
-              <button className="px-4 py-2 mt-3 transition bg-blue-100 rounded-full hover:bg-yellow-400 hover:text-white">
+              <button className="px-4 py-2 mt-3 transition bg-blue-100 rounded-full hover:bg-yellow-400 hover:text-white"
+                onClick={() => {
+                  setSelectedMap(storeBranch.map_link);
+                  setSelectedBranch(storeBranch);
+                }}>
                 Chỉ đường
               </button>
             </div>
+
           ))}
         </div>
 
         {/* Cột phải */}
         <div className="w-8/12">
           <iframe
-            src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3919.5692504136196!2d106.696811!3d10.767643!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752f1573f5d56f%3A0x300ecbf0d5ab5050!2zMTAgVHLhu4tuaCBWxINuIEPhuqVuLCBQaMaw4budbmcgQ-G6p3Ugw5RuZyBMw6NuaCwgUXXhuq1uIDEsIFRow6BuaCBwaOG7kSBI4buTIENow60gTWluaCwgVmnhu4d0IE5hbQ!5e0!3m2!1svi!2sus!4v1647421770627!5m2!1svi!2sus"
+            // src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3919.5692504136196!2d106.696811!3d10.767643!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752f1573f5d56f%3A0x300ecbf0d5ab5050!2zMTAgVHLhu4tuaCBWxINuIEPhuqVuLCBQaMaw4budbmcgQ-G6p3Ugw5RuZyBMw6NuaCwgUXXhuq1uIDEsIFRow6BuaCBwaOG7kSBI4buTIENow60gTWluaCwgVmnhu4d0IE5hbQ!5e0!3m2!1svi!2sus!4v1647421770627!5m2!1svi!2sus"
+            src={convertToEmbedLink(selectedMap, selectedBranch)}
+            // src={selectedMap}
             style={{ border: 0 }}
             className="w-full h-full"
             allowFullScreen
