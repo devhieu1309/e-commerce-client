@@ -4,6 +4,7 @@ import { Outlet } from "react-router-dom";
 import Message from "../../pages/User/IconEffect/Message";
 import NotificationWidget from "../../pages/User/IconEffect/NotificationWidget";
 import { useEffect, useState } from "react";
+import ChatBox from "../../pages/User/IconEffect/ChatBox";
 
 function LayoutUser() {
   const [user, setUser] = useState(() => {
@@ -39,10 +40,9 @@ function LayoutUser() {
       <Footer />
       <Message />
       <NotificationWidget />
+      <ChatBox />
     </>
   );
 }
-
-
 
 export default LayoutUser;
