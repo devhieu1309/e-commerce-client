@@ -231,7 +231,7 @@ function FromAddress() {
                             <Link to="#" className="block text-black hover:text-yellow-600">
                                 Đơn hàng của bạn
                             </Link>
-                            <Link to="#" className="block text-black hover:text-yellow-600">
+                            <Link to="/thay-doi-mat-khau" className="block text-black hover:text-yellow-600">
                                 Đổi mật khẩu
                             </Link>
                             <p className="text-yellow-500 font-medium">Sổ địa chỉ</p>

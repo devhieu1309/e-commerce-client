@@ -302,7 +302,7 @@ function Header({ user, onLogout }) {
 
                 {/* <li className="flex space-x-1.5 items-center justify-center w-[120px] relative"> */}
                 <li className="flex space-x-1.5 items-center justify-center w-[120px] group">
-                  <span classNme="">
+                  <span className="">
                     <img
                       className="h-[50px] w-[50px] object-contain"
                       src="/icons8-cart-100.png"

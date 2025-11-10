@@ -22,6 +22,11 @@ import Cart from "../pages/User/Cart";
 import Review from "../pages/User/Review";
 import Relatedquestions from "../pages/User/Relatedquestions";
 import Contact from "../pages/User/Contact";
+import LoGin from "../pages/User/login/Login";
+import RegisTer from "../pages/User/register/Register";
+import Information from "../pages/User/Information-customer/Information";
+import Address from "../pages/User/Address-customer/Address";
+import ChangePassword from "../pages/User/Change-Password/ChangePassword";
 
 import AdminBannerList from "../components/AdminBannerList";
 import AdminNewsList from "../components/News/NewsList";
@@ -35,10 +40,6 @@ import OnOffUserList from "../components/On_Off_User";
 import VideoReview from "../components/VideoReview";
 import AdminStoreSystemList from "../components/AdminStoreSystemList";
 import Payment from "../pages/User/Payment";
-import LoGin from "../pages/User/login/Login";
-import RegisTer from "../pages/User/register/Register";
-import Information from "../pages/User/Information-customer/Information";
-import Address from "../pages/User/Address-customer/Address";
 import BannerFormPage from "../components/AdminBannerList/BannerListModal";
 
 export const routes = [
@@ -125,6 +126,10 @@ export const routes = [
       {
         path: "dia-chi-khach-hang",
         element: <Address />,
+      },
+      {
+        path: "thay-doi-mat-khau",
+        element: <ChangePassword />,
       },
       {
         path: "*",

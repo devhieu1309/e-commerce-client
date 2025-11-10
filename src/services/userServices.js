@@ -1,8 +1,8 @@
-import { del, edit, get, post } from "../utils/request";
+import { del, edit, get, post, patch } from "../utils/request";
 
 export const getUserList = async () => {
-   const result = await get('users');
-    return result;
+  const result = await get('users');
+  return result;
 }
 
 export const storeUser = async (option) => {
@@ -22,6 +22,11 @@ export const deleteUser = async (id) => {
 
 export const searchUser = async (query) => {
   const result = await get(`users/search?query=${encodeURIComponent(query)}`);
+  return result;
+};
+
+export const changePassword = async (id, data) => {
+  const result = await patch(`users/${id}/change-password`, data);
   return result;
 };
 
