@@ -11,20 +11,6 @@ function AdminStoreBranchList() {
     const [filterBranches, setFilterBranches] = useState([]);
     const [isFiltering, setIsFiltering] = useState(false);
 
-    // Lấy danh sách chi nhánh từ API
-    // useEffect(() => {
-    //     const fetchApi = async () => {
-    //         try {
-    //             const result = await getStoreBranchList();
-    //             // console.log("Kết quả getProvinces:", result);
-    //             setBranches(result.storeBranches);
-    //         } catch (error) {
-    //             console.error("Lỗi khi tải danh sách chi nhánh:", error);
-    //         }
-    //     };
-    //     fetchApi();
-    // }, []);
-
     const fetchApi = async () => {
         const result = await getStoreBranchList();
         // console.log("Kết quả getProvinces:", result);

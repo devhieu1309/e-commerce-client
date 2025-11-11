@@ -1,5 +1,5 @@
 import HomeStore from "../HomeStore";
-import Stores from "../Stores";
+import Stores from "../Stores/index";
 
 function StoreSystem() {
   return (
