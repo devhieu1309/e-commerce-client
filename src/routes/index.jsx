@@ -27,6 +27,7 @@ import RegisTer from "../pages/User/register/Register";
 import Information from "../pages/User/Information-customer/Information";
 import Address from "../pages/User/Address-customer/Address";
 import ChangePassword from "../pages/User/Change-Password/ChangePassword";
+import Oder from "../pages/User/Oder-customer/Oder";
 
 import AdminBannerList from "../components/AdminBannerList";
 import AdminNewsList from "../components/News/NewsList";
@@ -130,6 +131,10 @@ export const routes = [
       {
         path: "thay-doi-mat-khau",
         element: <ChangePassword />,
+      },
+      {
+        path: "don-hang-khach-hang",
+        element: <Oder />,
       },
       {
         path: "*",

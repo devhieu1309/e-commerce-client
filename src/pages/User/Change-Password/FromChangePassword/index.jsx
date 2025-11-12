@@ -29,28 +29,59 @@ function FromChangePassword() {
         setErrors((prev) => ({ ...prev, [name]: "" })); // xóa lỗi khi người dùng gõ lại
     };
 
-    const validateForm = () => {
-        const newErrors = {};
-        if (!formData.old_password.trim())
-            newErrors.old_password = "Vui lòng nhập mật khẩu cũ!";
-        if (!formData.new_password.trim())
-            newErrors.new_password = "Vui lòng nhập mật khẩu mới!";
-        if (!formData.confirm_password.trim())
-            newErrors.confirm_password = "Vui lòng xác nhận lại mật khẩu!";
-        if (
-            formData.new_password.trim() &&
-            formData.confirm_password.trim() &&
-            formData.new_password !== formData.confirm_password
-        )
-            newErrors.confirm_password = "Mật khẩu xác nhận không khớp!";
+    // const handleSubmit = async (e) => {
+    //     e.preventDefault();
+    //     if (!validateForm()) return;
 
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    };
+    //     try {
+    //         const res = await changePassword(user.user_id, formData);
+
+    //         if (res.success) {
+    //             apiNoti.success({
+    //                 message: "Thành công",
+    //                 description: "Đổi mật khẩu thành công!",
+    //             });
+
+    //             setFormData({
+    //                 old_password: "",
+    //                 new_password: "",
+    //                 confirm_password: "",
+    //             });
+    //             setErrors({});
+    //         } else {
+    //             // Nếu BE trả message “Mật khẩu cũ không chính xác”
+    //             if (res.message && res.message.includes("Mật khẩu cũ")) {
+    //                 setErrors((prev) => ({
+    //                     ...prev,
+    //                     old_password: "Sai mật khẩu cũ!",
+    //                 }));
+    //             }
+
+    //             apiNoti.error({
+    //                 message: "Lỗi",
+    //                 description: res.message || "Đổi mật khẩu thất bại!",
+    //             });
+    //         }
+    //     } catch (err) {
+    //         const msg = err?.response?.data?.message || "Không thể đổi mật khẩu, vui lòng thử lại!";
+
+    //         // Nếu lỗi BE trả về có message “Mật khẩu cũ không chính xác”
+    //         if (msg.includes("Mật khẩu cũ")) {
+    //             setErrors((prev) => ({
+    //                 ...prev,
+    //                 old_password: "Sai mật khẩu cũ!",
+    //             }));
+    //         }
+
+    //         apiNoti.error({
+    //             message: "Lỗi",
+    //             description: msg,
+    //         });
+    //     }
+    // };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!validateForm()) return;
 
         try {
             const res = await changePassword(user.user_id, formData);
@@ -58,46 +89,30 @@ function FromChangePassword() {
             if (res.success) {
                 apiNoti.success({
                     message: "Thành công",
-                    description: "Đổi mật khẩu thành công!",
+                    description: res.message || "Đổi mật khẩu thành công!",
                 });
-
-                setFormData({
-                    old_password: "",
-                    new_password: "",
-                    confirm_password: "",
-                });
+                setFormData({ old_password: "", new_password: "", confirm_password: "" });
                 setErrors({});
-            } else {
-                // Nếu BE trả message “Mật khẩu cũ không chính xác”
-                if (res.message && res.message.includes("Mật khẩu cũ")) {
-                    setErrors((prev) => ({
-                        ...prev,
-                        old_password: "Sai mật khẩu cũ!",
-                    }));
-                }
-
-                apiNoti.error({
-                    message: "Lỗi",
-                    description: res.message || "Đổi mật khẩu thất bại!",
-                });
             }
         } catch (err) {
-            const msg = err?.response?.data?.message || "Không thể đổi mật khẩu, vui lòng thử lại!";
+            const data = err?.response?.data;
 
-            // Nếu lỗi BE trả về có message “Mật khẩu cũ không chính xác”
-            if (msg.includes("Mật khẩu cũ")) {
-                setErrors((prev) => ({
-                    ...prev,
-                    old_password: "Sai mật khẩu cũ!",
-                }));
+            // Laravel validation error (422)
+            if (data?.errors) {
+                const fieldErrors = {};
+                Object.entries(data.errors).forEach(([key, val]) => {
+                    fieldErrors[key] = val[0];
+                });
+                setErrors(fieldErrors);
             }
 
             apiNoti.error({
                 message: "Lỗi",
-                description: msg,
+                description: data?.message || "Không thể đổi mật khẩu, vui lòng thử lại!",
             });
         }
     };
+
 
     return (
         <>
@@ -147,9 +162,8 @@ function FromChangePassword() {
                                     name="old_password"
                                     value={formData.old_password}
                                     onChange={handleChange}
-                                    className={`w-[520px] border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-400 ${
-                                        errors.old_password ? "border-red-500" : "border-gray-300"
-                                    }`}
+                                    className={`w-[520px] border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-400 ${errors.old_password ? "border-red-500" : "border-gray-300"
+                                        }`}
                                 />
                                 {errors.old_password && (
                                     <p className="text-red-500 text-sm mt-1">{errors.old_password}</p>
@@ -165,9 +179,8 @@ function FromChangePassword() {
                                     name="new_password"
                                     value={formData.new_password}
                                     onChange={handleChange}
-                                    className={`w-[520px] border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-400 ${
-                                        errors.new_password ? "border-red-500" : "border-gray-300"
-                                    }`}
+                                    className={`w-[520px] border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-400 ${errors.new_password ? "border-red-500" : "border-gray-300"
+                                        }`}
                                 />
                                 {errors.new_password && (
                                     <p className="text-red-500 text-sm mt-1">{errors.new_password}</p>
@@ -183,9 +196,8 @@ function FromChangePassword() {
                                     name="confirm_password"
                                     value={formData.confirm_password}
                                     onChange={handleChange}
-                                    className={`w-[520px] border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-400 ${
-                                        errors.confirm_password ? "border-red-500" : "border-gray-300"
-                                    }`}
+                                    className={`w-[520px] border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-400 ${errors.confirm_password ? "border-red-500" : "border-gray-300"
+                                        }`}
                                 />
                                 {errors.confirm_password && (
                                     <p className="text-red-500 text-sm mt-1">{errors.confirm_password}</p>

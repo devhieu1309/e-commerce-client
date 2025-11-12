@@ -126,19 +126,79 @@ function FromAddress() {
         });
     };
 
-    const validateForm = () => {
-        const newErrors = {};
-        if (!formData.name?.trim()) newErrors.name = "Vui lòng nhập họ tên!";
-        if (!formData.phone?.trim()) newErrors.phone = "Vui lòng nhập số điện thoại!";
-        if (!formData.detailed_address?.trim())
-            newErrors.detailed_address = "Vui lòng nhập địa chỉ!";
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    };
+    // const handleSubmit = async (e) => {
+    //     e.preventDefault();
+    //     if (!validateForm()) return;
+
+    //     try {
+    //         const payload = {
+    //             ...formData,
+    //             isDefault: formData.isDefault ? 1 : 0,
+    //         };
+
+    //         if (payload.isDefault === 1) {
+    //             const all = await getAddressesByUser(user.user_id);
+
+    //             // 🔹 Lọc ra toàn bộ địa chỉ đang là mặc định (trừ chính cái đang sửa)
+    //             const defaultOnes = all.filter(
+    //                 (a) => a.isDefault === 1 && (!editMode || a.address_id !== editingId)
+    //             );
+
+    //             // 🔹 Reset toàn bộ về thường (chờ tất cả hoàn tất trước khi tiếp tục)
+    //             await Promise.all(
+    //                 defaultOnes.map((addr) =>
+    //                     updateAddress(addr.address_id, { ...addr, isDefault: 0 })
+    //                 )
+    //             );
+
+    //             // 🔹 Sau khi reset xong -> cập nhật hoặc thêm mới
+    //             if (editMode) {
+    //                 await updateAddress(editingId, payload);
+    //                 apiNoti.success({
+    //                     message: "Thông báo",
+    //                     description: "Cập nhật địa chỉ thành công!",
+    //                 });
+    //             } else {
+    //                 await addAddress(payload);
+    //                 apiNoti.success({
+    //                     message: "Thông báo",
+    //                     description: "Thêm địa chỉ mới thành công!",
+    //                 });
+    //             }
+    //         } else {
+    //             // 🔹 Nếu không tick mặc định -> cập nhật / thêm bình thường
+    //             if (editMode) {
+    //                 await updateAddress(editingId, payload);
+    //                 apiNoti.success({
+    //                     message: "Thông báo",
+    //                     description: "Cập nhật địa chỉ thành công!",
+    //                 });
+    //             } else {
+    //                 await addAddress(payload);
+    //                 apiNoti.success({
+    //                     message: "Thông báo",
+    //                     description: "Thêm địa chỉ mới thành công!",
+    //                 });
+    //             }
+    //         }
+
+    //         // 🔹 Fetch lại danh sách sau khi tất cả thao tác đã hoàn tất
+    //         await fetchAddresses(user.user_id);
+
+    //         // 🔹 Đóng modal sau khi cập nhật xong
+    //         setTimeout(() => setShowModal(false), 150);
+    //     } catch (error) {
+    //         console.error("Lỗi khi lưu địa chỉ:", error);
+    //         apiNoti.error({
+    //             message: "Lỗi",
+    //             description: "Có lỗi xảy ra khi lưu địa chỉ!",
+    //         });
+    //     }
+    // };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!validateForm()) return;
+        setErrors({});
 
         try {
             const payload = {
@@ -146,66 +206,41 @@ function FromAddress() {
                 isDefault: formData.isDefault ? 1 : 0,
             };
 
-            if (payload.isDefault === 1) {
-                const all = await getAddressesByUser(user.user_id);
-
-                // 🔹 Lọc ra toàn bộ địa chỉ đang là mặc định (trừ chính cái đang sửa)
-                const defaultOnes = all.filter(
-                    (a) => a.isDefault === 1 && (!editMode || a.address_id !== editingId)
-                );
-
-                // 🔹 Reset toàn bộ về thường (chờ tất cả hoàn tất trước khi tiếp tục)
-                await Promise.all(
-                    defaultOnes.map((addr) =>
-                        updateAddress(addr.address_id, { ...addr, isDefault: 0 })
-                    )
-                );
-
-                // 🔹 Sau khi reset xong -> cập nhật hoặc thêm mới
-                if (editMode) {
-                    await updateAddress(editingId, payload);
-                    apiNoti.success({
-                        message: "Thông báo",
-                        description: "Cập nhật địa chỉ thành công!",
-                    });
-                } else {
-                    await addAddress(payload);
-                    apiNoti.success({
-                        message: "Thông báo",
-                        description: "Thêm địa chỉ mới thành công!",
-                    });
-                }
+            if (editMode) {
+                await updateAddress(editingId, payload);
+                apiNoti.success({
+                    message: "Thành công",
+                    description: "Cập nhật địa chỉ thành công!",
+                });
             } else {
-                // 🔹 Nếu không tick mặc định -> cập nhật / thêm bình thường
-                if (editMode) {
-                    await updateAddress(editingId, payload);
-                    apiNoti.success({
-                        message: "Thông báo",
-                        description: "Cập nhật địa chỉ thành công!",
-                    });
-                } else {
-                    await addAddress(payload);
-                    apiNoti.success({
-                        message: "Thông báo",
-                        description: "Thêm địa chỉ mới thành công!",
-                    });
-                }
+                await addAddress(payload);
+                apiNoti.success({
+                    message: "Thành công",
+                    description: "Thêm địa chỉ mới thành công!",
+                });
             }
 
-            // 🔹 Fetch lại danh sách sau khi tất cả thao tác đã hoàn tất
             await fetchAddresses(user.user_id);
-
-            // 🔹 Đóng modal sau khi cập nhật xong
-            setTimeout(() => setShowModal(false), 150);
+            setTimeout(() => setShowModal(false), 200);
         } catch (error) {
-            console.error("Lỗi khi lưu địa chỉ:", error);
+            const data = error?.response?.data;
+            const fieldErrors = {};
+
+            if (data?.errors) {
+                Object.entries(data.errors).forEach(([key, value]) => {
+                    fieldErrors[key] = value[0];
+                });
+            }
+
+            setErrors(fieldErrors);
+
             apiNoti.error({
                 message: "Lỗi",
-                description: "Có lỗi xảy ra khi lưu địa chỉ!",
+                description:
+                    data?.message || "Không thể lưu địa chỉ, vui lòng kiểm tra lại thông tin!",
             });
         }
     };
-
 
 
 
