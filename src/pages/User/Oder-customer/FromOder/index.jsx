@@ -72,7 +72,7 @@ function FromOder() {
                     ) : user ? (
                         <p className="mb-2">
                             <span className="font-semibold">Xin chào, </span>
-                            <span className="text-red-600 font-semibold">{user.name}</span> !
+                            <span className="text-blue-600 font-semibold">{user.name}</span> !
                         </p>
                     ) : (
                         <p className="text-gray-500 italic">Đang tải thông tin...</p>
@@ -94,45 +94,35 @@ function FromOder() {
 
                 {/* Cột phải */}
                 <div className="md:w-2/3 w-full md:pl-8">
-                    <h5 className="font-semibold uppercase mb-5 text-lg">THÔNG TIN TÀI KHOẢN</h5>
+                    <h5 className="font-semibold uppercase mb-5 text-lg">ĐƠN HÀNG CỦA BẠN</h5>
 
-                    {user ? (
-                        <>
-                            <p className="mb-2">
-                                <strong>Họ tên:</strong> {user.name}
-                            </p>
-                            <p className="mb-2">
-                                <strong>Email:</strong> {user.email}
-                            </p>
+                    <div className="overflow-x-auto border border-gray-300 rounded-md">
+                        <table className="w-full border-collapse text-sm text-left">
+                            <thead>
+                                <tr className="bg-[#FDC300] text-white uppercase">
+                                    <th className="px-4 py-2 border border-white text-[15px] font-semibold text-white">Đơn hàng</th>
+                                    <th className="px-4 py-2 border border-white text-[15px] font-semibold text-white">Ngày</th>
+                                    <th className="px-4 py-2 border border-white text-[15px] font-semibold text-white">Địa chỉ</th>
+                                    <th className="px-4 py-2 border border-white text-[15px] font-semibold text-white">Giá trị đơn hàng</th>
+                                    <th className="px-4 py-2 border border-white text-[15px] font-semibold text-white">TT thanh toán</th>
+                                    <th className="px-4 py-2 border border-white text-[15px] font-semibold text-white">TT vận chuyển</th>
+                                </tr>
+                            </thead>
 
-                            <div className="mt-2">
-
-                                {loadingAddress ? (
-                                    <p className="text-gray-500 italic">Đang tải địa chỉ...</p>
-                                ) : defaultAddress ? (
-                                    <div>
-                                        <p>
-                                            <strong>Địa chỉ:</strong>{" "}
-                                            {[
-                                                defaultAddress.detailed_address,
-                                                defaultAddress.ward_name,
-                                                defaultAddress.district_name,
-                                                defaultAddress.province_name,
-                                                defaultAddress.country_name,
-                                            ]
-                                                .filter(Boolean)
-                                                .join(", ")}
-                                        </p>
-                                    </div>
-                                ) : (
-                                    <p className="text-gray-500 italic">Chưa có địa chỉ nào được lưu.</p>
-                                )}
-                            </div>
-                        </>
-                    ) : (
-                        <p className="text-gray-500 italic">Không có dữ liệu người dùng</p>
-                    )}
+                            <tbody>
+                                <tr>
+                                    <td
+                                        colSpan="6"
+                                        className="text-center py-6 text-gray-600 italic border-t border-gray-300"
+                                    >
+                                        Không có đơn hàng nào.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
+
             </div>
         </div>
     );

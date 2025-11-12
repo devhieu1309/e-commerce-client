@@ -80,7 +80,7 @@ function FromInformation() {
 
           <div className="mt-5 space-y-2">
             <p className="text-yellow-500 font-medium">Thông tin tài khoản</p>
-            <Link to="#" className="block text-black hover:text-yellow-600">
+            <Link to="/don-hang-khach-hang" className="block text-black hover:text-yellow-600">
               Đơn hàng của bạn
             </Link>
             <Link to="/thay-doi-mat-khau" className="block text-black hover:text-yellow-600">
