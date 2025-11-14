@@ -1,11 +1,11 @@
-import { Link } from "react-router-dom";
 import React, { useState } from "react";
+import { notification } from "antd";
 import { register } from "../../../../services/authServices";
+import { Link, useNavigate } from "react-router-dom";
 
 
 function FromRegister() {
-
-    const [showForgot, setShowForgot] = useState(false);
+    const [apiNoti, contextHolder] = notification.useNotification();
 
     const [formData, setFormData] = useState({
         name: "",
@@ -14,43 +14,66 @@ function FromRegister() {
         password: "",
     });
 
-    const [message, setMessage] = useState("");
     const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false);
 
-    // Xử lý thay đổi input
+    // 🟢 Xử lý thay đổi input
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        setFormData((prev) => ({ ...prev, [name]: value }));
+        setErrors((prev) => ({ ...prev, [name]: "" })); // xóa lỗi khi user gõ lại
     };
 
-    // Xử lý submit form
+    const navigate = useNavigate();
+
+    // 🟢 Xử lý submit form
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setErrors({});
         setLoading(true);
-        setMessage("");
+
 
         try {
-            const response = await register(formData);
-            setMessage("Đăng ký thành công!");
-            setErrors({});
-            console.log(response.data);
-        } catch (error) {
-            if (error.response && error.response.status === 422) {
-                setErrors(error.response.data.errors || {});
-                setMessage("Vui lòng kiểm tra lại thông tin!");
+            const res = await register(formData);
+
+            if (res.status) {
+                apiNoti.success({
+                    message: "Thành công",
+                    description: "Đăng ký tài khoản thành công!",
+                });
+
+                setFormData({
+                    name: "",
+                    email: "",
+                    phone: "",
+                    password: "",
+                });
+                setTimeout(() => {
+                    navigate("/dang-nhap");
+                }, 0);
             } else {
-                setMessage("Có lỗi xảy ra trong quá trình đăng ký!");
+                if (res.errors) setErrors(res.errors);
+
+                apiNoti.error({
+                    message: "Lỗi",
+                    description: res.message || "Đăng ký thất bại!",
+                });
             }
-        }
-        finally {
+        } catch (error) {
+            apiNoti.error({
+                message: "Lỗi",
+                description: "Không thể kết nối đến máy chủ!",
+            });
+            console.error("Lỗi khi đăng ký:", error);
+        } finally {
             setLoading(false);
         }
     };
 
     return (
         <>
-            <div className=" flex items-center justify-center mt-5 mb-5 font-sans">
-                {/* Khung chính */}
+            {contextHolder}
+            <div className="flex items-center justify-center mt-5 mb-5 font-sans">
                 <div className="bg-white shadow-lg rounded-lg w-96 p-6 border border-gray-100">
                     {/* Tabs */}
                     <div className="flex justify-center border-b border-gray-300">
@@ -63,68 +86,99 @@ function FromRegister() {
                         <button className="w-1/2 text-blue-700 font-medium border-b-2 border-blue-700 py-2">
                             ĐĂNG KÝ
                         </button>
-
                     </div>
 
-                    {/* Tiêu đề */}
                     <h2 className="text-center text-xl font-semibold mt-6 mb-4 text-gray-800">
                         ĐĂNG KÝ
                     </h2>
 
                     {/* Form */}
                     <form onSubmit={handleSubmit}>
-                        <input
-                            type="text" name="name" value={formData.name} onChange={handleChange}
-                            placeholder="Họ và Tên"
-                            className="w-full border border-gray-300 rounded-md px-3 py-2 mb-3 border-b-blue-700"
-                        />
-                        {errors.name && <p className="text-red-600 text-sm mb-2">{errors.name[0]}</p>}
-                        <input
-                            type="email" name="email" value={formData.email} onChange={handleChange}
-                            placeholder="Email"
-                            className="w-full border border-gray-300 rounded-md px-3 py-2 mb-3 border-b-blue-700"
-                        />
-                        {errors.email && <p className="text-red-600 text-sm mb-2">{errors.email[0]}</p>}
-                        <input
-                            type="text" name="phone" value={formData.phone} onChange={handleChange}
-                            placeholder="Số Điện Thoại"
-                            className="w-full border border-gray-300 rounded-md px-3 py-2 mb-4 border-b-blue-700"
-                        />
-                        {errors.phone && <p className="text-red-600 text-sm mb-2">{errors.phone[0]}</p>}
-                        <input
-                            type="password" name="password" value={formData.password} onChange={handleChange}
-                            placeholder="Mật khẩu"
-                            className="w-full border border-gray-300 rounded-md px-3 py-2 mb-4 border-b-blue-700"
-                        />
-                        {errors.password && <p className="text-red-600 text-sm mb-2">{errors.password[0]}</p>}
+                        <div className="space-y-3">
+                            <div>
+                                <input
+                                    type="text"
+                                    name="name"
+                                    placeholder="Họ và Tên"
+                                    value={formData.name}
+                                    onChange={handleChange}
+                                    className={`w-full border rounded-md px-3 py-2 ${errors.name ? "border-red-500" : "border-gray-300"
+                                        }`}
+                                />
+                                {errors.name && (
+                                    <p className="text-red-600 text-sm mt-1">
+                                        {errors.name[0]}
+                                    </p>
+                                )}
+                            </div>
+
+                            <div>
+                                <input
+                                    type="email"
+                                    name="email"
+                                    placeholder="Email"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                    className={`w-full border rounded-md px-3 py-2 ${errors.email ? "border-red-500" : "border-gray-300"
+                                        }`}
+                                />
+                                {errors.email && (
+                                    <p className="text-red-600 text-sm mt-1">
+                                        {errors.email[0]}
+                                    </p>
+                                )}
+                            </div>
+
+                            <div>
+                                <input
+                                    type="text"
+                                    name="phone"
+                                    placeholder="Số điện thoại"
+                                    value={formData.phone}
+                                    onChange={handleChange}
+                                    className={`w-full border rounded-md px-3 py-2 ${errors.phone ? "border-red-500" : "border-gray-300"
+                                        }`}
+                                />
+                                {errors.phone && (
+                                    <p className="text-red-600 text-sm mt-1">
+                                        {errors.phone[0]}
+                                    </p>
+                                )}
+                            </div>
+
+                            <div>
+                                <input
+                                    type="password"
+                                    name="password"
+                                    placeholder="Mật khẩu"
+                                    value={formData.password}
+                                    onChange={handleChange}
+                                    className={`w-full border rounded-md px-3 py-2 ${errors.password ? "border-red-500" : "border-gray-300"
+                                        }`}
+                                />
+                                {errors.password && (
+                                    <p className="text-red-600 text-sm mt-1">
+                                        {errors.password[0]}
+                                    </p>
+                                )}
+                            </div>
+                        </div>
+
                         <button
                             type="submit"
-                            className="w-full bg-blue-800 text-white py-2 rounded-md font-medium hover:bg-blue-900 transition"
+                            disabled={loading}
+                            className="w-full bg-blue-800 text-white py-2 rounded-md font-medium mt-4 hover:bg-blue-900 transition"
                         >
-                            {loading ? "Đang xử lý..." : "Đăng Ký"}
+                            {loading ? "Đang xử lý..." : "Đăng ký"}
                         </button>
-
-                        {/* Thông báo kết quả */}
-                        {message && (
-                            <p
-                                className={`text-center mt-3 text-sm font-medium ${message.includes("thành công") ? "text-green-600" : "text-red-600"
-                                    }`}
-                            >
-                                {message}
-                            </p>
-                        )}
-
                     </form>
 
-
-                    {/* Hoặc */}
                     <div className="text-center text-sm text-gray-600 mt-4 mb-3">
                         Hoặc đăng nhập bằng
                     </div>
 
-                    {/* Nút MXH */}
+                    {/* Mạng xã hội */}
                     <div className="flex justify-center space-x-2">
-                        {/* Facebook */}
                         <button className="flex items-center bg-[#3b5998] text-white px-4 py-2 rounded-md text-sm">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -137,7 +191,6 @@ function FromRegister() {
                             Facebook
                         </button>
 
-                        {/* Google */}
                         <button className="flex items-center bg-[#db4437] text-white px-4 py-2 rounded-md text-sm">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -152,8 +205,8 @@ function FromRegister() {
                     </div>
                 </div>
             </div>
-
         </>
     );
 }
+
 export default FromRegister;
