@@ -2,7 +2,6 @@ import { Link, useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import { notification } from "antd";
 import { register } from "../../../../services/authServices";
-import { Link, useNavigate } from "react-router-dom";
 
 function FromRegister() {
   const [showForgot, setShowForgot] = useState(false);
