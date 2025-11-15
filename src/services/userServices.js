@@ -1,8 +1,8 @@
 import { del, edit, get, post } from "../utils/request";
 
 export const getUserList = async () => {
-   const result = await get('users');
-    return result;
+  const result = await get('users');
+  return result;
 }
 
 export const storeUser = async (option) => {
@@ -20,8 +20,8 @@ export const deleteUser = async (id) => {
   return result;
 };
 
-export const searchUser = async (query) => {
-  const result = await get(`users/search?query=${encodeURIComponent(query)}`);
+export const searchUser = async (keyword) => {
+  const result = await get(`users/search?query=${keyword}`);
   return result;
 };
 
