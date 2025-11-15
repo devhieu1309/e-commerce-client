@@ -42,7 +42,15 @@ function FromLogin() {
           message: "Thành công",
           description: "Đăng nhập thành công!",
         });
-        navigate("/");
+
+        //  Thêm phân quyền tại đây
+        if (data.user.role === "Quản trị viên") {
+          navigate("/admin");
+        } else {
+          navigate("/");
+        }
+
+
       } else {
         if (data.errors) setErrors(data.errors);
         apiNoti.error({
@@ -130,9 +138,8 @@ function FromLogin() {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="Email"
-                className={`w-full border rounded-md px-3 py-2 mb-3 ${
-                  errors.email ? "border-red-500" : "border-gray-300"
-                }`}
+                className={`w-full border rounded-md px-3 py-2 mb-3 ${errors.email ? "border-red-500" : "border-gray-300"
+                  }`}
               />
               {errors.email && (
                 <p className="text-red-600 text-sm mb-2">{errors.email[0]}</p>
@@ -144,9 +151,8 @@ function FromLogin() {
                 value={formData.password}
                 onChange={handleChange}
                 placeholder="Mật khẩu"
-                className={`w-full border rounded-md px-3 py-2 mb-3 ${
-                  errors.password ? "border-red-500" : "border-gray-300"
-                }`}
+                className={`w-full border rounded-md px-3 py-2 mb-3 ${errors.password ? "border-red-500" : "border-gray-300"
+                  }`}
               />
               {errors.password && (
                 <p className="text-red-600 text-sm mb-2">{errors.password[0]}</p>

@@ -22,6 +22,7 @@ import Cart from "../pages/User/Cart";
 import Review from "../pages/User/Review";
 import Relatedquestions from "../pages/User/Relatedquestions";
 import Contact from "../pages/User/Contact";
+import AdminProtectedRoute from "../pages/User/Login/AdminProtectedRoute";
 
 import AdminBannerList from "../components/AdminBannerList";
 import AdminNewsList from "../components/News/NewsList";
@@ -127,7 +128,11 @@ export const routes = [
   },
   {
     path: "/admin",
-    element: <LayoutDashboard />,
+    element: (
+      <AdminProtectedRoute>
+        <LayoutDashboard />
+      </AdminProtectedRoute>
+    ),
     children: [
       {
         index: true,
