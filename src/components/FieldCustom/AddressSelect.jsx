@@ -1,64 +1,73 @@
-import { Select, Space, Spin } from "antd";
+import { Select, Space } from "antd";
 import { useEffect, useState } from "react";
 
 const { Option } = Select;
 
-function AddressSelect({ onChange }) {
+function AddressSelect({ onChange, value }) {
   const [provinces, setProvinces] = useState([]);
-  const [districts, setDistricts] = useState([]);
   const [wards, setWards] = useState([]);
 
-  const [province, setProvince] = useState("");
-  const [district, setDistrict] = useState("");
-  const [ward, setWard] = useState("");
+  const [province, setProvince] = useState(value?.province || "");
+  const [ward, setWard] = useState(value?.ward || "");
 
   const [loadingProvince, setLoadingProvince] = useState(false);
-  const [loadingDistrict, setLoadingDistrict] = useState(false);
   const [loadingWard, setLoadingWard] = useState(false);
 
   useEffect(() => {
     setLoadingProvince(true);
-    fetch("https://provinces.open-api.vn/api/p/")
+    fetch("http://127.0.0.1:8000/api/provinces")
       .then((res) => res.json())
-      .then((data) => setProvinces(data))
+      .then((data) => setProvinces(data.provinces))
       .finally(() => setLoadingProvince(false));
   }, []);
 
+  // Update local state when value prop changes and load wards if needed
+  useEffect(() => {
+    if (value) {
+      const newProvince = value.province || "";
+      const newWard = value.ward || "";
+      
+      if (newProvince && newProvince !== province) {
+        setProvince(newProvince);
+        setWard(newWard);
+        
+        // Load wards for the new province
+        setLoadingWard(true);
+        fetch(`http://127.0.0.1:8000/api/wards/by-province/${newProvince}`)
+          .then((res) => res.json())
+          .then((data) => setWards(data.wards))
+          .finally(() => setLoadingWard(false));
+      } else if (newProvince === province) {
+        // Only update ward if province hasn't changed
+        setWard(newWard);
+      } else {
+        setProvince(newProvince);
+        setWard(newWard);
+      }
+    }
+  }, [value, province]);
 
   const handleProvinceChange = (value) => {
+    console.log('Province', value);
     setProvince(value);
-    setDistrict("");
-    setWard("");
-    setDistricts([]);
-    setWards([]);
-
-    setLoadingDistrict(true);
-    fetch(`https://provinces.open-api.vn/api/p/${value}?depth=2`)
-      .then((res) => res.json())
-      .then((data) => setDistricts(data.districts || []))
-      .finally(() => setLoadingDistrict(false));
-
-    onChange({ province: value, district: "", ward: "" });
-  };
-
-  const handleDistrictChange = (value) => {
-    setDistrict(value);
     setWard("");
     setWards([]);
 
     setLoadingWard(true);
-    fetch(`https://provinces.open-api.vn/api/d/${value}?depth=2`)
+    fetch(`http://127.0.0.1:8000/api/wards/by-province/${value}`)
       .then((res) => res.json())
-      .then((data) => setWards(data.wards || []))
+      .then((data) => setWards(data.wards))
       .finally(() => setLoadingWard(false));
 
-    onChange({ province, district: value, ward: "" });
+    onChange({ province: value, ward: "" });
   };
 
   const handleWardChange = (value) => {
     setWard(value);
-    onChange({ province, district, ward: value });
+    onChange({ province, ward: value });
   };
+
+  // console.log('Tỉnh', provinces);
 
   return (
     <Space direction="vertical" style={{ width: "100%" }}>
@@ -67,26 +76,13 @@ function AddressSelect({ onChange }) {
         value={province || undefined}
         onChange={handleProvinceChange}
         loading={loadingProvince}
-        style={{ width: "100%", height: "50px", marginBottom: "8px"}}
+        className="w-full"
+        style={{ width: "100%", height: "45px", marginBottom: "8px"}}
+        size="large"
       >
         {provinces.map((p) => (
-          <Option key={p.code} value={p.code}>
+          <Option key={p.provinces_id} value={p.provinces_id}>
             {p.name}
-          </Option>
-        ))}
-      </Select>
-
-      <Select
-        placeholder="Chọn Quận/Huyện"
-        value={district || undefined}
-        onChange={handleDistrictChange}
-        disabled={!province}
-        loading={loadingDistrict}
-        style={{ width: "100%", height: "50px", marginBottom: "8px"}}
-      >
-        {districts.map((d) => (
-          <Option key={d.code} value={d.code}>
-            {d.name}
           </Option>
         ))}
       </Select>
@@ -95,12 +91,14 @@ function AddressSelect({ onChange }) {
         placeholder="Chọn Phường/Xã"
         value={ward || undefined}
         onChange={handleWardChange}
-        disabled={!district}
+        disabled={!province}
         loading={loadingWard}
-        style={{ width: "100%", height: "50px", marginBottom: "8px"}}
+        className="w-full"
+        style={{ width: "100%", height: "45px", marginBottom: "8px"}}
+        size="large"
       >
         {wards.map((w) => (
-          <Option key={w.code} value={w.code}>
+          <Option key={w.wards_id} value={w.wards_id}>
             {w.name}
           </Option>
         ))}

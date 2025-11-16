@@ -48,12 +48,12 @@ function ProductReview({ limit = 4, is_visible, showLoadMore }) {
 
     return (
         <>
-            <div className="container mx-auto px-32 pt-8 space-x-3">
-                <div className="bg-white p-2 rounded-md">
-                    <h2 className="relative text-[24px] font-bold uppercase pl-4 before:content-[''] before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-[6px] before:h-8 before:bg-[#000F8F]">
+            <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-16 xl:px-32 pt-4 sm:pt-6 md:pt-8 space-x-3">
+                <div className="bg-white p-2 sm:p-3 rounded-md">
+                    <h2 className="relative text-[18px] sm:text-[20px] md:text-[22px] lg:text-[24px] font-bold uppercase pl-4 before:content-[''] before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-[4px] sm:before:w-[5px] md:before:w-[6px] before:h-6 sm:before:h-7 md:before:h-8 before:bg-[#000F8F]">
                         Review sản phẩm
                     </h2>
-                    <div className="grid grid-cols-4 gap-4 pt-8">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 pt-4 sm:pt-6 md:pt-8">
                         {videoReviews.map((item) => (
                             <div key={item.video_id} className="group/review cursor-pointer">
                                 <div>
@@ -83,7 +83,7 @@ function ProductReview({ limit = 4, is_visible, showLoadMore }) {
 
                                     </div>
                                     <div className="block content">
-                                        <h3 className="text-[20px] font-medium pt-2 group-hover/review:text-amber-400">{item.title}</h3>
+                                        <h3 className="text-[14px] sm:text-[16px] md:text-[18px] lg:text-[20px] font-medium pt-2 sm:pt-3 group-hover/review:text-amber-400 line-clamp-2">{item.title}</h3>
                                     </div>
 
                                 </div>
@@ -91,10 +91,10 @@ function ProductReview({ limit = 4, is_visible, showLoadMore }) {
                         ))}
 
                         {showLoadMore && hasMore && !loading && (
-                            <div className="col-span-4 flex justify-center mt-3">
+                            <div className="col-span-1 sm:col-span-2 md:col-span-3 lg:col-span-4 flex justify-center mt-3">
                                 <button
                                     onClick={handleLoadMore}
-                                    className="px-6 py-2 bg-[#000F8F] text-white rounded-md hover:bg-amber-300 transition"
+                                    className="px-4 sm:px-6 py-2 bg-[#000F8F] text-white rounded-md hover:bg-amber-300 transition text-[13px] sm:text-[14px] md:text-[15px]"
                                 >
                                     Xem thêm
                                 </button>
