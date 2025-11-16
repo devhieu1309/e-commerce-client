@@ -65,34 +65,62 @@ function ShippingInfoForm({ onInfoChange }) {
 
   
 
+  // Lấy danh sách phương thức thanh toán
   useEffect(() => {
-    async function fetchData() {
+    async function fetchPaymentTypes() {
       try {
-        // setShippingOptions([
-        //   { id: 1, label: "Giao hàng tận nơi", value: "delivery", price: "40.000₫" },
-        //   { id: 2, label: "Nhận tại cửa hàng", value: "pickup", price: "0₫" },
-        // ]);
+        const response = await fetch("http://127.0.0.1:8000/api/payment-type");
+        const data = await response.json();
 
-        setPaymentOptions([
-          {
-            id: 1,
-            label: "Chuyển khoản",
-            value: "transfer",
-            icon: <DollarOutlined className="text-blue-500 text-lg" />,
-          },
-          {
-            id: 2,
-            label: "Thu hộ (COD)",
-            value: "cod",
-            icon: <DollarOutlined className="text-blue-500 text-lg" />,
-          },
-        ]);
+        // Format dữ liệu từ API
+        const formattedOptions = data.paymentType.map((item) => ({
+          id: item.payment_type_id,
+          label: item.value,
+          value: item.value.toLowerCase().replace(/\s+/g, "_"),
+          icon: <DollarOutlined className="text-blue-500 text-lg" />,
+        })) || [];
+
+        setPaymentOptions(formattedOptions);
       } catch (err) {
-        console.error("Lỗi tải dữ liệu phương thức:", err);
+        console.error("Lỗi tải dữ liệu phương thức thanh toán:", err);
       }
     }
 
-    fetchData();
+    fetchPaymentTypes();
+  }, []);
+
+  // console.log('Payment options', paymentOptions);
+
+  // Lấy thông tin giao hàng từ API
+  useEffect(() => {
+    async function fetchDeliveryInfo() {
+      try {
+        const response = await fetch("http://127.0.0.1:8000/api/delivery-info");
+        const data = await response.json();
+        
+        console.log('Delivery info', data);
+        
+        // Đổ dữ liệu vào form
+        if (data) {
+          setInfo({
+            email: data.data.email || "",
+            name: data.data.name || "",
+            phone: data.data.phone || "",
+            address: {
+              province: data.data.province_id || "",
+              ward: data.data.ward_id || "",
+            },
+            note: data.data.detailed_address || "",
+            shippingMethod: data.data.shipping_method || "",
+            paymentMethod: data.data.payment_method || "",
+          });
+        }
+      } catch (err) {
+        console.error("Lỗi tải thông tin giao hàng:", err);
+      }
+    }
+
+    fetchDeliveryInfo();
   }, []);
 
   const updateField = (field, value) => {
@@ -102,22 +130,22 @@ function ShippingInfoForm({ onInfoChange }) {
   };
 
   return (
-    <div className="main p-[50px]">
+    <div className="main p-4 sm:p-6 md:p-8 lg:p-[50px]">
       <div className="main-header flex justify-center mb-5">
         <img
-          className="w-[50%]"
+          className="w-[80%] sm:w-[60%] md:w-[50%]"
           src="../../../../public/logo-ft.webp"
           alt="Logo"
         />
       </div>
 
-      <div className="main-content flex space-x-5 mx-[25px]">
+      <div className="main-content flex flex-col lg:flex-row lg:space-x-5 lg:mx-[25px] space-y-6 lg:space-y-0">
         {/* Left side: Shipping form */}
-        <div className="w-[50%]">
+        <div className="w-full lg:w-[50%]">
           <section>
-            <div className="section_header mb-4 flex items-center ">
-              <p className="text-[25px] font-medium">Thông tin nhận hàng</p>
-              <a className="ml-auto text-[17px] self-center text-[#2a9dcc] hover:text-blue-700"
+            <div className="section_header mb-4 flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-0">
+              <p className="text-[20px] sm:text-[22px] md:text-[25px] font-medium">Thông tin nhận hàng</p>
+              <a className="sm:ml-auto text-[15px] sm:text-[17px] self-center text-[#2a9dcc] hover:text-blue-700"
                 href="#">
                 Đăng xuất
               </a>
@@ -144,6 +172,7 @@ function ShippingInfoForm({ onInfoChange }) {
 
               {/* Địa chỉ */}
               <AddressSelect
+                value={info.address}
                 onChange={(addr) => updateField("address", addr)}
               />
 
@@ -160,7 +189,7 @@ function ShippingInfoForm({ onInfoChange }) {
         </div>
 
         {/* Right side */}
-        <div className="w-[50%] flex flex-col gap-6">
+        <div className="w-full lg:w-[50%] flex flex-col gap-6">
           <OptionGroup
             title="Vận chuyển"
             options={shippingOptions}

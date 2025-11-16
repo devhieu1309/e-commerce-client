@@ -17,11 +17,11 @@ function PaymentPage() {
     };
 
     return (
-        <div class="flex w-full h-screen bg-white">
-            <div class="w-[70%]">
+        <div class="flex flex-col lg:flex-row w-full min-h-screen bg-white">
+            <div class="w-full lg:w-[70%]">
                 <ShippingInfoForm />
             </div>
-            <div class="flex-1 bg-[#fafafa] border border-l-gray-300">
+            <div class="w-full lg:flex-1 bg-[#fafafa] lg:border-l lg:border-l-gray-300 border-t lg:border-t-0 border-gray-300">
                 <OrderSummary
                     cartItems={[
                         {
