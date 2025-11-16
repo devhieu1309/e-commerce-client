@@ -41,6 +41,9 @@ import BannerFormPage from "../components/AdminBannerList/BannerListModal";
 import AddStoreBranch from "../components/AdminStoreBranchList/AddStoreBranch";
 import ShoppingOrder from "../components/ShoppingOrder";
 import EditStoreBranch from "../components/AdminStoreBranchList/EditStoreBranch";
+import GuaranteeList from "../components/GuaranteeList";
+import AddGuarantee from "../components/GuaranteeList/AddGuarantee";
+import EditGuarantee from "../components/GuaranteeList/EditGuarantee";
 
 export const routes = [
   {
@@ -238,7 +241,19 @@ export const routes = [
       {
         path: "shopping-order",
         element: <ShoppingOrder />,
-      }
+      },
+      {
+        path: "/admin/shopping-order/guarantees",
+        element: <GuaranteeList />,
+      },
+      {
+        path: "/admin/shopping-order/guarantees/create",
+        element: <AddGuarantee />,
+      },
+      {
+        path: "/admin/shopping-order/guarantees/edit/:id",
+        element: <EditGuarantee />,
+      },
     ],
   },
   {

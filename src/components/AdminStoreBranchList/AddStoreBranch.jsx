@@ -136,8 +136,8 @@ function AddStoreBranch() {
   return (
     <>
       {contextHolder}
-      <div className="p-6 bg-gray-50 min-h-screen">
-        <Card title="Thêm chi nhánh mới" bordered={false} className="max-w-3xl mx-auto shadow-md">
+      <div className="bg-white rounded-2xl shadow-md p-8 mx-10">
+        <Card title="Thêm chi nhánh mới" className="mb-6 text-gray-800">
           <Form
             form={form}
             layout="vertical"

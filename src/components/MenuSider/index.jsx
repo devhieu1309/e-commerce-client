@@ -129,7 +129,7 @@ function MenuSider() {
           key: "menu-14-2",
         },
         {
-          label: <Link to="">Quản lý bảo hành</Link>,
+          label: <Link to="/admin/shopping-order/guarantees">Quản lý bảo hành</Link>,
           key: "menu-14-3",
 
         },

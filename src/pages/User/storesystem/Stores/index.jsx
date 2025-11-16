@@ -9,8 +9,6 @@ function Stores() {
   const [selectedBranch, setSelectedBranch] = useState(null);
   const [selectedMap, setSelectedMap] = useState("");
   const [selectedProvince, setSelectedProvince] = useState("");
-  const [searchText, setSearchText] = useState("");
-  const [isFiltering, setIsFiltering] = useState(false);
 
   const fetchApi = async () => {
     const result = await getStoreBranchList();
@@ -36,48 +34,99 @@ function Stores() {
     fetchApi();
   }, []);
 
-  // Load lại trang
-  const handleReload = () => {
-    fetchApi();
-    // setSelectedProvince("");
-  };
   // ✅ Hàm chuyển link rút gọn hoặc địa chỉ thành link embed Google Maps
   const convertToEmbedLink = (link, branch) => {
-    if (!link) return "";
+    if (!link) {
+      // Nếu không có link, tạo embed từ địa chỉ
+      if (branch?.address) {
+        const fullAddress = formatFullAddress(branch.address);
+        const encodedAddress = encodeURIComponent(fullAddress);
+        return `https://www.google.com/maps?q=${encodedAddress}&output=embed`;
+      }
+      return "";
+    }
 
-    // Nếu là link rút gọn (maps.app.goo.gl) → dùng địa chỉ text fallback
-    if (link.includes("maps.app.goo.gl")) {
-      const encodedAddress = encodeURIComponent(
-        branch?.address?.detailed_address ||
-        branch?.name ||
-        "Việt Nam"
-      );
+    // Nếu đã là link embed sẵn (có /embed hoặc output=embed)
+    if (link.includes("/maps/embed") || link.includes("output=embed")) {
+      // Đảm bảo có output=embed
+      if (link.includes("output=embed")) {
+        return link;
+      }
+      // Nếu là /maps/embed?pb=... thì giữ nguyên
+      if (link.includes("/maps/embed?pb=")) {
+        return link;
+      }
+    }
+
+    // Nếu là link rút gọn (maps.app.goo.gl hoặc goo.gl/maps)
+    if (link.includes("maps.app.goo.gl") || link.includes("goo.gl/maps")) {
+      // Với link rút gọn, dùng địa chỉ để tạo embed
+      if (branch?.address) {
+        const fullAddress = formatFullAddress(branch.address);
+        const encodedAddress = encodeURIComponent(fullAddress);
+        return `https://www.google.com/maps?q=${encodedAddress}&output=embed`;
+      }
+      // Fallback: thử dùng link rút gọn trực tiếp
+      return link;
+    }
+
+    // Nếu link có dạng /maps/place/... - chuyển sang embed
+    if (link.includes("/maps/place/")) {
+      // Giữ nguyên link và thêm output=embed
+      const url = new URL(link.startsWith("http") ? link : `https://${link}`);
+      url.searchParams.set("output", "embed");
+      return url.toString();
+    }
+
+    // Nếu link có dạng maps?q=... hoặc maps/search/...
+    if (link.includes("maps?q=") || link.includes("maps/search/")) {
+      // Thêm output=embed vào URL
+      const url = new URL(link.startsWith("http") ? link : `https://${link}`);
+      url.searchParams.set("output", "embed");
+      return url.toString();
+    }
+
+    // Nếu link có dạng /maps/@lat,lng,zoom
+    if (link.includes("/maps/@")) {
+      // Chuyển sang embed với output=embed
+      const url = new URL(link.startsWith("http") ? link : `https://${link}`);
+      url.searchParams.set("output", "embed");
+      return url.toString();
+    }
+
+    // Nếu link có dạng https://www.google.com/maps hoặc tương tự
+    if (link.includes("google.com/maps") || link.includes("maps.google.com")) {
+      // Thêm output=embed
+      try {
+        const url = new URL(link.startsWith("http") ? link : `https://${link}`);
+        url.searchParams.set("output", "embed");
+        return url.toString();
+      } catch {
+        // Nếu không parse được URL, dùng địa chỉ
+        if (branch?.address) {
+          const fullAddress = formatFullAddress(branch.address);
+          const encodedAddress = encodeURIComponent(fullAddress);
+          return `https://www.google.com/maps?q=${encodedAddress}&output=embed`;
+        }
+      }
+    }
+
+    // Fallback: dùng địa chỉ nếu có
+    if (branch?.address) {
+      const fullAddress = formatFullAddress(branch.address);
+      const encodedAddress = encodeURIComponent(fullAddress);
       return `https://www.google.com/maps?q=${encodedAddress}&output=embed`;
     }
 
-    // Nếu link có dạng ...maps?q=...
-    if (link.includes("maps?q=")) return link + "&output=embed";
-
-    // Nếu link có dạng /maps/place/...
-    if (link.includes("/maps/place/"))
-      return link.replace("/maps/place/", "/maps/embed?pb=");
-
-    // Nếu là link /maps (fallback)
-    if (link.includes("/maps"))
-      return link.replace("/maps", "/maps/embed");
-
     // Fallback cuối cùng
-    return "https://www.google.com/maps/embed";
+    return "";
   };
   // Tìm kiếm chi nhánh theo tên
   const handleSearchStoreBranch = (value) => {
     if (!value) {
-      setIsFiltering(false);
       setFilterStoreBranches(storeBranches);
       return;
     }
-
-    setIsFiltering(true);
 
     const result = storeBranches.filter((storeBranch) =>
       storeBranch.name.toLowerCase().includes(value.toLowerCase())
@@ -112,7 +161,6 @@ function Stores() {
     setSelectedProvince(provinceName);
 
     if (!provinceName) {
-      setIsFiltering(false);
       setFilterStoreBranches(storeBranches);
       return;
     }
