@@ -20,3 +20,14 @@ export const updateCartItemQuantity = async (cartItemId, quantity) => {
   const result = await edit(`cart/${cartItemId}`, { quantity, _method: 'PUT' });
   return result;
 }
+
+// Thêm sản phảm vào giỏ hàng
+export const addToCart = async (userId, productId, quantity) => {
+  const data = {
+    user_id: userId,
+    product_item_id: productId, 
+    quantity: quantity,
+  };
+  const result = await post(`cart`, data);
+  return result;
+}
