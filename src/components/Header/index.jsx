@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getShoppingCartByUserId, removeFromCart, updateCartItemQuantity } from "../../services/shoppingCartServices";
-
+import {
+  getShoppingCartByUserId,
+  removeFromCart,
+  updateCartItemQuantity,
+} from "../../services/shoppingCartServices";
 
 function Header({ user, onLogout }) {
   const [cartItems, setCartItems] = useState([]);
@@ -29,21 +32,25 @@ function Header({ user, onLogout }) {
     try {
       const result = await removeFromCart(cartItemId);
       if (result.success) {
-        setCartItems((prev) => prev.filter((item) => item.cart_item_id !== cartItemId));
+        setCartItems((prev) =>
+          prev.filter((item) => item.cart_item_id !== cartItemId)
+        );
       }
-
-
     } catch (error) {
       console.error("Lỗi khi xóa sản phẩm khỏi giỏ hàng:", error);
     }
   };
 
-  const handleupdateQuantity = async (cartItemId, currentQuantity, newQuantity) => {
+  const handleupdateQuantity = async (
+    cartItemId,
+    currentQuantity,
+    newQuantity
+  ) => {
     if (newQuantity < 1) return;
 
     try {
-      setCartItems(prevItems =>
-        prevItems.map(item =>
+      setCartItems((prevItems) =>
+        prevItems.map((item) =>
           item.cart_item_id === cartItemId
             ? { ...item, quantity: newQuantity }
             : item
@@ -51,11 +58,11 @@ function Header({ user, onLogout }) {
       );
 
       const result = await updateCartItemQuantity(cartItemId, newQuantity);
-      
+
       // Nếu API thất bại, khôi phục lại giá trị cũ
       if (!result?.success) {
-        setCartItems(prevItems =>
-          prevItems.map(item =>
+        setCartItems((prevItems) =>
+          prevItems.map((item) =>
             item.cart_item_id === cartItemId
               ? { ...item, quantity: currentQuantity }
               : item
@@ -65,15 +72,15 @@ function Header({ user, onLogout }) {
     } catch (error) {
       console.error("Lỗi khi cập nhật số lượng:", error);
       // Khôi phục lại giá trị cũ nếu có lỗi
-      setCartItems(prevItems =>
-        prevItems.map(item =>
+      setCartItems((prevItems) =>
+        prevItems.map((item) =>
           item.cart_item_id === cartItemId
             ? { ...item, quantity: currentQuantity }
             : item
         )
       );
     }
-};
+  };
   return (
     <>
       <header className="relative group/header">
@@ -352,7 +359,6 @@ function Header({ user, onLogout }) {
                     </span>
 
                     <div className="group-hover:flex hidden absolute top-12 right-2 bg-white w-[400px] py-3 px-4 rounded-md flex-col space-y-4 ring-1 ring-black/10 shadow-[0_0_18px_0_rgba(0,0,0,0.06)] text-sm">
-
                       {cartItems.length === 0 ? (
                         <span className="text-center text-gray-500">
                           Giỏ hàng của bạn đang trống
@@ -360,49 +366,81 @@ function Header({ user, onLogout }) {
                       ) : (
                         <>
                           {cartItems.map((item) => (
-                            <div key={item.cart_item_id} className="flex items-start space-x-3">
+                            <div
+                              key={item.cart_item_id}
+                              className="flex items-start space-x-3"
+                            >
                               {/* Ảnh sản phẩm */}
                               <div className="w-[25%]">
                                 <img
                                   src={item.image}
                                   alt={item.product_name}
-                                  className="w-full h-full object-cover rounded-md"
+                                  className="object-cover w-full h-full rounded-md"
                                 />
                               </div>
 
                               {/* Thông tin sản phẩm */}
                               <div className="flex-1 space-y-1">
-                                <p className="font-semibold text-gray-900 text-sm">
-                                  {item.product_name} - {item.variation_options[1].variation_option_name}
+                                <p className="text-sm font-semibold text-gray-900">
+                                  {item.product_name} -{" "}
+                                  {
+                                    item.variation_options[1]
+                                      .variation_option_name
+                                  }
                                 </p>
-                                <p className="text-gray-600 text-sm">{item.variation_options[0].variation_option_name}</p>
-                                <button className="text-red-500 text-sm hover:underline"
+                                <p className="text-sm text-gray-600">
+                                  {
+                                    item.variation_options[0]
+                                      .variation_option_name
+                                  }
+                                </p>
+                                <button
+                                  className="text-sm text-red-500 hover:underline"
                                   //truyền cart_item_id để xóa
-                                  onClick={() => handleRemoveFromCart(item.cart_item_id)}>
+                                  onClick={() =>
+                                    handleRemoveFromCart(item.cart_item_id)
+                                  }
+                                >
                                   Xóa
                                 </button>
 
                                 {/* Số lượng và giá */}
-                                <div className="flex justify-between items-center mt-2">
+                                <div className="flex items-center justify-between mt-2">
                                   <div className="items-center space-x-2">
-                                    <span className="text-gray-700">Số lượng:</span>
-                                    <div className='flex space-x-3 justify-between items-center text-center border border-black w-auto h-auto rounded-md'>
-                                      <button className='bg-[#000f8f] h-[25px] px-2 text-white m-1 rounded-md'
+                                    <span className="text-gray-700">
+                                      Số lượng:
+                                    </span>
+                                    <div className="flex items-center justify-between w-auto h-auto space-x-3 text-center border border-black rounded-md">
+                                      <button
+                                        className="bg-[#000f8f] h-[25px] px-2 text-white m-1 rounded-md"
                                         onClick={() =>
-                                          handleupdateQuantity(item.cart_item_id, item.quantity, item.quantity - 1)
-                                        }>
+                                          handleupdateQuantity(
+                                            item.cart_item_id,
+                                            item.quantity,
+                                            item.quantity - 1
+                                          )
+                                        }
+                                      >
                                         -
                                       </button>
-                                      <p className='m-0 text-gray-900 px-2'>{item.quantity}</p>
-                                      <button className='bg-[#000f8f] h-[25px] px-2 text-white m-1 rounded-md'
+                                      <p className="px-2 m-0 text-gray-900">
+                                        {item.quantity}
+                                      </p>
+                                      <button
+                                        className="bg-[#000f8f] h-[25px] px-2 text-white m-1 rounded-md"
                                         onClick={() =>
-                                          handleupdateQuantity(item.cart_item_id, item.quantity, item.quantity + 1)
-                                        }>
+                                          handleupdateQuantity(
+                                            item.cart_item_id,
+                                            item.quantity,
+                                            item.quantity + 1
+                                          )
+                                        }
+                                      >
                                         +
                                       </button>
                                     </div>
                                   </div>
-                                  <p className="font-bold text-red-500 text-base">
+                                  <p className="text-base font-bold text-red-500">
                                     {Number(item.price).toLocaleString()}đ
                                   </p>
                                 </div>
@@ -411,11 +449,19 @@ function Header({ user, onLogout }) {
                           ))}
 
                           {/* Tổng tiền & nút thanh toán */}
-                          <div className="border-t border-gray-200 pt-3 space-y-3">
-                            <div className="flex justify-between items-center">
-                              <p className="font-semibold text-gray-900">Tổng tiền:</p>
-                              <p className="font-bold text-red-500 text-lg">
-                                {cartItems.reduce((sum, i) => sum + i.quantity * i.price, 0).toLocaleString()}đ
+                          <div className="pt-3 space-y-3 border-t border-gray-200">
+                            <div className="flex items-center justify-between">
+                              <p className="font-semibold text-gray-900">
+                                Tổng tiền:
+                              </p>
+                              <p className="text-lg font-bold text-red-500">
+                                {cartItems
+                                  .reduce(
+                                    (sum, i) => sum + i.quantity * i.price,
+                                    0
+                                  )
+                                  .toLocaleString()}
+                                đ
                               </p>
                             </div>
                             <button
@@ -428,7 +474,6 @@ function Header({ user, onLogout }) {
                         </>
                       )}
                     </div>
-
                   </span>
                 </li>
               </ul>
@@ -448,7 +493,6 @@ function Header({ user, onLogout }) {
 
                   <div className="bg-white absolute top-8 right-[-8px] w-[220px] rounded-md hidden md:group-hover:flex flex-col shadow-md border border-gray-200">
                     <ul className="py-1 px-[7px] flex flex-col space-y-2 text-black text-[14px]">
-
                       {/* Nếu CHƯA đăng nhập */}
                       {!user ? (
                         <>
@@ -487,7 +531,7 @@ function Header({ user, onLogout }) {
                           </li>
 
                           <li
-                            className="flex items-center w-full px-4 py-1 space-x-2 hover:bg-gray-200 cursor-pointer"
+                            className="flex items-center w-full px-4 py-1 space-x-2 cursor-pointer hover:bg-gray-200"
                             onClick={onLogout}
                           >
                             <img
@@ -507,7 +551,10 @@ function Header({ user, onLogout }) {
                           src="/icons8-heart-50.png"
                           alt=""
                         />
-                        <span>Danh sách yêu thích (0)</span>
+                        <Link to="/san-pham-yeu-thich">
+                          {" "}
+                          <span>Danh sách yêu thích (0)</span>
+                        </Link>
                       </li>
 
                       <li className="flex items-center w-full px-4 py-1 space-x-2 hover:bg-gray-200">
@@ -521,10 +568,7 @@ function Header({ user, onLogout }) {
                     </ul>
                   </div>
                 </div>
-
-
               </div>
-
             </div>
           </div>
         </div>
@@ -533,7 +577,9 @@ function Header({ user, onLogout }) {
             <li className="py-2 hover:text-[#000F8F] text-[16px]">Trang chủ</li>
           </Link>
 
-          <li className="py-2 hover:text-[#000F8F] text-[16px]"><Link to="/introduction">Giới thiệu</Link></li>
+          <li className="py-2 hover:text-[#000F8F] text-[16px]">
+            <Link to="/introduction">Giới thiệu</Link>
+          </li>
           <li className="flex items-center justify-center py-2 space-x-1 group/rotate">
             <span className="hover:text-[#000F8F] text-[16px]">Sản phẩm</span>
             <div>
@@ -637,8 +683,12 @@ function Header({ user, onLogout }) {
             <li className="py-2 hover:text-[#000F8F] text-[16px]">Tin tức</li>
           </Link>
 
-          <li className="py-2 hover:text-[#000F8F] text-[16px]"><Link to="/review">Review</Link></li>
-          <li className="py-2 hover:text-[#000F8F] text-[16px]"><Link to="/relatedquestions">Câu hỏi thường gặp</Link></li>
+          <li className="py-2 hover:text-[#000F8F] text-[16px]">
+            <Link to="/review">Review</Link>
+          </li>
+          <li className="py-2 hover:text-[#000F8F] text-[16px]">
+            <Link to="/relatedquestions">Câu hỏi thường gặp</Link>
+          </li>
           <Link to="/Tra-cuu-bao-hanh">
             <li className="py-2 hover:text-[#000F8F] text-[16px]">
               Tra cứu bảo hành
@@ -648,7 +698,9 @@ function Header({ user, onLogout }) {
             <li className="py-2 hover:text-[#000F8F] text-[16px]">Đặt trước</li>
           </Link>
 
-          <li className="py-2 hover:text-[#000F8F] text-[16px]"><Link to="/contact">Liên hệ</Link></li>
+          <li className="py-2 hover:text-[#000F8F] text-[16px]">
+            <Link to="/contact">Liên hệ</Link>
+          </li>
         </ul>
         <div className="group-hover/header:h-[115px]"></div>
       </header>

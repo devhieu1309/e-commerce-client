@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getProductList } from "../../services/productServices";
+import { postFavorite } from "../../services/favoriteServices";
 
 function ProductList() {
   const [products, setProducts] = useState([]);
+  const [favorite, setFavorite] = useState([]);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -20,8 +22,8 @@ function ProductList() {
 
   return (
     <>
-      <div className="container mx-auto px-32 py-8">
-        <div className="bg-white p-3 rounded-md">
+      <div className="container px-32 py-8 mx-auto">
+        <div className="p-3 bg-white rounded-md">
           <div className="flex space-x-8">
             <div className="flex items-center space-x-2 bg-[#000F8F] rounded-sm p-2">
               <img
@@ -29,7 +31,7 @@ function ProductList() {
                 src="/title_image_1_allpro1.webp"
                 alt=""
               />
-              <p className="text-white font-bold">Sản phẩm mới</p>
+              <p className="font-bold text-white">Sản phẩm mới</p>
             </div>
             {/* <div className="flex items-center space-x-2 border border-gray-500 rounded-sm p-2 hover:bg-[#000F8F] hover:text-white">
               <img
@@ -48,12 +50,12 @@ function ProductList() {
               <p className="font-bold">Sản phẩm bán chạy</p>
             </div> */}
           </div>
-          <div className="grid grid-cols-5 gap-4 py-10 px-2">
+          <div className="grid grid-cols-5 gap-4 px-2 py-10">
             {products.map((product, index) => {
               const item = product.items[0];
               console.log("MINH HIEU TEST ITEM: ", item);
               // console.log("Image: ", item?.image);
-              
+
               return (
                 <div
                   key={index}
@@ -89,7 +91,7 @@ function ProductList() {
                         {product.product_name}
                       </h3>
                     </Link>
-                    <p className="text-red-500 font-extrabold py-2">Liên hệ</p>
+                    <p className="py-2 font-extrabold text-red-500">Liên hệ</p>
                     <p className="text-[12px] bg-[#F3F4F6] rounded-sm py-3 px-2">
                       Bảo hành chính hãng Apple 12 tháng
                     </p>

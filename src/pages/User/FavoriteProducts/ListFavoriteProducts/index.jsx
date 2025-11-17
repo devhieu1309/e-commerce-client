@@ -5,7 +5,7 @@ function ListFavoriteProducts() {
     <>
       <div className="container w-full border border-gray-200  bg-white pl-[110px] pr-[110px]">
         <div className="grid grid-cols-5 gap-4 px-2 py-5">
-          {[...Array(8)].map((_, index) => (
+          {[...Array(1)].map((_, index) => (
             <div
               key={index}
               className="p-3 rounded-sm ring-1 ring-black/10 shadow-[0_0_18px_0_rgba(0,0,0,0.06)]"
