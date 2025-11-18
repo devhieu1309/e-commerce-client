@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import {
   getProvinces,
   getWardsByProvince,
-} from "../../services/addressServices";
+} from "../../services/addressCustomerServices";
 
 const { Option } = Select;
 

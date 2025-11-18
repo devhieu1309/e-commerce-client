@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { get } from "../../../../utils/request";
-import { getAddressesByUser } from "../../../../services/addressServices";
+import { getAddressesByUser } from "../../../../services/addressCustomerServices";
 
 function FromOder() {
     const [user, setUser] = useState(null);

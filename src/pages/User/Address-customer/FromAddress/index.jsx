@@ -7,7 +7,7 @@ import {
     addAddress,
     updateAddress,
     deleteAddress,
-} from "../../../../services/addressServices";
+} from "../../../../services/addressCustomerServices";
 
 function FromAddress() {
     const [apiNoti, contextHolder] = notification.useNotification();
@@ -46,9 +46,19 @@ function FromAddress() {
     const fetchAddresses = async (userId) => {
         try {
             const result = await getAddressesByUser(userId);
-            const sorted = result.sort((a, b) =>
+
+            // Ép dữ liệu về đúng định dạng FE
+            const normalized = result.map((item) => ({
+                ...item,
+                id: item.address_id ?? item.customer_address_id,
+                isDefault: Boolean(Number(item.isDefault)),
+            }));
+
+            // Sắp xếp: mặc định lên đầu
+            const sorted = normalized.sort((a, b) =>
                 a.isDefault === b.isDefault ? 0 : a.isDefault ? -1 : 1
             );
+
             setAddresses(sorted);
         } catch (error) {
             console.error("Lỗi khi tải địa chỉ:", error);
@@ -76,7 +86,7 @@ function FromAddress() {
     // ================= Open Edit =================
     const handleEdit = (item) => {
         setEditMode(true);
-        setEditingId(item.address_id);
+        setEditingId(item.address_id ?? item.customer_address_id);
         setErrors({});
         setFormData({
             user_id: user.user_id,
@@ -86,7 +96,7 @@ function FromAddress() {
             detailed_address: item.detailed_address ?? "",
             provinces_id: item.provinces_id ?? "",
             wards_id: item.wards_id ?? "",
-            isDefault: item.isDefault ?? false,
+            isDefault: Boolean(Number(item.isDefault)),
         });
         setShowModal(true);
     };
@@ -204,7 +214,7 @@ function FromAddress() {
                                 <hr className="my-4 border-gray-300" />
 
                                 {addresses.map((item) => (
-                                    <div key={item.address_id} className="mb-6 border-b pb-3 border-gray-300">
+                                    <div key={item.id} className="mb-6 border-b pb-3 border-gray-300">
                                         <p className="font-semibold">
                                             <strong>Họ tên:</strong> {item.name}
                                             {item.isDefault && (
@@ -233,7 +243,7 @@ function FromAddress() {
 
                                                 {!item.isDefault && (
                                                     <button
-                                                        onClick={() => handleDelete(item.address_id)}
+                                                        onClick={() => handleDelete(item.id)}
                                                         className="text-red-500 hover:underline"
                                                     >
                                                         Xóa
