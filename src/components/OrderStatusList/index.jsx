@@ -35,7 +35,7 @@ function OrderStatusList() {
       render: (text, record, index) => index + 1,
     },
     {
-      title: "Tên phương thanh toán",
+      title: "Tên trạng thái đơn hàng",
       dataIndex: "status",
       key: "status",
     },
@@ -70,7 +70,7 @@ function OrderStatusList() {
             onReload={handleReload}
           />
           <Popconfirm
-            title="Bạn chắc chắn muốn xóa phương thanh toán này?"
+            title="Bạn chắc chắn muốn xóa trạng thái đơn hàng này?"
             okText="Xóa"
             cancelText="Hủy"
           >

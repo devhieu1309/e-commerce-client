@@ -41,7 +41,7 @@ function OrderStatusModal(props) {
       } else {
         apiNoti.error({
           message: `Notification`,
-          description: `Cập nhật phương thanh toán ${response.status} không thành công!`,
+          description: `Cập nhật trạng thái đơn hàng ${response.status} không thành công!`,
         });
       }
       setSpinning(false);
@@ -50,7 +50,7 @@ function OrderStatusModal(props) {
       if (response) {
         apiNoti.success({
           message: `Notification`,
-          description: `Thêm phương thanh toán ${response.status} thành công!`,
+          description: `Thêm trạng thái đơn hàng ${response.status} thành công!`,
         });
         setShowModal(false);
         form.resetFields();
@@ -58,7 +58,7 @@ function OrderStatusModal(props) {
       } else {
         apiNoti.error({
           message: `Notification`,
-          description: `Thêm phương thanh toán ${response.status} không thành công!`,
+          description: `Thêm trạng thái đơn hàng ${response.status} không thành công!`,
         });
       }
       setSpinning(false);
@@ -68,7 +68,7 @@ function OrderStatusModal(props) {
     <>
       {contextHolder}
       {mode === "edit" ? (
-        <Tooltip title="Chỉnh sửa Phương thanh toán">
+        <Tooltip title="Chỉnh sửa trạng thái đơn hàng">
           <Button
             size="small"
             type="primary"
@@ -91,8 +91,8 @@ function OrderStatusModal(props) {
         onCancel={handleCancel}
         title={
           mode === "edit"
-            ? "Cập nhật Phương thanh toán"
-            : "Thêm Phương thức thanh toán"
+            ? "Cập nhật trạng thái đơn hàng"
+            : "Thêm trạng thái đơn hàng"
         }
         footer={null}
       >
@@ -108,7 +108,7 @@ function OrderStatusModal(props) {
             initialValues={record}
           >
             <Form.Item
-              label="Tên Phương thanh toán"
+              label="Tên trạng thái đơn hàng"
               name="status"
               rules={[
                 {

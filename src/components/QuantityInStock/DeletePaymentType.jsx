@@ -1,25 +1,28 @@
 import { Button, notification, Popconfirm } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
-import { deleteOrderStatus } from "../../services/orderStatus";
+import { deletePayment } from "../../services/paymentTypeService";
 
-function DeleteOrderStatus(props) {
+function DeletePaymentType(props) {
   const { record, onReload } = props;
+
   const [apiNoti, contextHolder] = notification.useNotification();
 
   const handleDelete = async () => {
-    const response = await deleteOrderStatus(record.id);
+    const response = await deletePayment(record.payment_type_id);
+
     if (response.success) {
       apiNoti.success({
-        message: `Notification`,
-        description: `Xóa trạng thái đơn hàng ${record.status} thành công!`,
+        message: "Notification",
+        description: `Xóa phương thanh toán ${record.value} thành công!`,
       });
+
       setTimeout(() => {
         onReload();
       }, 1000);
     } else {
       apiNoti.error({
-        message: `Notification`,
-        description: `Xóa trạng thái đơn hàng "${record.status}" thất bại!`,
+        message: "Notification",
+        description: `Xóa phương thanh toán ${record.value} thất bại!`,
       });
     }
   };
@@ -28,7 +31,7 @@ function DeleteOrderStatus(props) {
     <>
       {contextHolder}
       <Popconfirm
-        title={`Bạn có chắc muốn xóa ${record.status} không?`}
+        title={` Bạn có muốn xóa Phương thanh toán ${record.value} không?`}
         onConfirm={handleDelete}
       >
         <Button danger size="small" icon={<DeleteOutlined />}></Button>
@@ -37,4 +40,4 @@ function DeleteOrderStatus(props) {
   );
 }
 
-export default DeleteOrderStatus;
+export default DeletePaymentType;

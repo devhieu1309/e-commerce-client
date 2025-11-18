@@ -1,77 +1,41 @@
 import { Button, Popconfirm, Space, Table } from "antd";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-import QuantityInStockToolbar from "./QuantityInStockToolbar";
-import QuantityInStockModal from "./QuantityInStockModal";
-import DeleteQuantityInStock from "./DeleteQuantityInStock";
+import PaymentTypeToolbar from "./PaymentTypeToolbar";
+import DeletePaymentType from "./DeletePaymentType";
+import PaymentTypeModal from "./PaymentTypeModal";
+import { getPayment } from "../../services/paymentTypeService";
 
-function QuantityInStock() {
-  const [quantityInStock] = useState([
-    {
-      id: 1,
-      qty_in_stock: 100,
-      price: 5.0,
-      product_image: "image1.jpg",
-      product_id: "01",
-      SKU: "SP001",
-      created_at: "2025-09-01 12:00:00",
-      updated_at: "2025-09-10 08:00:00",
-    },
-    {
-      id: 2,
-      qty_in_stock: 200,
-      price: 5.0,
-      product_image: "image1.jpg",
-      product_id: "002",
-      SKU: "SP002",
-      created_at: "2025-09-01 12:00:00",
-      updated_at: "2025-09-10 08:00:00",
-    },
-    {
-      id: 3,
-      qty_in_stock: 180,
-      price: 5.0,
-      product_image: "image1.jpg",
-      product_id: "01",
-      SKU: "SP001",
-      created_at: "2025-09-01 12:00:00",
-      updated_at: "2025-09-10 08:00:00",
-    },
-    {
-      id: 4,
-      qty_in_stock: 100,
-      price: 5.0,
-      product_image: "image1.jpg",
-      product_id: "01",
-      SKU: "SP001",
-      created_at: "2025-09-01 12:00:00",
-      updated_at: "2025-09-10 08:00:00",
-    },
-    {
-      id: 5,
-      qty_in_stock: 100,
-      price: 5.0,
-      product_image: "image1.jpg",
-      product_id: "01",
-      SKU: "SP001",
-      created_at: "2025-09-01 12:00:00",
-      updated_at: "2025-09-10 08:00:00",
-    },
-    {
-      id: 5,
-      qty_in_stock: 100,
-      price: 5.0,
-      product_image: "image1.jpg",
-      product_id: "01",
-      SKU: "SP001",
-      created_at: "2025-09-01 12:00:00",
-      updated_at: "2025-09-10 08:00:00",
-    },
-  ]);
+function AdminPaymentType() {
+  const [paymentType, setPaymentType] = useState([]);
+  const [isFiltering, setIsFiltering] = useState(false);
+  const [filterPayment, setFilterPayment] = useState([]);
 
-  const getParentName = (parentId) => {
-    const parent = quantityInStock.find((c) => c.id === parentId);
-    return parent ? parent.category_name : "Không có";
+  const fetchApi = async () => {
+    const result = await getPayment();
+    setPaymentType(result.paymentType.reverse());
+  };
+
+  useEffect(() => {
+    fetchApi();
+  }, []);
+
+  const handleReload = () => {
+    fetchApi();
+  };
+
+  const handleSearch = (value) => {
+    if (!value) {
+      setIsFiltering(false);
+      setFilterPayment([]);
+      return;
+    }
+
+    setIsFiltering(true);
+    const resultFinal = paymentType.filter((item) =>
+      item.value.toLowerCase().includes(value.toLowerCase())
+    );
+    setFilterPayment(resultFinal);
   };
 
   const columns = [
@@ -80,66 +44,62 @@ function QuantityInStock() {
       dataIndex: "id",
       key: "id",
       width: 80,
+      render: (text, record, index) => index + 1,
     },
 
     {
-      title: "Số lượng tồn kho",
-      dataIndex: "qty_in_stock",
-      key: "qty_in_stock",
+      title: "Tên phương thanh toán",
+      dataIndex: "value",
+      key: "value",
     },
+
     {
-      title: "Giá",
-      dataIndex: "price",
-      key: "price",
-    },
-    {
-      title: "Hình ảnh sản phẩm",
-      dataIndex: "product_image",
-      key: "product_image",
+      title: "Hình ảnh ",
+      dataIndex: "image",
+      key: "image",
       render: (text) => (
         <img
-          src={`/public/230913055843-mt0u3fe-a2.webp`}
-          alt="product"
-          style={{ width: 80, height: 80, objectFit: "cover" }}
+          src={`http://127.0.0.1:8000/storage/${text}`}
+          alt={text}
+          style={{ width: 70, height: 50, objectFit: "cover" }}
         />
       ),
     },
 
     {
-      title: "Mã sản phẩm",
-      dataIndex: "product_id",
-      key: "product_id",
-      render: (product_id) => getParentName(product_id),
-    },
-    {
-      title: "Mã SKU của sản phẩm",
-      dataIndex: "SKU",
-      key: "SKU",
-      render: (SKU) => getParentName(SKU),
-    },
-    {
       title: "Ngày tạo",
       dataIndex: "created_at",
       key: "created_at",
+      render: (text) => {
+        const date = new Date(text);
+        return date.toLocaleDateString("vi-VN");
+      },
     },
     {
       title: "Ngày cập nhật",
       dataIndex: "updated_at",
       key: "updated_at",
+      render: (text) => {
+        const date = new Date(text);
+        return date.toLocaleDateString("vi-VN");
+      },
     },
     {
       title: "Hành động",
       key: "action",
       render: (_, record) => (
         <Space>
-          {/* <EditCategory record={record} onReload={onReload} /> */}
-          <QuantityInStockModal mode="edit" record={record} />
+          <PaymentTypeModal
+            mode="edit"
+            record={record}
+            onReload={handleReload}
+          />
           <Popconfirm
-            title="Bạn chắc chắn muốn xóa sản phẩm này không?"
+            title="Bạn chắc chắn muốn xóa phương thanh toán này không?"
             okText="Xóa"
             cancelText="Hủy"
           >
-            <DeleteQuantityInStock record={record} />
+            <DeletePaymentType record={record} onReload={handleReload} />
           </Popconfirm>
         </Space>
       ),
@@ -148,14 +108,18 @@ function QuantityInStock() {
 
   return (
     <>
-      <QuantityInStockToolbar />
+      <PaymentTypeToolbar
+        paymentType={paymentType}
+        onReload={handleReload}
+        handleSearch={handleSearch}
+      />
       <Table
         columns={columns}
-        dataSource={quantityInStock}
-        pagination={{ pageSize: 5 }}
+        dataSource={isFiltering ? filterPayment : paymentType}
+        pagination={{ pageSize: 10 }}
       />
     </>
   );
 }
 
-export default QuantityInStock;
+export default AdminPaymentType;

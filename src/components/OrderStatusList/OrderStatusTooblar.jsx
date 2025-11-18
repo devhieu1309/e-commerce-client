@@ -49,7 +49,7 @@ function OrderStatusTooblar({
     >
       <Space>
         <Input
-          placeholder="Tìm kiếm phương thanh toán"
+          placeholder="Tìm kiếm trạng thái đơn hàng"
           prefix={<SearchOutlined />}
           onChange={(e) => setKeyword(e.target.value)}
           style={{ width: 250 }}
