@@ -23,6 +23,12 @@ import Review from "../pages/User/Review";
 import Relatedquestions from "../pages/User/Relatedquestions";
 import Contact from "../pages/User/Contact";
 import AdminProtectedRoute from "../pages/User/Login/AdminProtectedRoute";
+import LoGin from "../pages/User/login/Login";
+import RegisTer from "../pages/User/register/Register";
+import Information from "../pages/User/Information-customer/Information";
+import Address from "../pages/User/Address-customer/Address";
+import ChangePassword from "../pages/User/Change-Password/ChangePassword";
+import Oder from "../pages/User/Oder-customer/Oder";
 
 import AdminBannerList from "../components/AdminBannerList";
 import AdminNewsList from "../components/News/NewsList";
@@ -36,8 +42,6 @@ import OnOffUserList from "../components/On_Off_User";
 import VideoReview from "../components/VideoReview";
 import AdminStoreBranchList from "../components/AdminStoreBranchList";
 import Payment from "../pages/User/Payment";
-import LoGin from "../pages/User/login/Login";
-import RegisTer from "../pages/User/register/Register";
 import BannerFormPage from "../components/AdminBannerList/BannerListModal";
 import AddStoreBranch from "../components/AdminStoreBranchList/AddStoreBranch";
 import ShoppingOrder from "../components/ShoppingOrder";
@@ -123,6 +127,22 @@ export const routes = [
       {
         path: "dang-ky",
         element: <RegisTer />,
+      },
+      {
+        path: "thong-tin-khach-hang",
+        element: <Information />,
+      },
+      {
+        path: "dia-chi-khach-hang",
+        element: <Address />,
+      },
+      {
+        path: "thay-doi-mat-khau",
+        element: <ChangePassword />,
+      },
+      {
+        path: "don-hang-khach-hang",
+        element: <Oder />,
       },
       {
         path: "*",

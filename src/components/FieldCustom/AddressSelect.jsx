@@ -1,5 +1,6 @@
 import { Select, Space } from "antd";
 import { useEffect, useState } from "react";
+import { getProvinces, getDistricts, getWards } from "../../services/locationServices";
 
 const { Option } = Select;
 
@@ -13,6 +14,7 @@ function AddressSelect({ onChange, value }) {
   const [loadingProvince, setLoadingProvince] = useState(false);
   const [loadingWard, setLoadingWard] = useState(false);
 
+  // load tỉnh
   useEffect(() => {
     setLoadingProvince(true);
     fetch("http://127.0.0.1:8000/api/provinces")
@@ -62,6 +64,7 @@ function AddressSelect({ onChange, value }) {
     onChange({ province: value, ward: "" });
   };
 
+  // chọn xã
   const handleWardChange = (value) => {
     setWard(value);
     onChange({ province, ward: value });
@@ -70,9 +73,9 @@ function AddressSelect({ onChange, value }) {
   // console.log('Tỉnh', provinces);
 
   return (
-    <Space direction="vertical" style={{ width: "100%" }}>
+    <div className="grid grid-cols-3 gap-2">
       <Select
-        placeholder="Chọn Tỉnh/Thành phố"
+        placeholder="Tỉnh/Thành"
         value={province || undefined}
         onChange={handleProvinceChange}
         loading={loadingProvince}
@@ -103,8 +106,9 @@ function AddressSelect({ onChange, value }) {
           </Option>
         ))}
       </Select>
-    </Space>
+    </div>
   );
 }
 
 export default AddressSelect;
+

@@ -1,30 +1,13 @@
 // const API_DOMAIN = "https://e-commerce-server.app/api/";
 const API_DOMAIN = "http://127.0.0.1:8000/api/";
 
-// export const get = async (path, params = {}) => {
-//   const query = new URLSearchParams(params).toString();
-//   const response = await fetch(API_DOMAIN + path + (query ? `?${query}` : ""));
-//   const result = await response.json();
-//   return result;
-// };
 export const get = async (path) => {
   const response = await fetch(API_DOMAIN + path);
   const result = await response.json();
   return result;
 };
 
-// export const post = async (path, options) => {
-//     const response = await fetch(API_DOMAIN + path , {
-//         method: 'POST',
-//         headers: {
-//             Accept: "application/json",
-//             "Content-Type": "application/json"
-//         },
-//         body: JSON.stringify(options)
-//     });
-//     const result = await response.json();
-//     return result;
-// }
+
 
 export const post = async (path, options) => {
   const isFormData = options instanceof FormData;
@@ -33,9 +16,9 @@ export const post = async (path, options) => {
     headers: isFormData
       ? {}
       : {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
     body: isFormData ? options : JSON.stringify(options),
   });
 
@@ -128,6 +111,7 @@ export const edit = async (path, options) => {
 //   return result;
 // };
 
+
 export const postFormData = async (path, formData) => {
   const res = await fetch(API_DOMAIN + path, {
     method: "POST",
@@ -181,3 +165,100 @@ export const editFormData = async (path, formData, method = "PUT") => {
 
   return data;
 };
+
+
+/* ============================================================
+   Bùi Thẩm Kỳ
+   ============================================================ */
+/* PATCH chuẩn cho đổi mật khẩu */
+export const patch = async (path, options = {}) => {
+  const response = await fetch(API_DOMAIN + path, {
+    method: "PATCH",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(options),
+  });
+
+  const result = await response.json();
+
+  if (!response.ok) {
+    const error = new Error(result.message || "PATCH request failed");
+    error.response = { status: response.status, data: result };
+    throw error;
+  }
+
+  return result;
+};
+
+/* PUT update địa chỉ */
+export const put = async (path, options = {}) => {
+  const response = await fetch(API_DOMAIN + path, {
+    method: "PUT",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(options),
+  });
+
+  const result = await response.json();
+
+  if (!response.ok) {
+    const error = new Error(result.message || "PUT request failed");
+    error.response = { status: response.status, data: result };
+    throw error;
+  }
+
+  return result;
+};
+
+/* DELETE để xoá địa chỉ */
+export const deleteItem = async (path) => {
+  const response = await fetch(API_DOMAIN + path, {
+    method: "DELETE",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+  });
+
+  const result = await response.json();
+
+  if (!response.ok) {
+    const error = new Error(result.message || "DELETE request failed");
+    error.response = { status: response.status, data: result };
+    throw error;
+  }
+
+  return result;
+};
+
+
+export const searchPost = async (path, options) => {
+  const response = await fetch(API_DOMAIN + path, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(options),
+  });
+
+  const result = await response.json();
+
+  if (!response.ok) {
+    const error = new Error(result.message || "Search request failed");
+    error.response = {
+      status: response.status,
+      data: result,
+    };
+    throw error;
+  }
+
+  return result;
+};
+/* ============================================================
+   Bùi Thẩm Kỳ
+   ============================================================ */
