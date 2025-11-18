@@ -45,6 +45,7 @@ import EditStoreBranch from "../components/AdminStoreBranchList/EditStoreBranch"
 import GuaranteeList from "../components/GuaranteeList";
 import AddGuarantee from "../components/GuaranteeList/AddGuarantee";
 import EditGuarantee from "../components/GuaranteeList/EditGuarantee";
+import AdminPaymentType from "../components/QuantityInStock";
 
 export const routes = [
   {
@@ -131,11 +132,12 @@ export const routes = [
   },
   {
     path: "/admin",
-    element: (
-      <AdminProtectedRoute>
-        <LayoutDashboard />
-      </AdminProtectedRoute>
-    ),
+    // element: (
+    //   <AdminProtectedRoute>
+    //     <LayoutDashboard />
+    //   </AdminProtectedRoute>
+    // ),
+    element: <LayoutDashboard />,
     children: [
       {
         index: true,
@@ -194,8 +196,8 @@ export const routes = [
       },
 
       {
-        path: "quantityInStock",
-        element: <QuantityInStock />,
+        path: "paymenttype",
+        element: <AdminPaymentType />,
       },
 
       {

@@ -75,13 +75,13 @@ function MenuSider() {
     },
     {
       // label: "Quản lý sản phẩm tồn kho",
-      label: <Link to="/admin/quantityInStock">Quản lý sản phẩm tồn kho</Link>,
+      label: <Link to="/admin/paymenttype">Quản lý Phương thanh toán</Link>,
       icon: <DatabaseOutlined />,
       key: "menu-8",
     },
     {
       // label: "Quản lý phương thanh toán  phương thanh toán",
-      label: <Link to="/admin/orderstatus">Quản lý phương thanh toán</Link>,
+      label: <Link to="/admin/orderstatus">Quản lý trạng thái đơn hàng</Link>,
       icon: <CreditCardOutlined />,
       key: "menu-9",
     },
@@ -109,9 +109,7 @@ function MenuSider() {
       key: "menu-12",
     },
     {
-      label: (
-        <Link to="/admin/store-branches">Quản lý chi nhánh cửa hàng</Link>
-      ),
+      label: <Link to="/admin/store-branches">Quản lý chi nhánh cửa hàng</Link>,
       icon: <HighlightOutlined />,
       key: "menu-13",
     },
@@ -129,9 +127,10 @@ function MenuSider() {
           key: "menu-14-2",
         },
         {
-          label: <Link to="/admin/shopping-order/guarantees">Quản lý bảo hành</Link>,
+          label: (
+            <Link to="/admin/shopping-order/guarantees">Quản lý bảo hành</Link>
+          ),
           key: "menu-14-3",
-
         },
       ],
     },
