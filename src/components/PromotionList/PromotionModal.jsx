@@ -142,6 +142,14 @@ function PromotionModal(props) {
               <Input />
             </Form.Item>
 
+            <Form.Item
+              label="Mã giảm giá"
+              name="discount_code"
+              rules={[{ required: true, message: "Vui lòng nhập mã giảm giá" }]}
+            >
+              <Input placeholder="Nhập mã giảm giá" />
+            </Form.Item>
+
             <Form.Item label="Mô tả" name="description">
               <TextArea
                 placeholder="Nhập mô tả chi tiết về chương trình khuyến mãi"

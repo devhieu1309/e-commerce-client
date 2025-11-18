@@ -43,6 +43,11 @@ function PromotionList() {
       key: "promotion_name",
     },
     {
+      title: "Mã giảm giá",
+      dataIndex: "discount_code",
+      key: "discount_code",
+    },
+    {
       title: "Mô tả",
       dataIndex: "description",
       key: "description",
