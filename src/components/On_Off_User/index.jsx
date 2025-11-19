@@ -1,57 +1,120 @@
-import { Table, Switch } from "antd";
-import { useState } from "react";
+import { Table, Switch, notification } from "antd";
+import { useState, useEffect } from "react";
 import OnOffToolbar from "./On_Off_Toolbar";
+import { get, patch } from "../../utils/request";
+import { useNavigate } from "react-router-dom";
+
 
 function OnOffUserList() {
+  const [apiNoti, contextHolder] = notification.useNotification();
   const [searchText, setSearchText] = useState("");
+  const [users, setUsers] = useState([]);
 
-  const [users, setUsers] = useState([
-    { id: 1, name: "Nguyen Van An", email: "an.nguyen@gmail.com", status: true },
-    { id: 2, name: "Tran Thi Bao", email: "bao.tran@yahoo.com", status: false },
-    { id: 3, name: "Le Minh Tuan", email: "tuan.le@hotmail.com", status: true },
-    { id: 4, name: "Pham Hoang Nam", email: "nam.pham@gmail.com", status: false },
-    { id: 5, name: "Do Thi Lan", email: "lan.do@outlook.com", status: true },
-    { id: 6, name: "Bui Duc Huy", email: "huy.bui@gmail.com", status: false },
-    { id: 7, name: "Hoang Gia Bao", email: "giabao.hoang@yahoo.com", status: true },
-    { id: 8, name: "Nguyen Kim Anh", email: "kimanh.nguyen@gmail.com", status: true },
-    { id: 9, name: "Tran Quoc Viet", email: "viet.tran@outlook.com", status: false },
-    { id: 10, name: "Phan Thi Huong", email: "huong.phan@gmail.com", status: true },
-    { id: 11, name: "Le Hoai Nam", email: "hoainam.le@yahoo.com", status: false },
-    { id: 12, name: "Nguyen Thanh Dat", email: "dat.nguyen@gmail.com", status: true },
-  ]);
 
-  const toggleStatus = (id) => {
-    setUsers((prev) =>
-      prev.map((u) => (u.id === id ? { ...u, status: !u.status } : u))
-    );
+  // ===========================
+  //  Load danh sách user
+  // ===========================
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const res = await get("users");
+        console.log("[OnOff] API /users:", res);
+
+        if (!Array.isArray(res)) {
+          setUsers([]);
+          return;
+        }
+
+        // Lọc user có role = "Người Dùng"
+        const onlyUsers = res.filter(
+          (u) => (u.role ?? "").toLowerCase().trim() === "người dùng"
+        );
+
+        // Chuẩn hóa + ép id thành số
+        const formatted = onlyUsers.map((u, index) => {
+          const rawId = u.user_id ?? u.id ?? null;
+          const id = rawId !== null ? Number(rawId) : null;
+
+          return {
+            id,
+            name: u.name,
+            email: u.email,
+            status: !!u.is_active,
+          };
+        });
+
+        // Sắp xếp id lớn → nhỏ
+        const sorted = formatted.sort((a, b) => b.id - a.id);
+
+        // Thêm STT
+        const finalList = sorted.map((u, idx) => ({
+          ...u,
+          stt: idx + 1,
+        }));
+
+        setUsers(finalList);
+      } catch (err) {
+        console.error("Lỗi load users:", err);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
+  // ===========================
+  //  Toggle trạng thái
+  // ===========================
+  const toggleStatus = async (id) => {
+    try {
+      const res = await patch(`users/${id}/toggle`);
+      console.log("[OnOff] Kết quả toggle:", res);
+
+      const updatedStatus = res.data.is_active;
+      const name = users.find((u) => u.id === id)?.name ?? "";
+
+      // Cập nhật UI ngay
+      setUsers((prev) =>
+        prev.map((u) =>
+          u.id === id ? { ...u, status: updatedStatus } : u
+        )
+      );
+
+      // ===========================
+      //  Thông báo theo kiểu Login.jsx
+      // ===========================
+      if (updatedStatus) {
+        apiNoti.success({
+          message: "Thành công",
+          description: `Đã mở tài khoản "${name}" thành công!`,
+        });
+      } else {
+        apiNoti.success({
+          message: "Thành công",
+          description: `Đã khóa tài khoản "${name}" thành công!`,
+        });
+      }
+    } catch (err) {
+      console.error("Toggle lỗi:", err);
+      apiNoti.error({
+        message: "Lỗi",
+        description: "Không thể cập nhật trạng thái!",
+      });
+    }
   };
 
+  // ===========================
+  //  Lọc theo search
+  // ===========================
   const filteredUsers = users.filter(
     (u) =>
-      u.name.toLowerCase().includes(searchText.toLowerCase()) ||
-      u.email.toLowerCase().includes(searchText.toLowerCase())
+      (u.name ?? "").toLowerCase().includes(searchText.toLowerCase()) ||
+      (u.email ?? "").toLowerCase().includes(searchText.toLowerCase())
   );
 
   const columns = [
-    {
-      title: "ID",
-      dataIndex: "id",
-      key: "id",
-      width: 80,
-      align: "center",
-    },
-    {
-      title: "Họ và Tên",
-      dataIndex: "name",
-      key: "name",
-      align: "center",
-    },
-    {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
-      align: "center",
-    },
+    { title: "STT", dataIndex: "stt", key: "stt", align: "center", width: 80 },
+    { title: "Họ và Tên", dataIndex: "name", key: "name", align: "center" },
+    { title: "Email", dataIndex: "email", key: "email", align: "center" },
     {
       title: "Trạng thái",
       key: "status",
@@ -72,23 +135,23 @@ function OnOffUserList() {
   ];
 
   return (
-    <div className="flex flex-col gap-4">
-      {/* Thanh tìm kiếm */}
-      <OnOffToolbar searchText={searchText} setSearchText={setSearchText} />
+    <>
+      {contextHolder}
+      <div className="flex flex-col gap-4">
+        <OnOffToolbar searchText={searchText} setSearchText={setSearchText} />
 
-      {/* Bảng người dùng */}
-      <Table
-        columns={columns}
-        dataSource={filteredUsers}
-        rowKey="id"
-        bordered={false}
-        pagination={{
-          pageSize: 10,
-          position: ["bottomRight"],
-          showSizeChanger: false,
-        }}
-      />
-    </div>
+        <Table
+          columns={columns}
+          dataSource={filteredUsers}
+          rowKey="id"
+          pagination={{
+            pageSize: 10,
+            position: ["bottomRight"],
+            showSizeChanger: false,
+          }}
+        />
+      </div>
+    </>
   );
 }
 
