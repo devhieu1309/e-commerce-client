@@ -21,6 +21,19 @@ function Header({ user, onLogout }) {
 
   useEffect(() => {
     loadCart();
+
+    // cập nhật số lượng
+    const handleCartUpdate = (event) => {
+      // lấy cả danh sách sản phẩm và tổng số lượng 
+      const { items, totalQuantity } = event.detail;
+      setCartItems(items);
+    };
+    window.addEventListener('cartUpdated', handleCartUpdate);
+
+    // dọn dẹp listener khi component unmount
+    return () => {
+      window.removeEventListener('cartUpdated', handleCartUpdate);
+    };
   }, []);
 
   const handleRemoveFromCart = async (cartItemId) => {
@@ -51,7 +64,7 @@ function Header({ user, onLogout }) {
       );
 
       const result = await updateCartItemQuantity(cartItemId, newQuantity);
-      
+
       // Nếu API thất bại, khôi phục lại giá trị cũ
       if (!result?.success) {
         setCartItems(prevItems =>
@@ -73,7 +86,7 @@ function Header({ user, onLogout }) {
         )
       );
     }
-};
+  };
   return (
     <>
       <header className="relative group/header">
@@ -84,356 +97,356 @@ function Header({ user, onLogout }) {
                 <img src="/logo.webp" alt="Ảnh logo" className="w-full h-full object-contain" />
               </div>
               <div className="w-full lg:w-auto flex flex-col sm:flex-row gap-2 lg:gap-0 order-2 lg:order-none">
-              <div className="bg-[#2E3AA3] z-10 flex p-2 items-center justify-center space-x-2 sm:space-x-3 rounded-sm group focus-within:bg-amber-500 relative w-full sm:w-auto">
-                <button className="flex items-center space-x-2 cursor-pointer">
-                  <img
-                    className="h-[18px] w-[18px] sm:h-[20px] sm:w-[20px]"
-                    src="/icons8-navigation-menu-50.png"
-                    alt="Danh mục"
-                  />
-                  <span className="text-[12px] sm:text-[14px]">Danh mục</span>
-                </button>
-                <div className="bg-white absolute top-full left-0 sm:top-[98px] sm:-left-[230px] mt-2 sm:mt-0 group-focus-within:flex hidden rounded-md z-50 shadow-lg border border-gray-200 max-h-[80vh] overflow-y-auto">
-                  <ul className="flex p-1 sm:p-2 flex-col space-y-1 w-full sm:w-[270px] text-black text-[12px] sm:text-[13px] md:text-[14px] lg:text-[16px]">
-                    <li className="flex items-center justify-between px-2 sm:px-3 py-1.5 sm:py-2 space-x-2 group/category hover:bg-gray-200">
-                      <div className="relative flex items-center space-x-2 flex-1">
-                        <div>
-                          <img
-                            className="w-[20px] h-[20px] sm:w-[25px] sm:h-[25px] object-cover"
-                            src="/icons8-iphone-50.png"
-                            alt="Iphone"
-                          />
-                        </div>
-                        <span className="flex-1">Iphone</span>
-                        <div className="bg-white p-2 sm:p-3 h-auto sm:h-[262px] w-[90vw] sm:w-[600px] md:w-[700px] lg:w-[800px] rounded-md absolute sm:fixed top-0 left-full sm:top-[116px] sm:left-[402px] ml-2 sm:ml-0 hidden lg:grid lg:grid-cols-3 group-hover/category:grid shadow-lg border border-gray-200 max-h-[80vh] sm:max-h-none overflow-y-auto">
-                          <div className="cursor-pointer group/sub-category">
-                            <h3 className="font-medium text-[14px] sm:text-[15px] md:text-[16px] group-hover/sub-category:text-amber-500">
-                              Iphone 15 Series
-                            </h3>
-                            <ul className="pt-2 sm:pt-4 space-y-1 sm:space-y-2">
-                              <li className="hover:text-amber-400 text-[12px] sm:text-[13px] md:text-[14px]">
-                                Iphone 15
-                              </li>
-                              <li className="hover:text-amber-400 text-[12px] sm:text-[13px] md:text-[14px]">
-                                Iphone 15 Plus
-                              </li>
-                              <li className="hover:text-amber-400 text-[12px] sm:text-[13px] md:text-[14px]">
-                                Iphone 15 Pro
-                              </li>
-                              <li className="hover:text-amber-400 text-[12px] sm:text-[13px] md:text-[14px]">
-                                Iphone 15 Pro Max
-                              </li>
-                            </ul>
-                          </div>
-                          <div className="cursor-pointer group/sub-category">
-                            <h3 className="font-medium text-[14px] sm:text-[15px] md:text-[16px] group-hover/sub-category:text-amber-500">
-                              Iphone 14 Series
-                            </h3>
-                            <ul className="pt-2 sm:pt-4 space-y-1 sm:space-y-2">
-                              <li className="hover:text-amber-400 text-[12px] sm:text-[13px] md:text-[14px]">
-                                Iphone 14 Pro Max
-                              </li>
-                              <li className="hover:text-amber-400 text-[12px] sm:text-[13px] md:text-[14px]">
-                                Iphone 14 Pro
-                              </li>
-                              <li className="hover:text-amber-400 text-[12px] sm:text-[13px] md:text-[14px]">
-                                Iphone 14 Plus
-                              </li>
-                              <li className="hover:text-amber-400 text-[12px] sm:text-[13px] md:text-[14px]">
-                                Iphone 14
-                              </li>
-                            </ul>
-                          </div>
-                          <div className="cursor-pointer group/sub-category">
-                            <h3 className="font-medium text-[14px] sm:text-[15px] md:text-[16px] group-hover/sub-category:text-amber-500">
-                              Iphone 13
-                            </h3>
-                            <ul className="pt-2 sm:pt-4 space-y-1 sm:space-y-2">
-                              <li className="hover:text-amber-400 text-[12px] sm:text-[13px] md:text-[14px]">
-                                Iphone 13
-                              </li>
-                              <li className="hover:text-amber-400 text-[12px] sm:text-[13px] md:text-[14px]">
-                                Iphone 13 mini
-                              </li>
-                            </ul>
-                          </div>
-                          <div className="cursor-pointer group/sub-category">
-                            <h3 className="font-medium text-[14px] sm:text-[15px] md:text-[16px] group-hover/sub-category:text-amber-500">
-                              Iphone 12
-                            </h3>
-                          </div>
-                          <div className="cursor-pointer group/sub-category">
-                            <h3 className="font-medium text-[14px] sm:text-[15px] md:text-[16px] group-hover/sub-category:text-amber-500">
-                              Iphone 11
-                            </h3>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="hidden lg:block">
-                        <img
-                          className="w-[18px] h-[18px] sm:w-[20px] sm:h-[20px] object-cover"
-                          src="/icons8-next-30.png"
-                          alt=""
-                        />
-                      </div>
-                    </li>
-                    <li className="flex items-center justify-between px-2 sm:px-3 py-1.5 sm:py-2 space-x-2 group/category hover:bg-gray-200">
-                      <div className="flex items-center space-x-2 flex-1">
-                        <div>
-                          <img
-                            className="w-[20px] h-[20px] sm:w-[25px] sm:h-[25px] object-cover"
-                            src="/icons8-ipad-100.png"
-                            alt="Iphone"
-                          />
-                        </div>
-                        <span className="flex-1">Ipad</span>
-                      </div>
-                      <div>
-                        {/* <img className="w-[20px] h-[20px] object-cover" src="/icons8-next-30.png" alt="" /> */}
-                      </div>
-                    </li>
-                    <li className="flex items-center justify-between px-2 sm:px-3 py-1.5 sm:py-2 space-x-2 hover:bg-gray-200">
-                      <div className="flex items-center space-x-2 flex-1">
-                        <div>
-                          <img
-                            className="w-[20px] h-[20px] sm:w-[25px] sm:h-[25px] object-cover"
-                            src="/icons8-watch-50.png"
-                            alt="Iphone"
-                          />
-                        </div>
-                        <span className="flex-1">Watch</span>
-                      </div>
-                      <div>
-                        {/* <img className="w-[20px] h-[20px] object-cover" src="/icons8-next-30.png" alt="" /> */}
-                      </div>
-                    </li>
-                    <li className="flex items-center justify-between px-2 sm:px-3 py-1.5 sm:py-2 space-x-2 hover:bg-gray-200">
-                      <div className="flex items-center space-x-2 flex-1">
-                        <div>
-                          <img
-                            className="w-[20px] h-[20px] sm:w-[25px] sm:h-[25px] object-cover"
-                            src="/icons8-mac-50.png"
-                            alt="Iphone"
-                          />
-                        </div>
-                        <span className="flex-1">Mac</span>
-                      </div>
-                      <div>
-                        {/* <img className="w-[20px] h-[20px] object-cover" src="/icons8-next-30.png" alt="" /> */}
-                      </div>
-                    </li>
-                    <li className="flex items-center justify-between px-2 sm:px-3 py-1.5 sm:py-2 space-x-2 hover:bg-gray-200">
-                      <div className="flex items-center space-x-2 flex-1">
-                        <div>
-                          <img
-                            className="w-[20px] h-[20px] sm:w-[25px] sm:h-[25px] object-cover"
-                            src="/icons8-airpods-50.png"
-                            alt="Iphone"
-                          />
-                        </div>
-                        <span className="flex-1">AirPods</span>
-                      </div>
-                      <div>
-                        {/* <img className="w-[20px] h-[20px] object-cover" src="/icons8-next-30.png" alt="" /> */}
-                      </div>
-                    </li>
-                    <li className="flex items-center justify-between px-2 sm:px-3 py-1.5 sm:py-2 space-x-2 hover:bg-gray-200">
-                      <div className="flex items-center space-x-2 flex-1">
-                        <div>
-                          <img
-                            className="w-[20px] h-[20px] sm:w-[25px] sm:h-[25px] object-cover"
-                            src="/icons8-volume-50.png"
-                            alt="Iphone"
-                          />
-                        </div>
-                        <span className="flex-1">Âm thanh</span>
-                      </div>
-                      <div>
-                        {/* <img className="w-[20px] h-[20px] object-cover" src="/icons8-next-30.png" alt="" /> */}
-                      </div>
-                    </li>
-                    <li className="flex items-center justify-between px-2 sm:px-3 py-1.5 sm:py-2 space-x-2 hover:bg-gray-200">
-                      <div className="flex items-center space-x-2 flex-1">
-                        <div>
-                          <img
-                            className="w-[20px] h-[20px] sm:w-[25px] sm:h-[25px] object-cover"
-                            src="/icons8-phone-case-50.png"
-                            alt="Iphone"
-                          />
-                        </div>
-                        <span className="flex-1">Phụ kiện</span>
-                      </div>
-                      <div>
-                        {/* <img className="w-[20px] h-[20px] object-cover" src="/icons8-next-30.png" alt="" /> */}
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-
-              <div className="bg-white rounded-md w-full sm:w-[60%] lg:w-[25%] order-3 lg:order-none">
-                <form
-                  className="flex items-center justify-between pl-2"
-                  action=""
-                >
-                  <input
-                    className="text-[#75759D] outline-0 text-xs sm:text-sm md:text-base w-full py-1.5 sm:py-2"
-                    type="text"
-                    placeholder="Bạn cần tìm gì..."
-                  />
-                  <button className="hover:bg-amber-300 h-[32px] sm:h-[36px] md:h-[40px] w-[40px] sm:w-[45px] md:w-[50px] flex items-center justify-center rounded-md flex-shrink-0">
+                <div className="bg-[#2E3AA3] z-10 flex p-2 items-center justify-center space-x-2 sm:space-x-3 rounded-sm group focus-within:bg-amber-500 relative w-full sm:w-auto">
+                  <button className="flex items-center space-x-2 cursor-pointer">
                     <img
-                      className="h-[16px] w-[16px] sm:h-[18px] sm:w-[18px] md:h-[20px] md:w-[20px]"
-                      src="/icons8-search-50.png"
-                      alt="Tìm kiếm"
+                      className="h-[18px] w-[18px] sm:h-[20px] sm:w-[20px]"
+                      src="/icons8-navigation-menu-50.png"
+                      alt="Danh mục"
                     />
+                    <span className="text-[12px] sm:text-[14px]">Danh mục</span>
                   </button>
-                </form>
-              </div>
-              <ul className="flex flex-wrap justify-center lg:justify-start gap-2 sm:gap-3 md:gap-4 lg:gap-0 w-full sm:w-auto order-4 lg:order-none">
-                <li className="flex space-x-1 sm:space-x-1.5 items-center justify-center w-auto sm:w-[90px] md:w-[100px] lg:w-[120px]">
-                  <span className="">
-                    <img
-                      className="h-[28px] w-[28px] sm:h-[32px] sm:w-[32px] md:h-[35px] md:w-[35px] object-contain"
-                      src="/icons8-telephone-50.png"
-                      alt="Phone"
+                  <div className="bg-white absolute top-full left-0 sm:top-[98px] sm:-left-[230px] mt-2 sm:mt-0 group-focus-within:flex hidden rounded-md z-50 shadow-lg border border-gray-200 max-h-[80vh] overflow-y-auto">
+                    <ul className="flex p-1 sm:p-2 flex-col space-y-1 w-full sm:w-[270px] text-black text-[12px] sm:text-[13px] md:text-[14px] lg:text-[16px]">
+                      <li className="flex items-center justify-between px-2 sm:px-3 py-1.5 sm:py-2 space-x-2 group/category hover:bg-gray-200">
+                        <div className="relative flex items-center space-x-2 flex-1">
+                          <div>
+                            <img
+                              className="w-[20px] h-[20px] sm:w-[25px] sm:h-[25px] object-cover"
+                              src="/icons8-iphone-50.png"
+                              alt="Iphone"
+                            />
+                          </div>
+                          <span className="flex-1">Iphone</span>
+                          <div className="bg-white p-2 sm:p-3 h-auto sm:h-[262px] w-[90vw] sm:w-[600px] md:w-[700px] lg:w-[800px] rounded-md absolute sm:fixed top-0 left-full sm:top-[116px] sm:left-[402px] ml-2 sm:ml-0 hidden lg:grid lg:grid-cols-3 group-hover/category:grid shadow-lg border border-gray-200 max-h-[80vh] sm:max-h-none overflow-y-auto">
+                            <div className="cursor-pointer group/sub-category">
+                              <h3 className="font-medium text-[14px] sm:text-[15px] md:text-[16px] group-hover/sub-category:text-amber-500">
+                                Iphone 15 Series
+                              </h3>
+                              <ul className="pt-2 sm:pt-4 space-y-1 sm:space-y-2">
+                                <li className="hover:text-amber-400 text-[12px] sm:text-[13px] md:text-[14px]">
+                                  Iphone 15
+                                </li>
+                                <li className="hover:text-amber-400 text-[12px] sm:text-[13px] md:text-[14px]">
+                                  Iphone 15 Plus
+                                </li>
+                                <li className="hover:text-amber-400 text-[12px] sm:text-[13px] md:text-[14px]">
+                                  Iphone 15 Pro
+                                </li>
+                                <li className="hover:text-amber-400 text-[12px] sm:text-[13px] md:text-[14px]">
+                                  Iphone 15 Pro Max
+                                </li>
+                              </ul>
+                            </div>
+                            <div className="cursor-pointer group/sub-category">
+                              <h3 className="font-medium text-[14px] sm:text-[15px] md:text-[16px] group-hover/sub-category:text-amber-500">
+                                Iphone 14 Series
+                              </h3>
+                              <ul className="pt-2 sm:pt-4 space-y-1 sm:space-y-2">
+                                <li className="hover:text-amber-400 text-[12px] sm:text-[13px] md:text-[14px]">
+                                  Iphone 14 Pro Max
+                                </li>
+                                <li className="hover:text-amber-400 text-[12px] sm:text-[13px] md:text-[14px]">
+                                  Iphone 14 Pro
+                                </li>
+                                <li className="hover:text-amber-400 text-[12px] sm:text-[13px] md:text-[14px]">
+                                  Iphone 14 Plus
+                                </li>
+                                <li className="hover:text-amber-400 text-[12px] sm:text-[13px] md:text-[14px]">
+                                  Iphone 14
+                                </li>
+                              </ul>
+                            </div>
+                            <div className="cursor-pointer group/sub-category">
+                              <h3 className="font-medium text-[14px] sm:text-[15px] md:text-[16px] group-hover/sub-category:text-amber-500">
+                                Iphone 13
+                              </h3>
+                              <ul className="pt-2 sm:pt-4 space-y-1 sm:space-y-2">
+                                <li className="hover:text-amber-400 text-[12px] sm:text-[13px] md:text-[14px]">
+                                  Iphone 13
+                                </li>
+                                <li className="hover:text-amber-400 text-[12px] sm:text-[13px] md:text-[14px]">
+                                  Iphone 13 mini
+                                </li>
+                              </ul>
+                            </div>
+                            <div className="cursor-pointer group/sub-category">
+                              <h3 className="font-medium text-[14px] sm:text-[15px] md:text-[16px] group-hover/sub-category:text-amber-500">
+                                Iphone 12
+                              </h3>
+                            </div>
+                            <div className="cursor-pointer group/sub-category">
+                              <h3 className="font-medium text-[14px] sm:text-[15px] md:text-[16px] group-hover/sub-category:text-amber-500">
+                                Iphone 11
+                              </h3>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="hidden lg:block">
+                          <img
+                            className="w-[18px] h-[18px] sm:w-[20px] sm:h-[20px] object-cover"
+                            src="/icons8-next-30.png"
+                            alt=""
+                          />
+                        </div>
+                      </li>
+                      <li className="flex items-center justify-between px-2 sm:px-3 py-1.5 sm:py-2 space-x-2 group/category hover:bg-gray-200">
+                        <div className="flex items-center space-x-2 flex-1">
+                          <div>
+                            <img
+                              className="w-[20px] h-[20px] sm:w-[25px] sm:h-[25px] object-cover"
+                              src="/icons8-ipad-100.png"
+                              alt="Iphone"
+                            />
+                          </div>
+                          <span className="flex-1">Ipad</span>
+                        </div>
+                        <div>
+                          {/* <img className="w-[20px] h-[20px] object-cover" src="/icons8-next-30.png" alt="" /> */}
+                        </div>
+                      </li>
+                      <li className="flex items-center justify-between px-2 sm:px-3 py-1.5 sm:py-2 space-x-2 hover:bg-gray-200">
+                        <div className="flex items-center space-x-2 flex-1">
+                          <div>
+                            <img
+                              className="w-[20px] h-[20px] sm:w-[25px] sm:h-[25px] object-cover"
+                              src="/icons8-watch-50.png"
+                              alt="Iphone"
+                            />
+                          </div>
+                          <span className="flex-1">Watch</span>
+                        </div>
+                        <div>
+                          {/* <img className="w-[20px] h-[20px] object-cover" src="/icons8-next-30.png" alt="" /> */}
+                        </div>
+                      </li>
+                      <li className="flex items-center justify-between px-2 sm:px-3 py-1.5 sm:py-2 space-x-2 hover:bg-gray-200">
+                        <div className="flex items-center space-x-2 flex-1">
+                          <div>
+                            <img
+                              className="w-[20px] h-[20px] sm:w-[25px] sm:h-[25px] object-cover"
+                              src="/icons8-mac-50.png"
+                              alt="Iphone"
+                            />
+                          </div>
+                          <span className="flex-1">Mac</span>
+                        </div>
+                        <div>
+                          {/* <img className="w-[20px] h-[20px] object-cover" src="/icons8-next-30.png" alt="" /> */}
+                        </div>
+                      </li>
+                      <li className="flex items-center justify-between px-2 sm:px-3 py-1.5 sm:py-2 space-x-2 hover:bg-gray-200">
+                        <div className="flex items-center space-x-2 flex-1">
+                          <div>
+                            <img
+                              className="w-[20px] h-[20px] sm:w-[25px] sm:h-[25px] object-cover"
+                              src="/icons8-airpods-50.png"
+                              alt="Iphone"
+                            />
+                          </div>
+                          <span className="flex-1">AirPods</span>
+                        </div>
+                        <div>
+                          {/* <img className="w-[20px] h-[20px] object-cover" src="/icons8-next-30.png" alt="" /> */}
+                        </div>
+                      </li>
+                      <li className="flex items-center justify-between px-2 sm:px-3 py-1.5 sm:py-2 space-x-2 hover:bg-gray-200">
+                        <div className="flex items-center space-x-2 flex-1">
+                          <div>
+                            <img
+                              className="w-[20px] h-[20px] sm:w-[25px] sm:h-[25px] object-cover"
+                              src="/icons8-volume-50.png"
+                              alt="Iphone"
+                            />
+                          </div>
+                          <span className="flex-1">Âm thanh</span>
+                        </div>
+                        <div>
+                          {/* <img className="w-[20px] h-[20px] object-cover" src="/icons8-next-30.png" alt="" /> */}
+                        </div>
+                      </li>
+                      <li className="flex items-center justify-between px-2 sm:px-3 py-1.5 sm:py-2 space-x-2 hover:bg-gray-200">
+                        <div className="flex items-center space-x-2 flex-1">
+                          <div>
+                            <img
+                              className="w-[20px] h-[20px] sm:w-[25px] sm:h-[25px] object-cover"
+                              src="/icons8-phone-case-50.png"
+                              alt="Iphone"
+                            />
+                          </div>
+                          <span className="flex-1">Phụ kiện</span>
+                        </div>
+                        <div>
+                          {/* <img className="w-[20px] h-[20px] object-cover" src="/icons8-next-30.png" alt="" /> */}
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-md w-full sm:w-[60%] lg:w-[25%] order-3 lg:order-none">
+                  <form
+                    className="flex items-center justify-between pl-2"
+                    action=""
+                  >
+                    <input
+                      className="text-[#75759D] outline-0 text-xs sm:text-sm md:text-base w-full py-1.5 sm:py-2"
+                      type="text"
+                      placeholder="Bạn cần tìm gì..."
                     />
-                  </span>
-                  <span className="hover:text-amber-300 text-[10px] sm:text-[11px] md:text-[12px] lg:text-[14px] leading-tight">
-                    Hotline
-                    <br />
-                    <span className="hidden sm:inline">19006750</span>
-                    <span className="sm:hidden">1900</span>
-                  </span>
-                </li>
-                <li className="flex space-x-1 sm:space-x-1.5 items-center justify-center w-auto sm:w-[90px] md:w-[100px] lg:w-[120px]">
-                  <span className="">
-                    <img
-                      className="h-[24px] w-[24px] sm:h-[28px] sm:w-[28px] md:h-[32px] md:w-[32px] lg:h-[35px] lg:w-[35px] object-contain"
-                      src="/icons8-location-50.png"
-                      alt="Address"
-                    />
-                  </span>
-                  <Link to="/he-thong-cua-hang">
+                    <button className="hover:bg-amber-300 h-[32px] sm:h-[36px] md:h-[40px] w-[40px] sm:w-[45px] md:w-[50px] flex items-center justify-center rounded-md flex-shrink-0">
+                      <img
+                        className="h-[16px] w-[16px] sm:h-[18px] sm:w-[18px] md:h-[20px] md:w-[20px]"
+                        src="/icons8-search-50.png"
+                        alt="Tìm kiếm"
+                      />
+                    </button>
+                  </form>
+                </div>
+                <ul className="flex flex-wrap justify-center lg:justify-start gap-2 sm:gap-3 md:gap-4 lg:gap-0 w-full sm:w-auto order-4 lg:order-none">
+                  <li className="flex space-x-1 sm:space-x-1.5 items-center justify-center w-auto sm:w-[90px] md:w-[100px] lg:w-[120px]">
+                    <span className="">
+                      <img
+                        className="h-[28px] w-[28px] sm:h-[32px] sm:w-[32px] md:h-[35px] md:w-[35px] object-contain"
+                        src="/icons8-telephone-50.png"
+                        alt="Phone"
+                      />
+                    </span>
                     <span className="hover:text-amber-300 text-[10px] sm:text-[11px] md:text-[12px] lg:text-[14px] leading-tight">
-                      Hệ thống
+                      Hotline
                       <br />
-                      cửa hàng
+                      <span className="hidden sm:inline">19006750</span>
+                      <span className="sm:hidden">1900</span>
                     </span>
-                  </Link>
-                </li>
-                <li className="flex space-x-1 sm:space-x-1.5 items-center justify-center w-auto sm:w-[90px] md:w-[100px] lg:w-[120px]">
-                  <span className="">
-                    <img
-                      className="h-[24px] w-[24px] sm:h-[28px] sm:w-[28px] md:h-[32px] md:w-[32px] lg:h-[35px] lg:w-[35px] object-contain"
-                      src="/icons8-order-50.png"
-                      alt="Order"
-                    />
-                  </span>
-
-                  <span className="hover:text-amber-300 text-[10px] sm:text-[11px] md:text-[12px] lg:text-[14px] leading-tight">
-                    Tra cứu
-                    <br />
-                    đơn hàng
-                  </span>
-                </li>
-
-                <li className="flex space-x-1 sm:space-x-1.5 items-center justify-center w-auto sm:w-[90px] md:w-[100px] lg:w-[120px] group">
-                  <span className="">
-                    <img
-                      className="h-[28px] w-[28px] sm:h-[32px] sm:w-[32px] md:h-[40px] md:w-[40px] lg:h-[45px] lg:w-[45px] xl:h-[50px] xl:w-[50px] object-contain"
-                      src="/icons8-cart-100.png"
-                      alt="Cart"
-                    />
-                  </span>
-
-                  <span className="relative group/cart">
-                    <span className="flex justify-center text-center text-[10px] sm:text-[11px] md:text-[12px] lg:text-[14px] cursor-pointer">
-                      <Link to="/cart" className="hidden md:inline">Giỏ hàng Sản phẩm</Link>
-                      <Link to="/cart" className="md:hidden">Giỏ hàng</Link>
+                  </li>
+                  <li className="flex space-x-1 sm:space-x-1.5 items-center justify-center w-auto sm:w-[90px] md:w-[100px] lg:w-[120px]">
+                    <span className="">
+                      <img
+                        className="h-[24px] w-[24px] sm:h-[28px] sm:w-[28px] md:h-[32px] md:w-[32px] lg:h-[35px] lg:w-[35px] object-contain"
+                        src="/icons8-location-50.png"
+                        alt="Address"
+                      />
+                    </span>
+                    <Link to="/he-thong-cua-hang">
+                      <span className="hover:text-amber-300 text-[10px] sm:text-[11px] md:text-[12px] lg:text-[14px] leading-tight">
+                        Hệ thống
+                        <br />
+                        cửa hàng
+                      </span>
+                    </Link>
+                  </li>
+                  <li className="flex space-x-1 sm:space-x-1.5 items-center justify-center w-auto sm:w-[90px] md:w-[100px] lg:w-[120px]">
+                    <span className="">
+                      <img
+                        className="h-[24px] w-[24px] sm:h-[28px] sm:w-[28px] md:h-[32px] md:w-[32px] lg:h-[35px] lg:w-[35px] object-contain"
+                        src="/icons8-order-50.png"
+                        alt="Order"
+                      />
                     </span>
 
-                    <div className="group-hover/cart:flex hidden absolute top-full right-0 sm:top-12 sm:right-2 mt-2 sm:mt-0 bg-white w-[90vw] sm:w-[350px] md:w-[400px] max-w-[400px] py-2 sm:py-3 px-3 sm:px-4 rounded-md flex-col space-y-3 sm:space-y-4 ring-1 ring-black/10 shadow-[0_0_18px_0_rgba(0,0,0,0.06)] text-xs sm:text-sm z-50 max-h-[80vh] overflow-y-auto">
+                    <span className="hover:text-amber-300 text-[10px] sm:text-[11px] md:text-[12px] lg:text-[14px] leading-tight">
+                      Tra cứu
+                      <br />
+                      đơn hàng
+                    </span>
+                  </li>
 
-                      {cartItems.length === 0 ? (
-                        <span className="text-center text-gray-500">
-                          Giỏ hàng của bạn đang trống
-                        </span>
-                      ) : (
-                        <>
-                          {cartItems.map((item) => (
-                            <div key={item.cart_item_id} className="flex items-start space-x-2 sm:space-x-3">
-                              {/* Ảnh sản phẩm */}
-                              <div className="w-[25%] sm:w-[30%] flex-shrink-0">
-                                <img
-                                  src={item.image}
-                                  alt={item.product_name}
-                                  className="w-full h-auto object-cover rounded-md"
-                                />
-                              </div>
+                  <li className="flex space-x-1 sm:space-x-1.5 items-center justify-center w-auto sm:w-[90px] md:w-[100px] lg:w-[120px] group">
+                    <span className="">
+                      <img
+                        className="h-[28px] w-[28px] sm:h-[32px] sm:w-[32px] md:h-[40px] md:w-[40px] lg:h-[45px] lg:w-[45px] xl:h-[50px] xl:w-[50px] object-contain"
+                        src="/icons8-cart-100.png"
+                        alt="Cart"
+                      />
+                    </span>
 
-                              {/* Thông tin sản phẩm */}
-                              <div className="flex-1 space-y-1 min-w-0">
-                                <p className="font-semibold text-gray-900 text-xs sm:text-sm line-clamp-2">
-                                  {item.product_name} - {item.variation_options[1]?.variation_option_name || ''}
-                                </p>
-                                <p className="text-gray-600 text-xs sm:text-sm line-clamp-1">{item.variation_options[0]?.variation_option_name || ''}</p>
-                                <button className="text-red-500 text-xs sm:text-sm hover:underline"
-                                  //truyền cart_item_id để xóa
-                                  onClick={() => handleRemoveFromCart(item.cart_item_id)}>
-                                  Xóa
-                                </button>
+                    <span className="relative group/cart">
+                      <span className="flex justify-center text-center text-[10px] sm:text-[11px] md:text-[12px] lg:text-[14px] cursor-pointer">
+                        <Link to="/cart" className="hidden md:inline">Giỏ hàng Sản phẩm</Link>
+                        <Link to="/cart" className="md:hidden">Giỏ hàng</Link>
+                      </span>
 
-                                {/* Số lượng và giá */}
-                                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mt-2 gap-2 sm:gap-0">
-                                  <div className="flex items-center space-x-2">
-                                    <span className="text-gray-700 text-xs sm:text-sm">Số lượng:</span>
-                                    <div className='flex space-x-2 sm:space-x-3 justify-between items-center text-center border border-black w-auto h-auto rounded-md'>
-                                      <button className='bg-[#000f8f] h-[20px] sm:h-[25px] px-1.5 sm:px-2 text-white text-xs sm:text-sm m-0.5 sm:m-1 rounded-md'
-                                        onClick={() =>
-                                          handleupdateQuantity(item.cart_item_id, item.quantity, item.quantity - 1)
-                                        }>
-                                        -
-                                      </button>
-                                      <p className='m-0 text-gray-900 px-1 sm:px-2 text-xs sm:text-sm'>{item.quantity}</p>
-                                      <button className='bg-[#000f8f] h-[20px] sm:h-[25px] px-1.5 sm:px-2 text-white text-xs sm:text-sm m-0.5 sm:m-1 rounded-md'
-                                        onClick={() =>
-                                          handleupdateQuantity(item.cart_item_id, item.quantity, item.quantity + 1)
-                                        }>
-                                        +
-                                      </button>
-                                    </div>
-                                  </div>
-                                  <p className="font-bold text-red-500 text-xs sm:text-sm md:text-base">
-                                    {Number(item.price).toLocaleString()}đ
+                      <div className="group-hover/cart:flex hidden absolute top-full right-0 sm:top-12 sm:right-2 mt-2 sm:mt-0 bg-white w-[90vw] sm:w-[350px] md:w-[400px] max-w-[400px] py-2 sm:py-3 px-3 sm:px-4 rounded-md flex-col space-y-3 sm:space-y-4 ring-1 ring-black/10 shadow-[0_0_18px_0_rgba(0,0,0,0.06)] text-xs sm:text-sm z-50 max-h-[80vh] overflow-y-auto">
+
+                        {cartItems.length === 0 ? (
+                          <span className="text-center text-gray-500">
+                            Giỏ hàng của bạn đang trống
+                          </span>
+                        ) : (
+                          <>
+                            {cartItems.map((item) => (
+                              <div key={item.cart_item_id} className="flex items-start space-x-2 sm:space-x-3">
+                                {/* Ảnh sản phẩm */}
+                                <div className="w-[25%] sm:w-[30%] flex-shrink-0">
+                                  <img
+                                    src={item.image}
+                                    alt={item.product_name}
+                                    className="w-full h-auto object-cover rounded-md"
+                                  />
+                                </div>
+
+                                {/* Thông tin sản phẩm */}
+                                <div className="flex-1 space-y-1 min-w-0">
+                                  <p className="font-semibold text-gray-900 text-xs sm:text-sm line-clamp-2">
+                                    {item.product_name} - {item.variation_options[1]?.variation_option_name || ''}
                                   </p>
+                                  <p className="text-gray-600 text-xs sm:text-sm line-clamp-1">{item.variation_options[0]?.variation_option_name || ''}</p>
+                                  <button className="text-red-500 text-xs sm:text-sm hover:underline"
+                                    //truyền cart_item_id để xóa
+                                    onClick={() => handleRemoveFromCart(item.cart_item_id)}>
+                                    Xóa
+                                  </button>
+
+                                  {/* Số lượng và giá */}
+                                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mt-2 gap-2 sm:gap-0">
+                                    <div className="flex items-center space-x-2">
+                                      <span className="text-gray-700 text-xs sm:text-sm">Số lượng:</span>
+                                      <div className='flex space-x-2 sm:space-x-3 justify-between items-center text-center border border-black w-auto h-auto rounded-md'>
+                                        <button className='bg-[#000f8f] h-[20px] sm:h-[25px] px-1.5 sm:px-2 text-white text-xs sm:text-sm m-0.5 sm:m-1 rounded-md'
+                                          onClick={() =>
+                                            handleupdateQuantity(item.cart_item_id, item.quantity, item.quantity - 1)
+                                          }>
+                                          -
+                                        </button>
+                                        <p className='m-0 text-gray-900 px-1 sm:px-2 text-xs sm:text-sm'>{item.quantity}</p>
+                                        <button className='bg-[#000f8f] h-[20px] sm:h-[25px] px-1.5 sm:px-2 text-white text-xs sm:text-sm m-0.5 sm:m-1 rounded-md'
+                                          onClick={() =>
+                                            handleupdateQuantity(item.cart_item_id, item.quantity, item.quantity + 1)
+                                          }>
+                                          +
+                                        </button>
+                                      </div>
+                                    </div>
+                                    <p className="font-bold text-red-500 text-xs sm:text-sm md:text-base">
+                                      {Number(item.price).toLocaleString()}đ
+                                    </p>
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                          ))}
+                            ))}
 
-                          {/* Tổng tiền & nút thanh toán */}
-                          <div className="border-t border-gray-200 pt-2 sm:pt-3 space-y-2 sm:space-y-3">
-                            <div className="flex justify-between items-center">
-                              <p className="font-semibold text-gray-900 text-xs sm:text-sm">Tổng tiền:</p>
-                              <p className="font-bold text-red-500 text-sm sm:text-base md:text-lg">
-                                {cartItems.reduce((sum, i) => sum + i.quantity * i.price, 0).toLocaleString()}đ
-                              </p>
+                            {/* Tổng tiền & nút thanh toán */}
+                            <div className="border-t border-gray-200 pt-2 sm:pt-3 space-y-2 sm:space-y-3">
+                              <div className="flex justify-between items-center">
+                                <p className="font-semibold text-gray-900 text-xs sm:text-sm">Tổng tiền:</p>
+                                <p className="font-bold text-red-500 text-sm sm:text-base md:text-lg">
+                                  {cartItems.reduce((sum, i) => sum + i.quantity * i.price, 0).toLocaleString()}đ
+                                </p>
+                              </div>
+                              <button
+                                type="submit"
+                                className="w-full rounded-md bg-[#000f8f] px-4 sm:px-5 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold text-white shadow-sm hover:bg-amber-300 hover:text-[#000f8f] transition-all"
+                              >
+                                Thanh toán
+                              </button>
                             </div>
-                            <button
-                              type="submit"
-                              className="w-full rounded-md bg-[#000f8f] px-4 sm:px-5 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold text-white shadow-sm hover:bg-amber-300 hover:text-[#000f8f] transition-all"
-                            >
-                              Thanh toán
-                            </button>
-                          </div>
-                        </>
-                      )}
-                    </div>
+                          </>
+                        )}
+                      </div>
 
-                  </span>
-                </li>
-              </ul>
+                    </span>
+                  </li>
+                </ul>
 
               </div>
               <div className="bg-[#2E3AA3] flex flex-col justify-center items-center p-1.5 sm:p-2 rounded-sm hover:bg-amber-400 group order-5 lg:order-none">

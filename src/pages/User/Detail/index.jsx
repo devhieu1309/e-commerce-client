@@ -1,13 +1,14 @@
 import RelatedProducts from "../../../components/RelatedProducts";
 import SamePriceRangeProducts from "../../../components/SamePriceRangeProducts";
 import ViewedProducts from "../../../components/ViewedProducts";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {
   getProductDetail,
   getProductList,
 } from "../../../services/productServices";
 import { all } from "axios";
+import { addToCart } from "../../../services/shoppingCartServices";
 
 function Detail() {
   const { id } = useParams();
@@ -17,6 +18,8 @@ function Detail() {
   const [selectedItem, setSelectedItem] = useState({});
   const [expanded, setExpanded] = useState(false);
   const [activeTab, setActiveTab] = useState("mo-ta");
+  const [quantity, setQuantity] = useState(1);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -26,7 +29,7 @@ function Detail() {
       setProduct(response.product);
       setSelectedItem(response.product.items[0]);
       let currentProduct = response.product.items[0];
-
+      setQuantity(1);
       response = await getProductList();
       const allProducts = response.data;
 
@@ -34,7 +37,7 @@ function Detail() {
         const filtered = allProducts.filter(
           (p) => p.category_id === category_id && p.product_id !== product_id
         );
-        setRelatedProducts(filtered); 
+        setRelatedProducts(filtered);
       }
 
       console.log("MINH HIEU TEST ALL PRODUCT: ", allProducts);
@@ -50,8 +53,8 @@ function Detail() {
 
         const samePrice = allProducts.filter(
           (p) =>
-            p.product_id !== product.product_id && 
-            p.items?.[0] && 
+            p.product_id !== product.product_id &&
+            p.items?.[0] &&
             Number(p.items[0].price) >= minPrice &&
             Number(p.items[0].price) <= maxPrice
         );
@@ -60,10 +63,47 @@ function Detail() {
     };
 
     fetchProduct();
-  }, [id]);
+  }, [id, setSelectedItem]);
 
   // console.log("MINH HIEU TEST PRODUCT: ", product);
   // console.log("MINH HIEU TEST SELECTED ITEM: ", selectedItem);
+
+  //hàm xử lý tăng sô lượng
+  const handleIncreaseQuantity = () => {
+    if (quantity < selectedItem.qty_in_stock) {
+      setQuantity((prev) => prev + 1);
+    }
+  };
+
+  //hàm xử lý giảm số lượng
+  const handleDecreaseQuantity = () => {
+    if (quantity > 1) {
+      setQuantity((prev) => prev - 1);
+    }
+  };
+
+  //thêm sản phẩm vào giỏ hàng
+  const handleAddToCart = () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user) {
+      alert("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.");
+      return;
+    }
+
+    addToCart(user.user_id, selectedItem.product_item_id, quantity)
+      .then((result) => {
+        if (result?.success || result === undefined || result) {
+          setShowSuccessPopup(true);
+          setTimeout(() => setShowSuccessPopup(false), 3000);
+          window.dispatchEvent(new CustomEvent("cartUpdated"));
+        } else {
+          alert(result.message || "Có lỗi không thể thêm sản phẩm.");
+        }
+      })
+      .catch((error) => {
+        console.error("Lỗi khi thêm vào giỏ hàng:", error);
+      });
+  };
 
   return (
     <>
@@ -109,10 +149,10 @@ function Detail() {
                           key={index}
                           className={`cursor-pointer w-[87px] h-[87px] rounded-md border 
                         ${
-                          selectedItem?.product_item_id == item.product_item_id
-                            ? "border-blue-500"
-                            : "border-gray-300"
-                        }`}
+                            selectedItem?.product_item_id == item.product_item_id
+                              ? "border-blue-500"
+                              : "border-gray-300"
+                            }`}
                           onClick={() => setSelectedItem(item)}
                         >
                           <img
@@ -180,10 +220,10 @@ function Detail() {
                           onClick={() => setSelectedItem(item)}
                           className={`cursor-pointer flex items-center justify-between rounded-md px-2 py-1 w-[150px] border transition-all duration-200
         ${
-          selectedItem?.product_item_id === item.product_item_id
-            ? "border-blue-500 bg-blue-50"
-            : "border-gray-300 hover:border-blue-300"
-        }`}
+                            selectedItem?.product_item_id === item.product_item_id
+                              ? "border-blue-500 bg-blue-50"
+                              : "border-gray-300 hover:border-blue-300"
+                            }`}
                         >
                           {/* Dung lượng + Giá */}
                           <div className="flex flex-col leading-tight">
@@ -245,26 +285,35 @@ function Detail() {
                       <button
                         type="button"
                         aria-label="Giảm số lượng"
-                        class="inline-flex items-center justify-center w-9 h-9 text-white text-2xl rounded-md border border-gray-200 bg-[#0008f8]"
+                        className="inline-flex items-center justify-center w-9 h-9 text-white text-2xl rounded-md border border-gray-200 bg-[#0008f8] disabled:bg-gray-300"
+                        onClick={handleDecreaseQuantity}
+                        disabled={quantity <= 1}
                       >
                         -
                       </button>
                       <input
                         type="text"
-                        class="block h-[35px] w-[60px] rounded-lg border-0 px-[2px] text-center text-[15px] outline-0"
+                        className="block h-[35px] w-[60px] rounded-lg border-0 px-[2px] text-center text-[15px] outline-0"
+                        value={quantity}
+                        readOnly
                       />
 
                       <button
                         type="button"
-                        aria-label="Giảm số lượng"
-                        class="inline-flex items-center justify-center w-9 h-9 text-white text-2xl rounded-md border border-gray-200 bg-[#0008f8]"
+                        aria-label="Tăng số lượng"
+                        className="inline-flex items-center justify-center w-9 h-9 text-white text-2xl rounded-md border border-gray-200 bg-[#0008f8] disabled:bg-gray-300"
+                        onClick={handleIncreaseQuantity}
+                        disabled={quantity >= selectedItem.qty_in_stock}
                       >
                         +
                       </button>
                     </div>
                   </div>
                   <div className="py-2">
-                    <button className="text-white bg-amber-400 w-full rounded-sm py-1">
+                    <button
+                      className="text-white bg-amber-400 w-full rounded-sm py-1 disabled:bg-gray-400"
+                      onClick={handleAddToCart}
+                      disabled={selectedItem.qty_in_stock <= 0}>
                       <h3 className="text-[18px] font-medium p-0">
                         Thêm vào giỏ hàng
                       </h3>
@@ -602,9 +651,9 @@ function Detail() {
                   onClick={() => setActiveTab("mo-ta")}
                   className={`font-medium text-[17px] py-2 px-4 rounded-md cursor-pointer ${
                     activeTab === "mo-ta"
-                      ? "bg-[#000F8F] text-white"
-                      : "border border-gray-700"
-                  }`}
+                    ? "bg-[#000F8F] text-white"
+                    : "border border-gray-700"
+                    }`}
                 >
                   Mô tả sản phẩm
                 </button>
@@ -612,9 +661,9 @@ function Detail() {
                   onClick={() => setActiveTab("huong-dan")}
                   className={`font-medium text-[17px] py-2 px-4 rounded-md cursor-pointer ${
                     activeTab === "huong-dan"
-                      ? "bg-[#000F8F] text-white"
-                      : "border border-gray-700"
-                  }`}
+                    ? "bg-[#000F8F] text-white"
+                    : "border border-gray-700"
+                    }`}
                 >
                   Hướng dẫn mua hàng
                 </button>
@@ -622,9 +671,9 @@ function Detail() {
                   onClick={() => setActiveTab("danh-gia")}
                   className={`font-medium text-[17px] py-2 px-4 rounded-md cursor-pointer ${
                     activeTab === "danh-gia"
-                      ? "bg-[#000F8F] text-white"
-                      : "border border-gray-700"
-                  }`}
+                    ? "bg-[#000F8F] text-white"
+                    : "border border-gray-700"
+                    }`}
                 >
                   Đánh giá sản phẩm
                 </button>
@@ -635,7 +684,7 @@ function Detail() {
                   <div
                     className={`transition-all duration-300 overflow-hidden ${
                       expanded ? "max-h-full" : "max-h-[1400px]"
-                    }`}
+                      }`}
                   >
                     <p className="text-[14px] pb-5">
                       Vào ngày 13/09 vừa qua, Apple đã cho ra mắt chiếc iPhone
@@ -1220,6 +1269,19 @@ function Detail() {
         {/* Sản phẩm đã xem */}
         <ViewedProducts />
       </div>
+      {showSuccessPopup && (
+        <div className="fixed top-20 right-5 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg shadow-lg z-50">
+          <div className="flex items-center">
+            <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <div>
+              <p className="font-bold">Thêm vào giỏ hàng thành công!</p>
+              <Link to="/cart" className="text-sm text-blue-600 hover:underline">
+                Xem giỏ hàng
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
