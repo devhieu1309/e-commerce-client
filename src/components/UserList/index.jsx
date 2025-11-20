@@ -6,6 +6,8 @@ import UserDelete from "./UserDelete";
 import UserModal from "./UserModal";
 import UserView from "./UserView";
 import { getUserList, searchUser } from "../../services/userServices";
+import { getAddressesByUser } from "../../services/addressCustomerServices";
+
 
 function UserList() {
     const [userList, setUserList] = useState([]);
@@ -58,10 +60,23 @@ function UserList() {
     const [selectedUser, setSelectedUser] = useState(null);
     const [isViewOpen, setIsViewOpen] = useState(false);
 
-    const handleView = (record) => {
-        setSelectedUser(record);
+    const handleView = async (record) => {
+        // gọi API lấy địa chỉ
+        const addresses = await getAddressesByUser(record.user_id);
+
+        // tìm địa chỉ mặc định
+        const defaultAddress =
+            addresses?.find((a) => a.isDefault === true || a.isDefault === 1) || null;
+
+        // gửi user + defaultAddress vào popup
+        setSelectedUser({
+            ...record,
+            defaultAddress: defaultAddress,
+        });
+
         setIsViewOpen(true);
     };
+
 
     const handleCloseView = () => {
         setIsViewOpen(false);
