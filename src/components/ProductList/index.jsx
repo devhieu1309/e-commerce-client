@@ -5,7 +5,8 @@ import { postFavorite } from "../../services/favoriteServices";
 
 function ProductList() {
   const [products, setProducts] = useState([]);
-  const [favorite, setFavorite] = useState([]);
+  const [isFavorite, setIsFavorite] = useState({});
+  const [favoriteMessage, setFavoriteMessage] = useState("");
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -20,10 +21,42 @@ function ProductList() {
     fetchProducts();
   }, []);
 
+  //Hàm thêm sản phẩm vào mục yêu thích.
+  const handleAddFavorite = async (productItemId) => {
+    try {
+      const response = await postFavorite({
+        product_item_id: productItemId,
+        user_id: 2,
+      });
+
+      if (response?.success) {
+        setFavoriteMessage("Đã thêm sảnh phẩm vào mục yêu thích.");
+
+        setTimeout(() => {
+          setFavoriteMessage("");
+        }, 3000);
+      }
+
+      console.log("Đã thêm yêu thích.");
+    } catch (error) {
+      console.log("Lỗi khi thêm sản phẩm yêu thich: ", error);
+      setFavoriteMessage("Lỗi khi thêm sản phẩm yêu thich.");
+
+      setTimeout(() => {
+        setFavoriteMessage("");
+      }, 3000);
+    }
+  };
+
   return (
     <>
+      {favoriteMessage && (
+        <div className="fixed px-4 py-2 text-green-500 bg-green-200 rounded shadow-lg z-100 top-5 right-5">
+          {favoriteMessage}
+        </div>
+      )}
       <div className="container px-32 py-8 mx-auto">
-        <div className="p-3 bg-white rounded-md">
+        <div className="relative p-3 bg-white rounded-md">
           <div className="flex space-x-8">
             <div className="flex items-center space-x-2 bg-[#000F8F] rounded-sm p-2">
               <img
@@ -96,14 +129,20 @@ function ProductList() {
                       Bảo hành chính hãng Apple 12 tháng
                     </p>
                     <div className="flex items-center justify-between py-2">
-                      <div className="flex items-center justify-center space-x-1">
-                        <img
-                          className="h-[15px] w-[15px] object-contain"
-                          src="/icons8-heart-50.png"
-                          alt="Thích"
-                        />
+                      <div
+                        className="flex items-center justify-center space-x-1"
+                        onClick={() => handleAddFavorite(item.product_item_id)}
+                      >
+                        <span
+                          className={`
+                          "w-[50px]"
+                            ${isFavorite ? "text-red-500" : "text-gray-400"}
+                          `}
+                        >
+                          ♥
+                        </span>
                         <span className="text-[15px] text-[#231F20] font-semibold hover:text-amber-400">
-                          Thích
+                          {isFavorite ? "Đã thích" : "Thích"}
                         </span>
                       </div>
                       <div className="flex items-center justify-center space-x-1">
