@@ -24,7 +24,7 @@ function FromLogin() {
     setErrors({ ...errors, [e.target.name]: "" });
   };
 
-  // 🟢 Đăng nhập
+  //  Đăng nhập
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -44,7 +44,7 @@ function FromLogin() {
         });
 
         //  Thêm phân quyền tại đây
-        if (data.user.role === "Quản trị viên") {
+        if (data.user.role === "admin") {
           navigate("/admin");
         } else {
           navigate("/");
@@ -52,11 +52,15 @@ function FromLogin() {
 
 
       } else {
-        if (data.errors) setErrors(data.errors);
+        // GÁN LỖI XUỐNG INPUT EMAIL
+        setErrors({ email: [data.message] });
+
         apiNoti.error({
           message: "Lỗi",
           description: data.message || "Đăng nhập thất bại!",
         });
+
+        return;
       }
     } catch (error) {
       apiNoti.error({
@@ -69,7 +73,7 @@ function FromLogin() {
     }
   };
 
-  // 🟡 Quên mật khẩu
+  //  Quên mật khẩu
   const handleForgotPassword = async () => {
     if (!forgotEmail.trim()) {
       apiNoti.warning({
@@ -133,7 +137,7 @@ function FromLogin() {
             {/* Form */}
             <form onSubmit={handleSubmit}>
               <input
-                type="email"
+                type="text"
                 name="email"
                 value={formData.email}
                 onChange={handleChange}

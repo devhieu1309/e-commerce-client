@@ -157,7 +157,9 @@ export const routes = [
     //     <LayoutDashboard />
     //   </AdminProtectedRoute>
     // ),
-    element: <LayoutDashboard />,
+    element: (
+      <LayoutDashboard />
+    ),
     children: [
       {
         index: true,
