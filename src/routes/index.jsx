@@ -128,10 +128,13 @@ export const routes = [
   },
   {
     path: "/admin",
+    // element: (
+    //   <AdminProtectedRoute>
+    //     <LayoutDashboard />
+    //   </AdminProtectedRoute>
+    // ),
     element: (
-      <AdminProtectedRoute>
-        <LayoutDashboard />
-      </AdminProtectedRoute>
+      <LayoutDashboard />
     ),
     children: [
       {
