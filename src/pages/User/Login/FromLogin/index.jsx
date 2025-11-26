@@ -73,13 +73,21 @@ function FromLogin() {
     }
   };
 
-  //  Quên mật khẩu
+
+  // Quên mật khẩu
+  const [forgotErrorText, setForgotErrorText] = useState("");
+
   const handleForgotPassword = async () => {
+    // Clear lỗi cũ
+    setForgotErrorText("");
+
+    // FE kiểm tra rỗng
     if (!forgotEmail.trim()) {
       apiNoti.warning({
         message: "Thiếu thông tin",
         description: "Vui lòng nhập email để khôi phục mật khẩu!",
       });
+      setForgotErrorText("Vui lòng nhập email.");
       return;
     }
 
@@ -87,6 +95,21 @@ function FromLogin() {
 
     try {
       const res = await forgotPassword(forgotEmail);
+
+      // Nếu Laravel trả validation lỗi (FE tự nhận qua res.errors)
+      if (res?.errors) {
+        const errorMsg = res.errors.email?.[0];
+        if (errorMsg) {
+          setForgotErrorText(errorMsg);
+          apiNoti.error({
+            message: "Lỗi",
+            description: errorMsg,
+          });
+        }
+        return;
+      }
+
+      // Trường hợp OK
       if (res.status) {
         apiNoti.success({
           message: "Thành công",
@@ -101,6 +124,20 @@ function FromLogin() {
         });
       }
     } catch (error) {
+      // Laravel trả lỗi validation qua axios catch
+      if (error.response?.status === 422) {
+        const errorMsg = error.response.data.errors?.email?.[0];
+        if (errorMsg) {
+          setForgotErrorText(errorMsg);
+          apiNoti.error({
+            message: "Lỗi",
+            description: errorMsg,
+          });
+        }
+        return;
+      }
+
+      // Các lỗi khác (mạng / server die)
       apiNoti.error({
         message: "Lỗi",
         description: "Không thể kết nối đến máy chủ!",
@@ -109,6 +146,8 @@ function FromLogin() {
       setLoadingForgot(false);
     }
   };
+
+
 
   return (
     <>
@@ -194,6 +233,10 @@ function FromLogin() {
                   onChange={(e) => setForgotEmail(e.target.value)}
                   className="w-full border border-gray-300 rounded-md px-3 py-2 mb-3 focus:outline-none focus:border-blue-700"
                 />
+                {forgotErrorText && (
+                  <p className="text-red-600 text-sm mt-1">{forgotErrorText}</p>
+                )}
+
                 <button
                   type="button"
                   onClick={handleForgotPassword}

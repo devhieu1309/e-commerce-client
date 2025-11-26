@@ -103,16 +103,25 @@ export const forgotPassword = async (email) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Accept": "application/json",
       },
       body: JSON.stringify({ email }),
     });
 
-    const data = await res.json();
-    return data;
+    // Nếu Laravel trả lỗi (422, 404, 500) → response.ok = false
+    if (!res.ok) {
+      const errorData = await res.json();
+      return errorData; // gửi về FE để hiển thị lỗi từ ForgotPasswordRequest
+    }
+
+    // Thành công
+    return await res.json();
+
   } catch (error) {
     console.error(" Lỗi khi gọi API forgot-password:", error);
     return { status: false, message: "Không thể kết nối tới server!" };
   }
 };
+
 
 
