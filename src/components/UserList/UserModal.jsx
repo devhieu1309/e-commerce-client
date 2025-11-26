@@ -113,7 +113,7 @@ function UserModal(props) {
             <Form.Item
               label="Họ và tên"
               name="name"
-            rules={[{ required: true, message: "Vui lòng nhập họ tên người dùng" }]}
+              rules={[{ required: true, message: "Vui lòng nhập họ tên người dùng" }]}
             >
               <Input placeholder="Nhập họ tên người dùng" />
             </Form.Item>
@@ -121,10 +121,10 @@ function UserModal(props) {
             <Form.Item
               label="Email"
               name="email"
-            rules={[
-              { required: true, message: "Vui lòng nhập email" }
-            //   { type: "email", message: "Email không hợp lệ" },
-            ]}
+              rules={[
+                { required: true, message: "Vui lòng nhập email" }
+                //   { type: "email", message: "Email không hợp lệ" },
+              ]}
             >
               <Input placeholder="Nhập email" />
             </Form.Item>
@@ -140,12 +140,11 @@ function UserModal(props) {
             <Form.Item
               label="Quyền hạn"
               name="role"
-              initialValue="Người Dùng" 
+              initialValue="Người Dùng"
             >
-              <Select disabled>
-                <Option value="Người Dùng">Người dùng</Option>
-              </Select>
+              <Input value="Người Dùng" disabled />
             </Form.Item>
+
 
             <Form.Item
               label="Mật khẩu"
