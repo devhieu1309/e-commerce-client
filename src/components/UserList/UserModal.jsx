@@ -142,8 +142,7 @@ function UserModal(props) {
               name="role"
               initialValue="Người Dùng" 
             >
-              <Select placeholder="Chọn quyền">
-                <Option value="Quản trị Viên">Quản trị viên</Option>
+              <Select disabled>
                 <Option value="Người Dùng">Người dùng</Option>
               </Select>
             </Form.Item>
