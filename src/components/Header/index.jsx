@@ -553,7 +553,7 @@ function Header({ user, onLogout }) {
                         />
                         <Link to="/san-pham-yeu-thich">
                           {" "}
-                          <span>Danh sách yêu thích (0)</span>
+                          <span>Danh sách yêu thích </span>
                         </Link>
                       </li>
 

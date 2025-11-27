@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getProductList } from "../../services/productServices";
 import { postFavorite } from "../../services/favoriteServices";
+import { notification } from "antd";
 
 function ProductList() {
   const [products, setProducts] = useState([]);
   const [isFavorite, setIsFavorite] = useState({});
-  const [favoriteMessage, setFavoriteMessage] = useState("");
+  const [apiNoti, contextHolder] = notification.useNotification();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -29,32 +30,36 @@ function ProductList() {
         user_id: 2,
       });
 
-      if (response?.success) {
-        setFavoriteMessage("Đã thêm sảnh phẩm vào mục yêu thích.");
+      console.log("API FAVORITE RESPONSE:", response);
 
-        setTimeout(() => {
-          setFavoriteMessage("");
-        }, 3000);
+      if (response?.message) {
+        apiNoti.success({
+          message: "Thành công",
+          description: "Thêm sản phẩm yêu thích thành công!",
+        });
+
+        setIsFavorite((prev) => ({
+          ...prev,
+          [productItemId]: true, // đánh dấu sản phẩm vừa thích
+        }));
+      } else {
+        apiNoti.error({
+          message: "Thất bại",
+          description: response?.message || "Thêm sản phẩm yêu thích thất bại!",
+        });
       }
-
-      console.log("Đã thêm yêu thích.");
     } catch (error) {
-      console.log("Lỗi khi thêm sản phẩm yêu thich: ", error);
-      setFavoriteMessage("Lỗi khi thêm sản phẩm yêu thich.");
-
-      setTimeout(() => {
-        setFavoriteMessage("");
-      }, 3000);
+      console.log("Lỗi khi thêm sản phẩm yêu thích: ", error);
+      apiNoti.error({
+        message: "Thất Bại",
+        description: "Không thể thêm sản phẩm yếu thích!",
+      });
     }
   };
 
   return (
     <>
-      {favoriteMessage && (
-        <div className="fixed px-4 py-2 text-green-500 bg-green-200 rounded shadow-lg z-100 top-5 right-5">
-          {favoriteMessage}
-        </div>
-      )}
+      {contextHolder}
       <div className="container px-32 py-8 mx-auto">
         <div className="relative p-3 bg-white rounded-md">
           <div className="flex space-x-8">
@@ -83,9 +88,10 @@ function ProductList() {
               <p className="font-bold">Sản phẩm bán chạy</p>
             </div> */}
           </div>
+
           <div className="grid grid-cols-5 gap-4 px-2 py-10">
             {products.map((product, index) => {
-              const item = product.items[0];
+              const item = product.items?.[0];
               console.log("MINH HIEU TEST ITEM: ", item);
               // console.log("Image: ", item?.image);
 
@@ -131,18 +137,24 @@ function ProductList() {
                     <div className="flex items-center justify-between py-2">
                       <div
                         className="flex items-center justify-center space-x-1"
-                        onClick={() => handleAddFavorite(item.product_item_id)}
+                        onClick={() =>
+                          item && handleAddFavorite(item.product_item_id)
+                        }
                       >
                         <span
-                          className={`
-                          "w-[50px]"
-                            ${isFavorite ? "text-red-500" : "text-gray-400"}
-                          `}
+                          className={` w-[15px]
+                            ${
+                              isFavorite[item?.product_item_id]
+                                ? "text-red-500"
+                                : "text-gray-400"
+                            }`}
                         >
                           ♥
                         </span>
                         <span className="text-[15px] text-[#231F20] font-semibold hover:text-amber-400">
-                          {isFavorite ? "Đã thích" : "Thích"}
+                          {isFavorite[item?.product_item_id]
+                            ? "Đã thích"
+                            : "Thích"}
                         </span>
                       </div>
                       <div className="flex items-center justify-center space-x-1">
