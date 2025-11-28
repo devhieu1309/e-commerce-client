@@ -50,6 +50,7 @@ import GuaranteeList from "../components/GuaranteeList";
 import AddGuarantee from "../components/GuaranteeList/AddGuarantee";
 import EditGuarantee from "../components/GuaranteeList/EditGuarantee";
 import AdminPaymentType from "../components/QuantityInStock";
+import OrderDetail from "../components/ShoppingOrder/OrderDetail";
 
 export const routes = [
   {
@@ -270,6 +271,10 @@ export const routes = [
       {
         path: "shopping-order",
         element: <ShoppingOrder />,
+      },
+      {
+        path: "shopping-order/:id",
+        element: <OrderDetail />,
       },
       {
         path: "/admin/shopping-order/guarantees",
