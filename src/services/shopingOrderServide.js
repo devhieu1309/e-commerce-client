@@ -5,4 +5,9 @@ export const getShoppingOrder= async () => {
   return result;
 };
 
+export const getOrderDetail = async (id) => {
+  const result = await get(`shopping-order/${id}`);
+  return result;
+}
+
 

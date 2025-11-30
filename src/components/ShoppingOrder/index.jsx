@@ -1,8 +1,9 @@
-import { Button, Popconfirm, Space, Table, Tag } from "antd";
+import { Button, Space, Table, Tag, Dropdown, Menu } from "antd";
 import { useEffect, useState } from "react";
-import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { getShoppingOrder } from "../../services/shopingOrderServide";
+import { DownOutlined } from "@ant-design/icons";
+
 
 function ShoppingOrder() {
   // const [filterProducts, setFilterProducts] = useState([]);
@@ -177,23 +178,37 @@ function ShoppingOrder() {
       title: "Tổng tiền",
       dataIndex: "order_total",
       key: "order_total",
-      // render: (order_total) => <Tag color="red">{formatVND(Number(order_total))}</Tag>
+      render: (order_total) => formatVND(Number(order_total)),
     },
     {
       title: "Hành động",
       key: "action",
-      // render: (_, record) => (
-      //   <Space>
-      //     <Link to={`edit/${record.product_id}`}>
-      //       <Button size="small" type="primary" icon={<EditOutlined />} />
-      //     </Link>
-      //     {/* <DeleteItem record={record} onReload={handleReload} /> */}
-      //     <Link to={`${record.product_id}`}>
-      //       <Button size="small" icon={<EyeOutlined />} />
-      //     </Link>
-      //   </Space>
-      // ),
-    },
+      render: (_, record) => {
+        const menu = (
+          <Menu>
+            <Menu.Item key="view">
+              <Link to={`${record.shop_order_id}`}>Xem chi tiết</Link>
+            </Menu.Item>
+            <Menu.Item key="quick-status">
+              <Link to={`${record.shop_order_id}/edit?action=status`}>Chỉnh sửa trạng thái nhanh</Link>
+            </Menu.Item>
+            <Menu.Item key="edit-info">
+              <Link to={`${record.shop_order_id}/edit?action=info`}>Chỉnh sửa thông tin</Link>
+            </Menu.Item>
+            <Menu.Item key="confirm-payment">
+              <Link to={`${record.shop_order_id}/edit?action=payment`}>Xác nhận thanh toán</Link>
+            </Menu.Item>
+          </Menu>
+        );
+        return (
+          <Dropdown overlay={menu} trigger={['click']}>
+            <Button size="medium" type="primary">
+              Thông tin đơn hàng <DownOutlined />
+            </Button>
+          </Dropdown>
+        );
+      }
+    }
   ];
 
   return (

@@ -617,7 +617,7 @@ function Header({ user, onLogout }) {
             </div>
             <div
               className="h-auto w-full fixed top-[115px] left-0 container mx-auto px-4 sm:px-6 md:px-8 lg:px-16 xl:px-32
-                                        origin-bottom scale-y-0
+                                        origin-top scale-y-0
                                         transition-transform duration-500 ease-out
                                         group-hover/rotate:scale-y-100 z-50 overflow-hidden"
             >
