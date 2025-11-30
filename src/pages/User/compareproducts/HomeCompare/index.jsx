@@ -9,7 +9,7 @@ function HomeCompare() {
           </span>
           <span>{">"}</span>
           <span className="cursor-pointer text-sky-900 hover:underline">
-            So sánh sản phẩm (0)
+            So sánh sản phẩm
           </span>
         </div>
       </div>
