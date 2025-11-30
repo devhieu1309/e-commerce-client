@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getProductList } from "../../services/productServices";
 import { postFavorite } from "../../services/favoriteServices";
+import { postCompare } from "../../services/compareProductServices";
 import { notification } from "antd";
 
 function ProductList() {
   const [products, setProducts] = useState([]);
   const [isFavorite, setIsFavorite] = useState({});
+  const [compareChecked, setCompareChecked] = useState([]);
   const [apiNoti, contextHolder] = notification.useNotification();
 
   useEffect(() => {
@@ -57,6 +59,37 @@ function ProductList() {
     }
   };
 
+  //Hàm thêm sản phẩm vào mục so sánh.
+  const handlePostCompare = async (productItemId) => {
+    try {
+      const response = await postCompare({
+        product_item_id: productItemId,
+        user_id: 2,
+      });
+      if (response?.success) {
+        setCompareChecked((prev) => ({
+          ...prev,
+          [productItemId]: true,
+        }));
+        apiNoti.success({
+          message: "Thành công",
+          description: "Thêm sản phẩm vào danh sách so sánh thành công",
+        });
+      } else {
+        apiNoti.error({
+          message: "Thất bại",
+          description: "Thêm sản phẩm vào danh sách so sánh thất bại",
+        });
+      }
+    } catch (error) {
+      console.log("Lỗi khi thêm sản phẩm so sánh: ", error);
+      apiNoti.error({
+        message: "Thất bại",
+        description: "Không thể thêm sản phẩm vào danh sách so sánh",
+      });
+    }
+  };
+
   return (
     <>
       {contextHolder}
@@ -94,12 +127,15 @@ function ProductList() {
             {products.map((product, index) => {
               const item = product.items[0];           */}
 
-          <div className="grid grid-cols-5 gap-4 px-2 py-10">
+          {/* <div className="grid grid-cols-5 gap-4 px-2 py-10">
             {products.map((product, index) => {
               const item = product.items?.[0];
               console.log("MINH HIEU TEST ITEM: ", item);
-              // console.log("Image: ", item?.image);
+              // console.log("Image: ", item?.image); */}
 
+          <div className="grid grid-cols-2 gap-3 px-2 py-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 sm:gap-4 sm:py-8 md:py-10">
+            {products.map((product, index) => {
+              const item = product.items[0];
               return (
                 <div
                   key={index}
@@ -138,8 +174,12 @@ function ProductList() {
                       </h3>
                     </Link>
 
-                    <p className="py-2 font-extrabold text-red-500">Liên hệ</p>
-                    <p className="text-[12px] bg-[#F3F4F6] rounded-sm py-3 px-2">
+                    {/* <p className="py-2 font-extrabold text-red-500">Liên hệ</p>
+                    <p className="text-[12px] bg-[#F3F4F6] rounded-sm py-3 px-2"> */}
+                    <p className="text-red-500 font-extrabold py-1 sm:py-2 text-[13px] sm:text-[14px] md:text-[15px]">
+                      Liên hệ
+                    </p>
+                    <p className="text-[10px] sm:text-[11px] md:text-[12px] bg-[#F3F4F6] rounded-sm py-2 sm:py-3 px-2">
                       Bảo hành chính hãng Apple 12 tháng
                     </p>
                     <div className="flex items-center justify-between py-2">
@@ -165,12 +205,31 @@ function ProductList() {
                             : "Thích"}
                         </span>
                       </div>
+
                       <div className="flex items-center justify-center space-x-1">
-                        <img
-                          className="h-[12px] w-[12px] sm:h-[14px] sm:w-[14px] md:h-[15px] md:w-[15px] object-contain"
-                          src="/icons8-circle-50.png"
-                          alt="Thích"
-                        />
+                        <button
+                          className="flex items-center justify-center w-3 h-3 border rounded"
+                          onClick={() =>
+                            item && handlePostCompare(item.product_item_id)
+                          }
+                        >
+                          {compareChecked[item.product_item_id] ? (
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="w-4 h-5 text-green-500"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                              strokeWidth={3}
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M5 13l4 4L19 7"
+                              />
+                            </svg>
+                          ) : null}
+                        </button>
                         <span className="text-[12px] sm:text-[13px] md:text-[14px] lg:text-[15px] text-[#231F20] font-semibold hover:text-amber-400">
                           So Sánh
                         </span>

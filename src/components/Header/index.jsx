@@ -566,27 +566,29 @@ function Header({ user, onLogout }) {
                       )}
 
                       {/* Mục chung cho cả 2 trạng thái */}
-                      <li className="flex items-center w-full px-3 sm:px-4 py-1.5 sm:py-2 space-x-2 hover:bg-gray-200">
-                        <img
-                          className="w-[18px] h-[18px] sm:w-[20px] sm:h-[20px] object-cover"
-                          src="/icons8-heart-50.png"
-                          alt=""
-                        />
-                        <span className="line-clamp-1">
-                          Danh sách yêu thích (0)
-                        </span>
-                      </li>
+                      <Link to="san-pham-yeu-thich">
+                        <li className="flex items-center w-full px-3 sm:px-4 py-1.5 sm:py-2 space-x-2 hover:bg-gray-200">
+                          <img
+                            className="w-[18px] h-[18px] sm:w-[20px] sm:h-[20px] object-cover"
+                            src="/icons8-heart-50.png"
+                            alt=""
+                          />
+                          <span className="line-clamp-1">
+                            Danh sách yêu thích
+                          </span>
+                        </li>
+                      </Link>
 
-                      <li className="flex items-center w-full px-3 sm:px-4 py-1.5 sm:py-2 space-x-2 hover:bg-gray-200">
-                        <img
-                          className="w-[18px] h-[18px] sm:w-[20px] sm:h-[20px] object-cover"
-                          src="/icons8-compare-50.png"
-                          alt=""
-                        />
-                        <span className="line-clamp-1">
-                          So sánh sản phẩm (0)
-                        </span>
-                      </li>
+                      <Link to="/so-sanh-san-pham">
+                        <li className="flex items-center w-full px-3 sm:px-4 py-1.5 sm:py-2 space-x-2 hover:bg-gray-200">
+                          <img
+                            className="w-[18px] h-[18px] sm:w-[20px] sm:h-[20px] object-cover"
+                            src="/icons8-compare-50.png"
+                            alt=""
+                          />
+                          <span className="line-clamp-1">So sánh sản phẩm</span>
+                        </li>
+                      </Link>
                     </ul>
                   </div>
                 </div>
@@ -651,7 +653,7 @@ function Header({ user, onLogout }) {
                     Watch
                   </h3>
                   <ul className="font-normal text-[12px] sm:text-[13px] md:text-[14px] lg:text-[16px] space-y-1 sm:space-y-2 mt-1 sm:mt-2">
-                    <li className="hover:text-[#000F8F]">Apple Watch Ultra</li> 
+                    <li className="hover:text-[#000F8F]">Apple Watch Ultra</li>
                     <li className="hover:text-[#000F8F]">Apple Watch S7</li>
                     <li className="hover:text-[#000F8F]">Apple Watch SE</li>
                     <li className="hover:text-[#000F8F]">Apple Watch S8</li>
