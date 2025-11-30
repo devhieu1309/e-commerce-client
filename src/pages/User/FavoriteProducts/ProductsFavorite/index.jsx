@@ -1,12 +1,12 @@
 import HomeFavoriteP from "../HomeFavoriteP";
-// import ListFavoriteProducts from "./ListFavoriteProducts";
+import ListFavoriteProducts from "../ListFavoriteProducts";
 
 function ProductsFavorite() {
   return (
     <>
       <HomeFavoriteP />
 
-      {/* <ListFavoriteProducts /> */}
+      <ListFavoriteProducts />
     </>
   );
 }
