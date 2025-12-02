@@ -26,10 +26,20 @@ function ProductList() {
 
   //Hàm thêm sản phẩm vào mục yêu thích.
   const handleAddFavorite = async (productItemId) => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const userId = user?.user_id;
+
+    if (!userId) {
+      apiNoti.error({
+        message: "Thất Bại",
+        description: "Vui lòng đăng nhập để thêm sản phẩm yêu thích!",
+      });
+      return;
+    }
     try {
       const response = await postFavorite({
         product_item_id: productItemId,
-        user_id: 2,
+        user_id: userId,
       });
 
       console.log("API FAVORITE RESPONSE:", response);
@@ -61,10 +71,20 @@ function ProductList() {
 
   //Hàm thêm sản phẩm vào mục so sánh.
   const handlePostCompare = async (productItemId) => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const userId = user?.user_id;
+
+    if (!userId) {
+      apiNoti.error({
+        message: "Thất Bại",
+        description: "Vui lòng đăng nhập để thêm sản phẩm so sánh!",
+      });
+      return;
+    }
     try {
       const response = await postCompare({
         product_item_id: productItemId,
-        user_id: 2,
+        user_id: userId,
       });
       if (response?.success) {
         setCompareChecked((prev) => ({
