@@ -424,44 +424,31 @@ function Header({ user, onLogout }) {
                                   </button>
 
                                   {/* Số lượng và giá */}
-                                  <div className="flex flex-col items-start justify-between gap-2 mt-2 sm:flex-row sm:items-center sm:gap-0">
-                                    <div className="flex items-center space-x-2">
-                                      <span className="text-xs text-gray-700 sm:text-sm">
-                                        Số lượng:
-                                      </span>
-                                      <div className="flex items-center justify-between w-auto h-auto space-x-2 text-center border border-black rounded-md sm:space-x-3">
-                                        <button
-                                          className="bg-[#000f8f] h-[20px] sm:h-[25px] px-1.5 sm:px-2 text-white text-xs sm:text-sm m-0.5 sm:m-1 rounded-md"
-                                          onClick={() =>
-                                            handleupdateQuantity(
-                                              item.cart_item_id,
-                                              item.quantity,
-                                              item.quantity - 1
-                                            )
-                                          }
-                                        >
-                                          -
-                                        </button>
-                                        <p className="px-1 m-0 text-xs text-gray-900 sm:px-2 sm:text-sm">
-                                          {item.quantity}
-                                        </p>
-                                        <button
-                                          className="bg-[#000f8f] h-[20px] sm:h-[25px] px-1.5 sm:px-2 text-white text-xs sm:text-sm m-0.5 sm:m-1 rounded-md"
-                                          onClick={() =>
-                                            handleupdateQuantity(
-                                              item.cart_item_id,
-                                              item.quantity,
-                                              item.quantity + 1
-                                            )
-                                          }
-                                        >
-                                          +
-                                        </button>
+
+                                  <div className="flex flex-col mt-2 gap-2">
+                                    <div className="flex justify-between items-center">
+                                      <div className="flex flex-col">
+                                        <span className="text-gray-700 text-xs sm:text-sm">Số lượng:</span>
+                                        <div className='flex space-x-2 sm:space-x-3 justify-between items-center text-center border border-black w-auto h-auto rounded-md mt-1'>
+                                          <button className='bg-[#000f8f] h-[20px] sm:h-[25px] px-1.5 sm:px-2 text-white text-xs sm:text-sm m-0.5 sm:m-1 rounded-md'
+                                            onClick={() =>
+                                              handleupdateQuantity(item.cart_item_id, item.quantity, item.quantity - 1)
+                                            }>
+                                            -
+                                          </button>
+                                          <p className='m-0 text-gray-900 px-1 sm:px-2 text-xs sm:text-sm'>{item.quantity}</p>
+                                          <button className='bg-[#000f8f] h-[20px] sm:h-[25px] px-1.5 sm:px-2 text-white text-xs sm:text-sm m-0.5 sm:m-1 rounded-md'
+                                            onClick={() =>
+                                              handleupdateQuantity(item.cart_item_id, item.quantity, item.quantity + 1)
+                                            }>
+                                            +
+                                          </button>
+                                        </div>
                                       </div>
+                                      <p className="font-bold text-red-500 text-xs sm:text-sm md:text-base">
+                                        {Number(item.price).toLocaleString()}đ
+                                      </p>
                                     </div>
-                                    <p className="text-xs font-bold text-red-500 sm:text-sm md:text-base">
-                                      {Number(item.price).toLocaleString()}đ
-                                    </p>
                                   </div>
                                 </div>
                               </div>
