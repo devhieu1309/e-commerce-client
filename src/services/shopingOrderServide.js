@@ -10,4 +10,14 @@ export const getOrderDetail = async (id) => {
   return result;
 }
 
+export const getOrdersByUser = async (userId) => {
+  const result = await get(`shopping-order/user/${userId}`);
+  return result;
+}
 
+export const updateOrderStatus = async (orderId, statusId) => {
+  const result = await edit(`shopping-order/${orderId}`, {
+    order_status_id: statusId
+  });
+  return result;
+};

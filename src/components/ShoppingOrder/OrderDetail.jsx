@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Table, Card, Typography, Button, Image, Space, Row, Col, Divider, Tag, Descriptions } from "antd";
+import { Table, Card, Typography, Button, Image, Space, Row, Col, Divider, Tag, Descriptions, message } from "antd";
 import { ArrowLeftOutlined, ClockCircleOutlined, CheckCircleOutlined, CheckSquareOutlined, CarOutlined, HomeOutlined, RollbackOutlined, CloseCircleOutlined } from "@ant-design/icons";
-import { getOrderDetail } from "../../services/shopingOrderServide";
+import { getOrderDetail, updateOrderStatus } from "../../services/shopingOrderServide";
 import OrderStepper from "./OrderStepper";
 
 const { Title } = Typography;
@@ -20,27 +20,53 @@ const ORDER_STEPS = [
 const OrderDetail = () => {
   const { id } = useParams();
   const [order, setOrder] = useState();
-
+  const [selectedStatusId, setSelectedStatusId] = useState();
+  const [validOptions, setValidOptions] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       const res = await getOrderDetail(id);
       setOrder(res);
+
+      if (res.valid_next_status_options) {
+        setValidOptions(res.valid_next_status_options);
+      } else {
+        setValidOptions([]);
+      }
     };
     fetchData();
   }, [id]);
 
-  console.log("Đơn hàng:", id, order);
-
-  const statusColorMap = {
-    "Chờ lấy hàng": "cyan",
-    "Trả hàng": "pink",
-    "Hủy đơn": "red",
-    "Chờ giao hàng": "orange",
-    "Đã xác nhận": "blue",
-    "Đã giao": "green",
-    "Hoàn tiền": "purple",
+  const handleSelectChange = (e) => {
+    setSelectedStatusId(e.target.value);
   };
+
+  const handleStatusBlur = async () => {
+    if (!selectedStatusId) return;
+
+    try {
+      setLoading(true);
+      const res = await updateOrderStatus(id, selectedStatusId);
+      
+      if (res.success) {
+        message.success(res.message || "Cập nhật trạng thái thành công");
+        
+        const updatedOrder = await getOrderDetail(id);
+        setOrder(updatedOrder);
+        setSelectedStatusId(null);
+        if (updatedOrder.valid_next_status_options) {
+          setValidOptions(updatedOrder.valid_next_status_options);
+        }
+      } else {
+        message.error(res.message || "Cập nhật trạng thái thất bại");
+      }
+    } catch (error) {
+      message.error(error.message || "Có lỗi xảy ra");
+    } finally {
+      setLoading(false);
+    }
+  };  
 
   const columns = [
     {
@@ -88,7 +114,7 @@ const OrderDetail = () => {
           <Title level={3} style={{ margin: 0 }}>
             Chi tiết đơn hàng #{id}
           </Title>
-        </Space>                      
+        </Space>
 
         <Card style={{ borderRadius: 12, padding: 15 }}>
           <OrderStepper
@@ -120,16 +146,24 @@ const OrderDetail = () => {
                   </Descriptions.Item>
 
                   <Descriptions.Item label="Trạng thái">
-                    <Tag
-                      color={statusColorMap[order?.order_status] || "default"}
+                    <select
+                      value={selectedStatusId || ''}
+                      onChange={handleSelectChange}
+                      onBlur={handleStatusBlur}
+                      disabled={loading}
                       style={{
-                        padding: "5px 12px",
-                        fontWeight: 500,
-                        borderRadius: 6,
+                        padding: "6px 10px",
+                        borderRadius: "4px",
+                        border: "1px solid #d9d9d9",
+                        cursor: loading ? "not-allowed" : "pointer",
+                        opacity: loading ? 0.6 : 1
                       }}
                     >
-                      {order?.order_status}
-                    </Tag>
+                      <option value="">{order.order_status}</option>
+                      {validOptions.map(sts => (
+                        <option key={sts.order_status_id} value={sts.order_status_id}>{sts.status}</option>
+                      ))}
+                    </select>
                   </Descriptions.Item>
 
                   <Descriptions.Item label="Vận chuyển">
