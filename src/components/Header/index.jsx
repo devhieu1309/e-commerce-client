@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getShoppingCartByUserId, removeFromCart, updateCartItemQuantity } from "../../services/shoppingCartServices";
-
+import {
+  getShoppingCartByUserId,
+  removeFromCart,
+  updateCartItemQuantity,
+} from "../../services/shoppingCartServices";
 
 function Header({ user, onLogout }) {
   const [cartItems, setCartItems] = useState([]);
@@ -24,15 +27,15 @@ function Header({ user, onLogout }) {
 
     // cập nhật số lượng
     const handleCartUpdate = (event) => {
-      // lấy cả danh sách sản phẩm và tổng số lượng 
+      // lấy cả danh sách sản phẩm và tổng số lượng
       const { items, totalQuantity } = event.detail;
       setCartItems(items);
     };
-    window.addEventListener('cartUpdated', handleCartUpdate);
+    window.addEventListener("cartUpdated", handleCartUpdate);
 
     // dọn dẹp listener khi component unmount
     return () => {
-      window.removeEventListener('cartUpdated', handleCartUpdate);
+      window.removeEventListener("cartUpdated", handleCartUpdate);
     };
   }, []);
 
@@ -42,21 +45,25 @@ function Header({ user, onLogout }) {
     try {
       const result = await removeFromCart(cartItemId);
       if (result.success) {
-        setCartItems((prev) => prev.filter((item) => item.cart_item_id !== cartItemId));
+        setCartItems((prev) =>
+          prev.filter((item) => item.cart_item_id !== cartItemId)
+        );
       }
-
-
     } catch (error) {
       console.error("Lỗi khi xóa sản phẩm khỏi giỏ hàng:", error);
     }
   };
 
-  const handleupdateQuantity = async (cartItemId, currentQuantity, newQuantity) => {
+  const handleupdateQuantity = async (
+    cartItemId,
+    currentQuantity,
+    newQuantity
+  ) => {
     if (newQuantity < 1) return;
 
     try {
-      setCartItems(prevItems =>
-        prevItems.map(item =>
+      setCartItems((prevItems) =>
+        prevItems.map((item) =>
           item.cart_item_id === cartItemId
             ? { ...item, quantity: newQuantity }
             : item
@@ -67,8 +74,8 @@ function Header({ user, onLogout }) {
 
       // Nếu API thất bại, khôi phục lại giá trị cũ
       if (!result?.success) {
-        setCartItems(prevItems =>
-          prevItems.map(item =>
+        setCartItems((prevItems) =>
+          prevItems.map((item) =>
             item.cart_item_id === cartItemId
               ? { ...item, quantity: currentQuantity }
               : item
@@ -78,8 +85,8 @@ function Header({ user, onLogout }) {
     } catch (error) {
       console.error("Lỗi khi cập nhật số lượng:", error);
       // Khôi phục lại giá trị cũ nếu có lỗi
-      setCartItems(prevItems =>
-        prevItems.map(item =>
+      setCartItems((prevItems) =>
+        prevItems.map((item) =>
           item.cart_item_id === cartItemId
             ? { ...item, quantity: currentQuantity }
             : item
@@ -92,11 +99,15 @@ function Header({ user, onLogout }) {
       <header className="relative group/header">
         <div className="fixed top-0 right-0 left-0 z-50 bg-[#000F8F] py-2 text-white">
           <div>
-            <div className="container flex flex-col lg:flex-row items-center justify-between px-3 sm:px-4 md:px-6 lg:px-8 xl:px-16 2xl:px-32 mx-auto gap-2 sm:gap-3 lg:gap-0">
+            <div className="container flex flex-col items-center justify-between gap-2 px-3 mx-auto lg:flex-row sm:px-4 md:px-6 lg:px-8 xl:px-16 2xl:px-32 sm:gap-3 lg:gap-0">
               <div className="w-[120px] sm:w-[150px] md:w-[180px] lg:w-[219px] h-[28px] sm:h-[35px] md:h-[40px] lg:h-[45px] order-1 lg:order-none">
-                <img src="/logo.webp" alt="Ảnh logo" className="w-full h-full object-contain" />
+                <img
+                  src="/logo.webp"
+                  alt="Ảnh logo"
+                  className="object-contain w-full h-full"
+                />
               </div>
-              <div className="w-full lg:w-auto flex flex-col sm:flex-row gap-2 lg:gap-0 order-2 lg:order-none">
+              <div className="flex flex-col order-2 w-full gap-2 lg:w-auto sm:flex-row lg:gap-0 lg:order-none">
                 <div className="bg-[#2E3AA3] z-10 flex p-2 items-center justify-center space-x-2 sm:space-x-3 rounded-sm group focus-within:bg-amber-500 relative w-full sm:w-auto">
                   <button className="flex items-center space-x-2 cursor-pointer">
                     <img
@@ -109,7 +120,7 @@ function Header({ user, onLogout }) {
                   <div className="bg-white absolute top-full left-0 sm:top-[98px] sm:-left-[230px] mt-2 sm:mt-0 group-focus-within:flex hidden rounded-md z-50 shadow-lg border border-gray-200 max-h-[80vh] overflow-y-auto">
                     <ul className="flex p-1 sm:p-2 flex-col space-y-1 w-full sm:w-[270px] text-black text-[12px] sm:text-[13px] md:text-[14px] lg:text-[16px]">
                       <li className="flex items-center justify-between px-2 sm:px-3 py-1.5 sm:py-2 space-x-2 group/category hover:bg-gray-200">
-                        <div className="relative flex items-center space-x-2 flex-1">
+                        <div className="relative flex items-center flex-1 space-x-2">
                           <div>
                             <img
                               className="w-[20px] h-[20px] sm:w-[25px] sm:h-[25px] object-cover"
@@ -123,7 +134,7 @@ function Header({ user, onLogout }) {
                               <h3 className="font-medium text-[14px] sm:text-[15px] md:text-[16px] group-hover/sub-category:text-amber-500">
                                 Iphone 15 Series
                               </h3>
-                              <ul className="pt-2 sm:pt-4 space-y-1 sm:space-y-2">
+                              <ul className="pt-2 space-y-1 sm:pt-4 sm:space-y-2">
                                 <li className="hover:text-amber-400 text-[12px] sm:text-[13px] md:text-[14px]">
                                   Iphone 15
                                 </li>
@@ -142,7 +153,7 @@ function Header({ user, onLogout }) {
                               <h3 className="font-medium text-[14px] sm:text-[15px] md:text-[16px] group-hover/sub-category:text-amber-500">
                                 Iphone 14 Series
                               </h3>
-                              <ul className="pt-2 sm:pt-4 space-y-1 sm:space-y-2">
+                              <ul className="pt-2 space-y-1 sm:pt-4 sm:space-y-2">
                                 <li className="hover:text-amber-400 text-[12px] sm:text-[13px] md:text-[14px]">
                                   Iphone 14 Pro Max
                                 </li>
@@ -161,7 +172,7 @@ function Header({ user, onLogout }) {
                               <h3 className="font-medium text-[14px] sm:text-[15px] md:text-[16px] group-hover/sub-category:text-amber-500">
                                 Iphone 13
                               </h3>
-                              <ul className="pt-2 sm:pt-4 space-y-1 sm:space-y-2">
+                              <ul className="pt-2 space-y-1 sm:pt-4 sm:space-y-2">
                                 <li className="hover:text-amber-400 text-[12px] sm:text-[13px] md:text-[14px]">
                                   Iphone 13
                                 </li>
@@ -191,7 +202,7 @@ function Header({ user, onLogout }) {
                         </div>
                       </li>
                       <li className="flex items-center justify-between px-2 sm:px-3 py-1.5 sm:py-2 space-x-2 group/category hover:bg-gray-200">
-                        <div className="flex items-center space-x-2 flex-1">
+                        <div className="flex items-center flex-1 space-x-2">
                           <div>
                             <img
                               className="w-[20px] h-[20px] sm:w-[25px] sm:h-[25px] object-cover"
@@ -206,7 +217,7 @@ function Header({ user, onLogout }) {
                         </div>
                       </li>
                       <li className="flex items-center justify-between px-2 sm:px-3 py-1.5 sm:py-2 space-x-2 hover:bg-gray-200">
-                        <div className="flex items-center space-x-2 flex-1">
+                        <div className="flex items-center flex-1 space-x-2">
                           <div>
                             <img
                               className="w-[20px] h-[20px] sm:w-[25px] sm:h-[25px] object-cover"
@@ -221,7 +232,7 @@ function Header({ user, onLogout }) {
                         </div>
                       </li>
                       <li className="flex items-center justify-between px-2 sm:px-3 py-1.5 sm:py-2 space-x-2 hover:bg-gray-200">
-                        <div className="flex items-center space-x-2 flex-1">
+                        <div className="flex items-center flex-1 space-x-2">
                           <div>
                             <img
                               className="w-[20px] h-[20px] sm:w-[25px] sm:h-[25px] object-cover"
@@ -236,7 +247,7 @@ function Header({ user, onLogout }) {
                         </div>
                       </li>
                       <li className="flex items-center justify-between px-2 sm:px-3 py-1.5 sm:py-2 space-x-2 hover:bg-gray-200">
-                        <div className="flex items-center space-x-2 flex-1">
+                        <div className="flex items-center flex-1 space-x-2">
                           <div>
                             <img
                               className="w-[20px] h-[20px] sm:w-[25px] sm:h-[25px] object-cover"
@@ -251,7 +262,7 @@ function Header({ user, onLogout }) {
                         </div>
                       </li>
                       <li className="flex items-center justify-between px-2 sm:px-3 py-1.5 sm:py-2 space-x-2 hover:bg-gray-200">
-                        <div className="flex items-center space-x-2 flex-1">
+                        <div className="flex items-center flex-1 space-x-2">
                           <div>
                             <img
                               className="w-[20px] h-[20px] sm:w-[25px] sm:h-[25px] object-cover"
@@ -266,7 +277,7 @@ function Header({ user, onLogout }) {
                         </div>
                       </li>
                       <li className="flex items-center justify-between px-2 sm:px-3 py-1.5 sm:py-2 space-x-2 hover:bg-gray-200">
-                        <div className="flex items-center space-x-2 flex-1">
+                        <div className="flex items-center flex-1 space-x-2">
                           <div>
                             <img
                               className="w-[20px] h-[20px] sm:w-[25px] sm:h-[25px] object-cover"
@@ -303,7 +314,7 @@ function Header({ user, onLogout }) {
                     </button>
                   </form>
                 </div>
-                <ul className="flex flex-wrap justify-center lg:justify-start gap-2 sm:gap-3 md:gap-4 lg:gap-0 w-full sm:w-auto order-4 lg:order-none">
+                <ul className="flex flex-wrap justify-center order-4 w-full gap-2 lg:justify-start sm:gap-3 md:gap-4 lg:gap-0 sm:w-auto lg:order-none">
                   <li className="flex space-x-1 sm:space-x-1.5 items-center justify-center w-auto sm:w-[90px] md:w-[100px] lg:w-[120px]">
                     <span className="">
                       <img
@@ -362,12 +373,15 @@ function Header({ user, onLogout }) {
 
                     <span className="relative group/cart">
                       <span className="flex justify-center text-center text-[10px] sm:text-[11px] md:text-[12px] lg:text-[14px] cursor-pointer">
-                        <Link to="/cart" className="hidden md:inline">Giỏ hàng Sản phẩm</Link>
-                        <Link to="/cart" className="md:hidden">Giỏ hàng</Link>
+                        <Link to="/cart" className="hidden md:inline">
+                          Giỏ hàng Sản phẩm
+                        </Link>
+                        <Link to="/cart" className="md:hidden">
+                          Giỏ hàng
+                        </Link>
                       </span>
 
                       <div className="group-hover/cart:flex hidden absolute top-full right-0 sm:top-12 sm:right-2 mt-2 sm:mt-0 bg-white w-[90vw] sm:w-[350px] md:w-[400px] max-w-[400px] py-2 sm:py-3 px-3 sm:px-4 rounded-md flex-col space-y-3 sm:space-y-4 ring-1 ring-black/10 shadow-[0_0_18px_0_rgba(0,0,0,0.06)] text-xs sm:text-sm z-50 max-h-[80vh] overflow-y-auto">
-
                         {cartItems.length === 0 ? (
                           <span className="text-center text-gray-500">
                             Giỏ hàng của bạn đang trống
@@ -375,29 +389,42 @@ function Header({ user, onLogout }) {
                         ) : (
                           <>
                             {cartItems.map((item) => (
-                              <div key={item.cart_item_id} className="flex items-start space-x-2 sm:space-x-3">
+                              <div
+                                key={item.cart_item_id}
+                                className="flex items-start space-x-2 sm:space-x-3"
+                              >
                                 {/* Ảnh sản phẩm */}
                                 <div className="w-[25%] sm:w-[30%] flex-shrink-0">
                                   <img
                                     src={item.image}
                                     alt={item.product_name}
-                                    className="w-full h-auto object-cover rounded-md"
+                                    className="object-cover w-full h-auto rounded-md"
                                   />
                                 </div>
 
                                 {/* Thông tin sản phẩm */}
-                                <div className="flex-1 space-y-1 min-w-0">
-                                  <p className="font-semibold text-gray-900 text-xs sm:text-sm line-clamp-2">
-                                    {item.product_name} - {item.variation_options[1]?.variation_option_name || ''}
+                                <div className="flex-1 min-w-0 space-y-1">
+                                  <p className="text-xs font-semibold text-gray-900 sm:text-sm line-clamp-2">
+                                    {item.product_name} -{" "}
+                                    {item.variation_options[1]
+                                      ?.variation_option_name || ""}
                                   </p>
-                                  <p className="text-gray-600 text-xs sm:text-sm line-clamp-1">{item.variation_options[0]?.variation_option_name || ''}</p>
-                                  <button className="text-red-500 text-xs sm:text-sm hover:underline"
+                                  <p className="text-xs text-gray-600 sm:text-sm line-clamp-1">
+                                    {item.variation_options[0]
+                                      ?.variation_option_name || ""}
+                                  </p>
+                                  <button
+                                    className="text-xs text-red-500 sm:text-sm hover:underline"
                                     //truyền cart_item_id để xóa
-                                    onClick={() => handleRemoveFromCart(item.cart_item_id)}>
+                                    onClick={() =>
+                                      handleRemoveFromCart(item.cart_item_id)
+                                    }
+                                  >
                                     Xóa
                                   </button>
 
                                   {/* Số lượng và giá */}
+
                                   <div className="flex flex-col mt-2 gap-2">
                                     <div className="flex justify-between items-center">
                                       <div className="flex flex-col">
@@ -428,11 +455,19 @@ function Header({ user, onLogout }) {
                             ))}
 
                             {/* Tổng tiền & nút thanh toán */}
-                            <div className="border-t border-gray-200 pt-2 sm:pt-3 space-y-2 sm:space-y-3">
-                              <div className="flex justify-between items-center">
-                                <p className="font-semibold text-gray-900 text-xs sm:text-sm">Tổng tiền:</p>
-                                <p className="font-bold text-red-500 text-sm sm:text-base md:text-lg">
-                                  {cartItems.reduce((sum, i) => sum + i.quantity * i.price, 0).toLocaleString()}đ
+                            <div className="pt-2 space-y-2 border-t border-gray-200 sm:pt-3 sm:space-y-3">
+                              <div className="flex items-center justify-between">
+                                <p className="text-xs font-semibold text-gray-900 sm:text-sm">
+                                  Tổng tiền:
+                                </p>
+                                <p className="text-sm font-bold text-red-500 sm:text-base md:text-lg">
+                                  {cartItems
+                                    .reduce(
+                                      (sum, i) => sum + i.quantity * i.price,
+                                      0
+                                    )
+                                    .toLocaleString()}
+                                  đ
                                 </p>
                               </div>
                               <button
@@ -445,11 +480,9 @@ function Header({ user, onLogout }) {
                           </>
                         )}
                       </div>
-
                     </span>
                   </li>
                 </ul>
-
               </div>
               <div className="bg-[#2E3AA3] flex flex-col justify-center items-center p-1.5 sm:p-2 rounded-sm hover:bg-amber-400 group order-5 lg:order-none">
                 <span className="">
@@ -466,7 +499,6 @@ function Header({ user, onLogout }) {
 
                   <div className="bg-white absolute top-full right-0 sm:top-8 sm:right-[-8px] mt-2 sm:mt-0 w-[180px] sm:w-[200px] md:w-[220px] rounded-md hidden md:group-hover/user:flex flex-col shadow-md border border-gray-200 z-50">
                     <ul className="py-1 sm:py-2 px-[7px] flex flex-col space-y-1 sm:space-y-2 text-black text-[12px] sm:text-[13px] md:text-[14px]">
-
                       {/* Nếu CHƯA đăng nhập */}
                       {!user ? (
                         <>
@@ -521,41 +553,50 @@ function Header({ user, onLogout }) {
                       )}
 
                       {/* Mục chung cho cả 2 trạng thái */}
-                      <li className="flex items-center w-full px-3 sm:px-4 py-1.5 sm:py-2 space-x-2 hover:bg-gray-200">
-                        <img
-                          className="w-[18px] h-[18px] sm:w-[20px] sm:h-[20px] object-cover"
-                          src="/icons8-heart-50.png"
-                          alt=""
-                        />
-                        <span className="line-clamp-1">Danh sách yêu thích (0)</span>
-                      </li>
+                      <Link to="san-pham-yeu-thich">
+                        <li className="flex items-center w-full px-3 sm:px-4 py-1.5 sm:py-2 space-x-2 hover:bg-gray-200">
+                          <img
+                            className="w-[18px] h-[18px] sm:w-[20px] sm:h-[20px] object-cover"
+                            src="/icons8-heart-50.png"
+                            alt=""
+                          />
+                          <span className="line-clamp-1">
+                            Danh sách yêu thích
+                          </span>
+                        </li>
+                      </Link>
 
-                      <li className="flex items-center w-full px-3 sm:px-4 py-1.5 sm:py-2 space-x-2 hover:bg-gray-200">
-                        <img
-                          className="w-[18px] h-[18px] sm:w-[20px] sm:h-[20px] object-cover"
-                          src="/icons8-compare-50.png"
-                          alt=""
-                        />
-                        <span className="line-clamp-1">So sánh sản phẩm (0)</span>
-                      </li>
+                      <Link to="/so-sanh-san-pham">
+                        <li className="flex items-center w-full px-3 sm:px-4 py-1.5 sm:py-2 space-x-2 hover:bg-gray-200">
+                          <img
+                            className="w-[18px] h-[18px] sm:w-[20px] sm:h-[20px] object-cover"
+                            src="/icons8-compare-50.png"
+                            alt=""
+                          />
+                          <span className="line-clamp-1">So sánh sản phẩm</span>
+                        </li>
+                      </Link>
                     </ul>
                   </div>
                 </div>
-
-
               </div>
-
             </div>
           </div>
         </div>
         <ul className="bg-white group-hover/header:absolute group-hover/header:top-[0] group-hover/header:right-0 group-hover/header:left-0 z-20 pt-[75px] flex flex-wrap container mx-auto px-4 sm:px-6 md:px-8 lg:px-16 xl:px-32 text-[12px] sm:text-[13px] md:text-[14px] lg:text-[15px] md:text-[17px] font-semibold gap-2 sm:gap-3 md:gap-4 lg:space-x-8">
           <Link to="">
-            <li className="py-2 hover:text-[#000F8F] text-[12px] sm:text-[13px] md:text-[14px] lg:text-[15px] md:text-[16px]">Trang chủ</li>
+            <li className="py-2 hover:text-[#000F8F] text-[12px] sm:text-[13px] md:text-[14px] lg:text-[15px] md:text-[16px]">
+              Trang chủ
+            </li>
           </Link>
 
-          <li className="py-2 hover:text-[#000F8F] text-[12px] sm:text-[13px] md:text-[14px] lg:text-[15px] md:text-[16px]"><Link to="/introduction">Giới thiệu</Link></li>
-          <li className="flex items-center justify-center py-2 space-x-1 group/rotate relative">
-            <span className="hover:text-[#000F8F] text-[12px] sm:text-[13px] md:text-[14px] lg:text-[15px] md:text-[16px]">Sản phẩm</span>
+          <li className="py-2 hover:text-[#000F8F] text-[12px] sm:text-[13px] md:text-[14px] lg:text-[15px] md:text-[16px]">
+            <Link to="/introduction">Giới thiệu</Link>
+          </li>
+          <li className="relative flex items-center justify-center py-2 space-x-1 group/rotate">
+            <span className="hover:text-[#000F8F] text-[12px] sm:text-[13px] md:text-[14px] lg:text-[15px] md:text-[16px]">
+              Sản phẩm
+            </span>
             <div>
               <img
                 className="w-[12px] h-[12px] sm:w-[14px] sm:h-[14px] md:w-[15px] md:h-[15px] object-cover transition-transform duration-500 group-hover/rotate:rotate-180"
@@ -569,7 +610,7 @@ function Header({ user, onLogout }) {
                                         transition-transform duration-500 ease-out
                                         group-hover/rotate:scale-y-100 z-50 overflow-hidden"
             >
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 p-3 sm:p-4 bg-white rounded-sm gap-y-3 sm:gap-y-4 shadow-lg border border-gray-100">
+              <div className="grid grid-cols-2 p-3 bg-white border border-gray-100 rounded-sm shadow-lg sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 sm:p-4 gap-y-3 sm:gap-y-4">
                 <div className="cursor-pointer">
                   <h3 className="font-medium text-[16px] sm:text-[18px] md:text-[20px] text-[#000F8F] hover:text-amber-400">
                     Iphone
@@ -653,21 +694,31 @@ function Header({ user, onLogout }) {
             </div>
           </li>
           <Link to="/news">
-            <li className="py-2 hover:text-[#000F8F] text-[12px] sm:text-[13px] md:text-[14px] lg:text-[15px] md:text-[16px]">Tin tức</li>
+            <li className="py-2 hover:text-[#000F8F] text-[12px] sm:text-[13px] md:text-[14px] lg:text-[15px] md:text-[16px]">
+              Tin tức
+            </li>
           </Link>
 
-          <li className="py-2 hover:text-[#000F8F] text-[12px] sm:text-[13px] md:text-[14px] lg:text-[15px] md:text-[16px]"><Link to="/review">Review</Link></li>
-          <li className="py-2 hover:text-[#000F8F] text-[12px] sm:text-[13px] md:text-[14px] lg:text-[15px] md:text-[16px]"><Link to="/relatedquestions">Câu hỏi thường gặp</Link></li>
+          <li className="py-2 hover:text-[#000F8F] text-[12px] sm:text-[13px] md:text-[14px] lg:text-[15px] md:text-[16px]">
+            <Link to="/review">Review</Link>
+          </li>
+          <li className="py-2 hover:text-[#000F8F] text-[12px] sm:text-[13px] md:text-[14px] lg:text-[15px] md:text-[16px]">
+            <Link to="/relatedquestions">Câu hỏi thường gặp</Link>
+          </li>
           <Link to="/Tra-cuu-bao-hanh">
             <li className="py-2 hover:text-[#000F8F] text-[12px] sm:text-[13px] md:text-[14px] lg:text-[15px] md:text-[16px]">
               Tra cứu bảo hành
             </li>
           </Link>
           <Link to="/dat-truoc-san-pham">
-            <li className="py-2 hover:text-[#000F8F] text-[12px] sm:text-[13px] md:text-[14px] lg:text-[15px] md:text-[16px]">Đặt trước</li>
+            <li className="py-2 hover:text-[#000F8F] text-[12px] sm:text-[13px] md:text-[14px] lg:text-[15px] md:text-[16px]">
+              Đặt trước
+            </li>
           </Link>
 
-          <li className="py-2 hover:text-[#000F8F] text-[12px] sm:text-[13px] md:text-[14px] lg:text-[15px] md:text-[16px]"><Link to="/contact">Liên hệ</Link></li>
+          <li className="py-2 hover:text-[#000F8F] text-[12px] sm:text-[13px] md:text-[14px] lg:text-[15px] md:text-[16px]">
+            <Link to="/contact">Liên hệ</Link>
+          </li>
         </ul>
         <div className="group-hover/header:h-[115px]"></div>
       </header>

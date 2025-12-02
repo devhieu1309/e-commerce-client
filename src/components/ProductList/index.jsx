@@ -1,9 +1,15 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getProductList } from "../../services/productServices";
+import { postFavorite } from "../../services/favoriteServices";
+import { postCompare } from "../../services/compareProductServices";
+import { notification } from "antd";
 
 function ProductList() {
   const [products, setProducts] = useState([]);
+  const [isFavorite, setIsFavorite] = useState({});
+  const [compareChecked, setCompareChecked] = useState([]);
+  const [apiNoti, contextHolder] = notification.useNotification();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -18,10 +24,97 @@ function ProductList() {
     fetchProducts();
   }, []);
 
+  //Hàm thêm sản phẩm vào mục yêu thích.
+  const handleAddFavorite = async (productItemId) => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const userId = user?.user_id;
+
+    if (!userId) {
+      apiNoti.error({
+        message: "Thất Bại",
+        description: "Vui lòng đăng nhập để thêm sản phẩm yêu thích!",
+      });
+      return;
+    }
+    try {
+      const response = await postFavorite({
+        product_item_id: productItemId,
+        user_id: userId,
+      });
+
+      console.log("API FAVORITE RESPONSE:", response);
+
+      if (response?.message) {
+        apiNoti.success({
+          message: "Thành công",
+          description: "Thêm sản phẩm yêu thích thành công!",
+        });
+
+        setIsFavorite((prev) => ({
+          ...prev,
+          [productItemId]: true, // đánh dấu sản phẩm vừa thích
+        }));
+      } else {
+        apiNoti.error({
+          message: "Thất bại",
+          description: response?.message || "Thêm sản phẩm yêu thích thất bại!",
+        });
+      }
+    } catch (error) {
+      console.log("Lỗi khi thêm sản phẩm yêu thích: ", error);
+      apiNoti.error({
+        message: "Thất Bại",
+        description: "Không thể thêm sản phẩm yếu thích!",
+      });
+    }
+  };
+
+  //Hàm thêm sản phẩm vào mục so sánh.
+  const handlePostCompare = async (productItemId) => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const userId = user?.user_id;
+
+    if (!userId) {
+      apiNoti.error({
+        message: "Thất Bại",
+        description: "Vui lòng đăng nhập để thêm sản phẩm so sánh!",
+      });
+      return;
+    }
+    try {
+      const response = await postCompare({
+        product_item_id: productItemId,
+        user_id: userId,
+      });
+      if (response?.success) {
+        setCompareChecked((prev) => ({
+          ...prev,
+          [productItemId]: true,
+        }));
+        apiNoti.success({
+          message: "Thành công",
+          description: "Thêm sản phẩm vào danh sách so sánh thành công",
+        });
+      } else {
+        apiNoti.error({
+          message: "Thất bại",
+          description: "Thêm sản phẩm vào danh sách so sánh thất bại",
+        });
+      }
+    } catch (error) {
+      console.log("Lỗi khi thêm sản phẩm so sánh: ", error);
+      apiNoti.error({
+        message: "Thất bại",
+        description: "Không thể thêm sản phẩm vào danh sách so sánh",
+      });
+    }
+  };
+
   return (
     <>
-      <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-16 xl:px-32 py-4 sm:py-6 md:py-8">
-        <div className="bg-white p-2 sm:p-3 rounded-md">
+      {contextHolder}
+      <div className="container px-4 py-4 mx-auto sm:px-6 md:px-8 lg:px-16 xl:px-32 sm:py-6 md:py-8">
+        <div className="p-2 bg-white rounded-md sm:p-3">
           <div className="flex space-x-4 sm:space-x-6 md:space-x-8">
             <div className="flex items-center space-x-2 bg-[#000F8F] rounded-sm p-2">
               <img
@@ -29,7 +122,9 @@ function ProductList() {
                 src="/title_image_1_allpro1.webp"
                 alt=""
               />
-              <p className="text-white font-bold text-[14px] sm:text-[15px] md:text-[16px]">Sản phẩm mới</p>
+              <p className="text-white font-bold text-[14px] sm:text-[15px] md:text-[16px]">
+                Sản phẩm mới
+              </p>
             </div>
             {/* <div className="flex items-center space-x-2 border border-gray-500 rounded-sm p-2 hover:bg-[#000F8F] hover:text-white">
               <img
@@ -48,9 +143,19 @@ function ProductList() {
               <p className="font-bold">Sản phẩm bán chạy</p>
             </div> */}
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 py-6 sm:py-8 md:py-10 px-2">
+          {/* <div className="grid grid-cols-2 gap-3 px-2 py-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 sm:gap-4 sm:py-8 md:py-10">
             {products.map((product, index) => {
-              const item = product.items[0];          
+              const item = product.items[0];           */}
+
+          {/* <div className="grid grid-cols-5 gap-4 px-2 py-10">
+            {products.map((product, index) => {
+              const item = product.items?.[0];
+              console.log("MINH HIEU TEST ITEM: ", item);
+              // console.log("Image: ", item?.image); */}
+
+          <div className="grid grid-cols-2 gap-3 px-2 py-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 sm:gap-4 sm:py-8 md:py-10">
+            {products.map((product, index) => {
+              const item = product.items[0];
               return (
                 <div
                   key={index}
@@ -59,7 +164,7 @@ function ProductList() {
                   <div className="relative">
                     <div className="h-[120px] sm:h-[150px] md:h-[180px] lg:h-[220px] w-full overflow-hidden">
                       <img
-                        className="w-full h-full object-contain transition-transform duration-500 ease-out group-hover:scale-110"
+                        className="object-contain w-full h-full transition-transform duration-500 ease-out group-hover:scale-110"
                         // src="/221019094952-minhtuanmobile-ipad-08f8a086-4310-441b-a594-f2766853f14e.webp"
                         src={item?.image ?? "/placeholder-image.png"}
                         alt=""
@@ -77,7 +182,9 @@ function ProductList() {
                         src="/title_image_1_tag.webp"
                         alt=""
                       />
-                      <span className="text-white text-[11px] sm:text-[12px] md:text-[13px]">Mới</span>
+                      <span className="text-white text-[11px] sm:text-[12px] md:text-[13px]">
+                        Mới
+                      </span>
                     </div>
                   </div>
                   <div className="pt-3 sm:pt-4 md:pt-5">
@@ -86,27 +193,63 @@ function ProductList() {
                         {product.product_name}
                       </h3>
                     </Link>
-                    <p className="text-red-500 font-extrabold py-1 sm:py-2 text-[13px] sm:text-[14px] md:text-[15px]">Liên hệ</p>
+
+                    {/* <p className="py-2 font-extrabold text-red-500">Liên hệ</p>
+                    <p className="text-[12px] bg-[#F3F4F6] rounded-sm py-3 px-2"> */}
+                    <p className="text-red-500 font-extrabold py-1 sm:py-2 text-[13px] sm:text-[14px] md:text-[15px]">
+                      Liên hệ
+                    </p>
                     <p className="text-[10px] sm:text-[11px] md:text-[12px] bg-[#F3F4F6] rounded-sm py-2 sm:py-3 px-2">
                       Bảo hành chính hãng Apple 12 tháng
                     </p>
-                    <div className="flex items-center justify-between py-1 sm:py-2">
-                      <div className="flex items-center justify-center space-x-1">
-                        <img
-                          className="h-[12px] w-[12px] sm:h-[14px] sm:w-[14px] md:h-[15px] md:w-[15px] object-contain"
-                          src="/icons8-heart-50.png"
-                          alt="Thích"
-                        />
-                        <span className="text-[12px] sm:text-[13px] md:text-[14px] lg:text-[15px] text-[#231F20] font-semibold hover:text-amber-400">
-                          Thích
+                    <div className="flex items-center justify-between py-2">
+                      <div
+                        className="flex items-center justify-center space-x-1"
+                        onClick={() =>
+                          item && handleAddFavorite(item.product_item_id)
+                        }
+                      >
+                        <span
+                          className={` w-[15px]
+                            ${
+                              isFavorite[item?.product_item_id]
+                                ? "text-red-500"
+                                : "text-gray-400"
+                            }`}
+                        >
+                          ♥
+                        </span>
+                        <span className="text-[15px] text-[#231F20] font-semibold hover:text-amber-400">
+                          {isFavorite[item?.product_item_id]
+                            ? "Đã thích"
+                            : "Thích"}
                         </span>
                       </div>
+
                       <div className="flex items-center justify-center space-x-1">
-                        <img
-                          className="h-[12px] w-[12px] sm:h-[14px] sm:w-[14px] md:h-[15px] md:w-[15px] object-contain"
-                          src="/icons8-circle-50.png"
-                          alt="Thích"
-                        />
+                        <button
+                          className="flex items-center justify-center w-3 h-3 border rounded"
+                          onClick={() =>
+                            item && handlePostCompare(item.product_item_id)
+                          }
+                        >
+                          {compareChecked[item.product_item_id] ? (
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="w-4 h-5 text-green-500"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                              strokeWidth={3}
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M5 13l4 4L19 7"
+                              />
+                            </svg>
+                          ) : null}
+                        </button>
                         <span className="text-[12px] sm:text-[13px] md:text-[14px] lg:text-[15px] text-[#231F20] font-semibold hover:text-amber-400">
                           So Sánh
                         </span>
