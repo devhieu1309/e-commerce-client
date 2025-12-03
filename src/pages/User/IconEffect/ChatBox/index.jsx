@@ -15,11 +15,15 @@ function ChatBox() {
 
     try {
       const data = await chatBox(message);
-      setChatHistory([...newChat, { sender: "ai", text: data.reply }]);
+
+      setChatHistory([
+        ...newChat,
+        { sender: "ai", text: data.reply, image: data.image || null },
+      ]);
     } catch (error) {
       setChatHistory([
         ...newChat,
-        { sender: "ai", text: "Không thể kết nối với máy chủ." },
+        { sender: "ai", text: "Không thể kết nối với máy chủ.", image: null },
       ]);
       console.log("Lỗi khi fetch: ", error);
     }
@@ -58,15 +62,27 @@ function ChatBox() {
                   chat.sender === "user" ? "justify-end" : "justify-start"
                 }`}
               >
-                <span
-                  className={`px-4 py-2 rounded-2xl text-[15px] max-w-[75%] leading-snug break-words ${
-                    chat.sender === "user"
-                      ? "bg-blue-600 text-white"
-                      : "bg-gray-200 text-gray-800"
-                  }`}
-                >
-                  {chat.text}
-                </span>
+                <div className="flex flex-col max-w-[75%]">
+                  {/* Nội dung AI/User */}
+                  <span
+                    className={`px-4 py-2 rounded-2xl text-[15px] leading-snug break-words whitespace-pre-line ${
+                      chat.sender === "user"
+                        ? "bg-blue-600 text-white"
+                        : "bg-gray-200 text-gray-800"
+                    }`}
+                  >
+                    {chat.text}
+                  </span>
+
+                  {/* Ảnh sản phẩm nếu AI trả về */}
+                  {chat.image && (
+                    <img
+                      src={chat.image}
+                      alt="product"
+                      className="w-32 mt-1 border border-gray-300 rounded-lg"
+                    />
+                  )}
+                </div>
               </div>
             ))}
           </div>
