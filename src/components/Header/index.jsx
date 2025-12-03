@@ -425,27 +425,43 @@ function Header({ user, onLogout }) {
 
                                   {/* Số lượng và giá */}
 
-                                  <div className="flex flex-col mt-2 gap-2">
-                                    <div className="flex justify-between items-center">
+                                  <div className="flex flex-col gap-2 mt-2">
+                                    <div className="flex items-center justify-between">
                                       <div className="flex flex-col">
-                                        <span className="text-gray-700 text-xs sm:text-sm">Số lượng:</span>
-                                        <div className='flex space-x-2 sm:space-x-3 justify-between items-center text-center border border-black w-auto h-auto rounded-md mt-1'>
-                                          <button className='bg-[#000f8f] h-[20px] sm:h-[25px] px-1.5 sm:px-2 text-white text-xs sm:text-sm m-0.5 sm:m-1 rounded-md'
+                                        <span className="text-xs text-gray-700 sm:text-sm">
+                                          Số lượng:
+                                        </span>
+                                        <div className="flex items-center justify-between w-auto h-auto mt-1 space-x-2 text-center border border-black rounded-md sm:space-x-3">
+                                          <button
+                                            className="bg-[#000f8f] h-[20px] sm:h-[25px] px-1.5 sm:px-2 text-white text-xs sm:text-sm m-0.5 sm:m-1 rounded-md"
                                             onClick={() =>
-                                              handleupdateQuantity(item.cart_item_id, item.quantity, item.quantity - 1)
-                                            }>
+                                              handleupdateQuantity(
+                                                item.cart_item_id,
+                                                item.quantity,
+                                                item.quantity - 1
+                                              )
+                                            }
+                                          >
                                             -
                                           </button>
-                                          <p className='m-0 text-gray-900 px-1 sm:px-2 text-xs sm:text-sm'>{item.quantity}</p>
-                                          <button className='bg-[#000f8f] h-[20px] sm:h-[25px] px-1.5 sm:px-2 text-white text-xs sm:text-sm m-0.5 sm:m-1 rounded-md'
+                                          <p className="px-1 m-0 text-xs text-gray-900 sm:px-2 sm:text-sm">
+                                            {item.quantity}
+                                          </p>
+                                          <button
+                                            className="bg-[#000f8f] h-[20px] sm:h-[25px] px-1.5 sm:px-2 text-white text-xs sm:text-sm m-0.5 sm:m-1 rounded-md"
                                             onClick={() =>
-                                              handleupdateQuantity(item.cart_item_id, item.quantity, item.quantity + 1)
-                                            }>
+                                              handleupdateQuantity(
+                                                item.cart_item_id,
+                                                item.quantity,
+                                                item.quantity + 1
+                                              )
+                                            }
+                                          >
                                             +
                                           </button>
                                         </div>
                                       </div>
-                                      <p className="font-bold text-red-500 text-xs sm:text-sm md:text-base">
+                                      <p className="text-xs font-bold text-red-500 sm:text-sm md:text-base">
                                         {Number(item.price).toLocaleString()}đ
                                       </p>
                                     </div>
@@ -484,7 +500,7 @@ function Header({ user, onLogout }) {
                   </li>
                 </ul>
               </div>
-              <div className="bg-[#2E3AA3] flex flex-col justify-center items-center p-1.5 sm:p-2 rounded-sm hover:bg-amber-400 group order-5 lg:order-none">
+              <div className="bg-[#2E3AA3] group/user flex flex-col justify-center items-center p-1.5 sm:p-2 rounded-sm hover:bg-amber-400 group order-5 lg:order-none">
                 <span className="">
                   <img
                     className="h-[16px] w-[16px] sm:h-[18px] sm:w-[18px] md:h-[20px] md:w-[20px] object-contain"
@@ -492,7 +508,7 @@ function Header({ user, onLogout }) {
                     alt="User"
                   />
                 </span>
-                <div className="relative group/user">
+                <div className="relative ">
                   <span className="flex justify-center text-center text-[10px] sm:text-[11px] md:text-[12px] lg:text-[14px] cursor-pointer">
                     Thông tin
                   </span>
