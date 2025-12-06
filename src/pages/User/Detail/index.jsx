@@ -171,10 +171,10 @@ function Detail() {
                           key={index}
                           className={`cursor-pointer w-[87px] h-[87px] rounded-md border 
                         ${
-                          selectedItem?.product_item_id == item.product_item_id
-                            ? "border-blue-500"
-                            : "border-gray-300"
-                        }`}
+                            selectedItem?.product_item_id == item.product_item_id
+                              ? "border-blue-500"
+                              : "border-gray-300"
+                            }`}
                           onClick={() => setSelectedItem(item)}
                         >
                           <img
@@ -241,11 +241,10 @@ function Detail() {
                           key={index}
                           onClick={() => setSelectedItem(item)}
                           className={`cursor-pointer flex items-center justify-between rounded-md px-2 py-1 w-[150px] border transition-all duration-200
-        ${
-          selectedItem?.product_item_id === item.product_item_id
-            ? "border-blue-500 bg-blue-50"
-            : "border-gray-300 hover:border-blue-300"
-        }`}
+        ${selectedItem?.product_item_id === item.product_item_id
+                              ? "border-blue-500 bg-blue-50"
+                              : "border-gray-300 hover:border-blue-300"
+                            }`}
                         >
                           {/* Dung lượng + Giá */}
                           <div className="flex flex-col leading-tight">
@@ -672,31 +671,28 @@ function Detail() {
               <div className="flex pb-4 space-x-3">
                 <button
                   onClick={() => setActiveTab("mo-ta")}
-                  className={`font-medium text-[17px] py-2 px-4 rounded-md cursor-pointer ${
-                    activeTab === "mo-ta"
+                  className={`font-medium text-[17px] py-2 px-4 rounded-md cursor-pointer ${activeTab === "mo-ta"
                       ? "bg-[#000F8F] text-white"
                       : "border border-gray-700"
-                  }`}
+                    }`}
                 >
                   Mô tả sản phẩm
                 </button>
                 <button
                   onClick={() => setActiveTab("huong-dan")}
-                  className={`font-medium text-[17px] py-2 px-4 rounded-md cursor-pointer ${
-                    activeTab === "huong-dan"
+                  className={`font-medium text-[17px] py-2 px-4 rounded-md cursor-pointer ${activeTab === "huong-dan"
                       ? "bg-[#000F8F] text-white"
                       : "border border-gray-700"
-                  }`}
+                    }`}
                 >
                   Hướng dẫn mua hàng
                 </button>
                 <button
                   onClick={() => setActiveTab("danh-gia")}
-                  className={`font-medium text-[17px] py-2 px-4 rounded-md cursor-pointer ${
-                    activeTab === "danh-gia"
+                  className={`font-medium text-[17px] py-2 px-4 rounded-md cursor-pointer ${activeTab === "danh-gia"
                       ? "bg-[#000F8F] text-white"
                       : "border border-gray-700"
-                  }`}
+                    }`}
                 >
                   Đánh giá sản phẩm
                 </button>
@@ -705,9 +701,8 @@ function Detail() {
                 // Mô tả sản phẩm
                 <div>
                   <div
-                    className={`transition-all duration-300 overflow-hidden ${
-                      expanded ? "max-h-full" : "max-h-[1400px]"
-                    }`}
+                    className={`transition-all duration-300 overflow-hidden ${expanded ? "max-h-full" : "max-h-[1400px]"
+                      }`}
                   >
                     <p className="text-[14px] pb-5">
                       Vào ngày 13/09 vừa qua, Apple đã cho ra mắt chiếc iPhone

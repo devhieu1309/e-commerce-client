@@ -239,76 +239,71 @@ function FromOder() {
                           </div>
                           <div className="p-2">{item.product_name}</div>
                           <div className="p-2">{item.quantity}</div>
-                          <div className="p-2">{item.subtotal}₫</div>
+                          <div className="p-2">{item.subtotal.toLocaleString('vi-VN')} ₫</div>
                         </div>
 
-                        {/* Nút đánh giá – chỉ hiện khi đơn đã giao */}
-                        {order.order_status === "Đã giao" && (
-                          <div className="flex justify-end p-2 border-b border-gray-300">
-                            <button
-                              onClick={() =>
-                                setReviewingItemId(
-                                  reviewingItemId === item.product_item_id
-                                    ? null
-                                    : item.product_item_id
-                                )
-                              }
-                              className="px-3 py-1 text-white bg-blue-500 rounded hover:bg-blue-600"
-                            >
-                              Đánh giá
-                            </button>
-                          </div>
-                        )}
+                        {/* Nút đánh giá */}
+                        <div className="flex justify-end p-2 border-b border-gray-300">
+                          <button
+                            onClick={() =>
+                              setReviewingItemId(
+                                reviewingItemId === item.product_item_id
+                                  ? null
+                                  : item.product_item_id
+                              )
+                            }
+                            className="px-3 py-1 text-white bg-blue-500 rounded hover:bg-blue-600"
+                          >
+                            Đánh giá
+                          </button>
+                        </div>
 
                         {/* Form đánh giá */}
-                        {order.order_status === "Đã giao" &&
-                          reviewingItemId === item.product_item_id && (
-                            <div className="p-4 mb-2 border border-gray-300 rounded-md bg-gray-50">
-                              <div className="mb-2">
-                                <span className="font-semibold">
-                                  Chọn sao:{" "}
+                        {reviewingItemId === item.product_item_id && (
+                          <div className="p-4 mb-2 border border-gray-300 rounded-md bg-gray-50">
+                            <div className="mb-2">
+                              <span className="font-semibold">Chọn sao: </span>
+                              {[1, 2, 3, 4, 5].map((star) => (
+                                <span
+                                  key={star}
+                                  className={`cursor-pointer text-2xl ${
+                                    rating >= star
+                                      ? "text-yellow-400"
+                                      : "text-gray-300"
+                                  }`}
+                                  onClick={() => setRating(star)}
+                                >
+                                  ★
                                 </span>
-                                {[1, 2, 3, 4, 5].map((star) => (
-                                  <span
-                                    key={star}
-                                    className={`cursor-pointer text-2xl ${
-                                      rating >= star
-                                        ? "text-yellow-400"
-                                        : "text-gray-300"
-                                    }`}
-                                    onClick={() => setRating(star)}
-                                  >
-                                    ★
-                                  </span>
-                                ))}
-                              </div>
-                              <div className="mb-2">
-                                <textarea
-                                  rows={3}
-                                  placeholder="Viết đánh giá..."
-                                  value={comment}
-                                  onChange={(e) => setComment(e.target.value)}
-                                  className="w-full p-2 border rounded"
-                                />
-                              </div>
-                              <div className="flex justify-end gap-2">
-                                <button
-                                  onClick={() => setReviewingItemId(null)}
-                                  className="px-3 py-1 border rounded hover:bg-gray-100"
-                                >
-                                  Hủy
-                                </button>
-                                <button
-                                  onClick={() =>
-                                    handleUserReview(order.shop_order_id)
-                                  }
-                                  className="px-3 py-1 text-white bg-blue-500 rounded hover:bg-blue-600"
-                                >
-                                  Gửi đánh giá
-                                </button>
-                              </div>
+                              ))}
                             </div>
-                          )}
+                            <div className="mb-2">
+                              <textarea
+                                rows={3}
+                                placeholder="Viết đánh giá..."
+                                value={comment}
+                                onChange={(e) => setComment(e.target.value)}
+                                className="w-full p-2 border rounded"
+                              />
+                            </div>
+                            <div className="flex justify-end gap-2">
+                              <button
+                                onClick={() => setReviewingItemId(null)}
+                                className="px-3 py-1 border rounded hover:bg-gray-100"
+                              >
+                                Hủy
+                              </button>
+                              <button
+                                onClick={() =>
+                                  handleUserReview(order.shop_order_id)
+                                }
+                                className="px-3 py-1 text-white bg-blue-500 rounded hover:bg-blue-600"
+                              >
+                                Gửi đánh giá
+                              </button>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>
@@ -321,7 +316,7 @@ function FromOder() {
                       Xem chi tiết
                     </Link>
                     <div className="text-lg font-semibold">
-                      Tổng cộng: {order.total_amount}₫
+                      Tổng cộng: {order.total_amount.toLocaleString('vi-VN')}₫
                     </div>
                   </div>
                 </div>
@@ -342,9 +337,8 @@ function FromOder() {
                 <button
                   key={i}
                   onClick={() => setPage(i + 1)}
-                  className={`px-3 py-1 border rounded ${
-                    page === i + 1 ? "bg-black text-white" : ""
-                  }`}
+                  className={`px-3 py-1 border rounded ${page === i + 1 ? "bg-black text-white" : ""
+                    }`}
                 >
                   {i + 1}
                 </button>

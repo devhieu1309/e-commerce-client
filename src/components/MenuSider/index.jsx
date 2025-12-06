@@ -117,22 +117,6 @@ function MenuSider() {
       label: <Link to="/admin/shopping-order">Danh sách đơn hàng</Link>,
       icon: <CalendarOutlined />,
       key: "menu-14",
-      children: [
-        {
-          label: <Link to="/admin/shopping-order">Danh sách đơn hàng</Link>,
-          key: "menu-14-1",
-        },
-        {
-          label: <Link to="">Chi tiết đơn hàng</Link>,
-          key: "menu-14-2",
-        },
-        {
-          label: (
-            <Link to="/admin/shopping-order/guarantees">Quản lý bảo hành</Link>
-          ),
-          key: "menu-14-3",
-        },
-      ],
     },
   ];
 
