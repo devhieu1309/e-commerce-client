@@ -239,11 +239,11 @@ function FromOder() {
                           </div>
                           <div className="p-2">{item.product_name}</div>
                           <div className="p-2">{item.quantity}</div>
-                          <div className="p-2">{item.subtotal}₫</div>
+                          <div className="p-2">{item.subtotal.toLocaleString('vi-VN')} ₫</div>
                         </div>
 
                         {/* Nút đánh giá */}
-                        <div className="flex justify-end p-2 border-b border-gray-300">
+                        {/* <div className="flex justify-end p-2 border-b border-gray-300">
                           <button
                             onClick={() =>
                               setReviewingItemId(
@@ -256,10 +256,10 @@ function FromOder() {
                           >
                             Đánh giá
                           </button>
-                        </div>
+                        </div> */}
 
                         {/* Form đánh giá */}
-                        {reviewingItemId === item.product_item_id && (
+                        {/* {reviewingItemId === item.product_item_id && (
                           <div className="p-4 mb-2 border border-gray-300 rounded-md bg-gray-50">
                             <div className="mb-2">
                               <span className="font-semibold">Chọn sao: </span>
@@ -303,7 +303,7 @@ function FromOder() {
                               </button>
                             </div>
                           </div>
-                        )}
+                        )} */}
                       </div>
                     ))}
                   </div>
@@ -316,7 +316,7 @@ function FromOder() {
                       Xem chi tiết
                     </Link>
                     <div className="text-lg font-semibold">
-                      Tổng cộng: {order.total_amount}₫
+                      Tổng cộng: {order.total_amount.toLocaleString('vi-VN')}₫
                     </div>
                   </div>
                 </div>
@@ -337,9 +337,8 @@ function FromOder() {
                 <button
                   key={i}
                   onClick={() => setPage(i + 1)}
-                  className={`px-3 py-1 border rounded ${
-                    page === i + 1 ? "bg-black text-white" : ""
-                  }`}
+                  className={`px-3 py-1 border rounded ${page === i + 1 ? "bg-black text-white" : ""
+                    }`}
                 >
                   {i + 1}
                 </button>

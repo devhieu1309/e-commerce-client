@@ -21,3 +21,16 @@ export const updateOrderStatus = async (orderId, statusId) => {
   });
   return result;
 };
+
+export const createShoppingOrder = async (data) => {
+  const result = await post(`shopping-order`, data);
+  return result;
+};
+
+export const getAddressCustomerList = async (userId) => {
+  const result = await get(`customer-addresses/${userId}`);
+  return result;
+};
+
+
+
