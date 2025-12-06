@@ -243,7 +243,7 @@ function FromOder() {
                         </div>
 
                         {/* Nút đánh giá */}
-                        {/* <div className="flex justify-end p-2 border-b border-gray-300">
+                        <div className="flex justify-end p-2 border-b border-gray-300">
                           <button
                             onClick={() =>
                               setReviewingItemId(
@@ -256,10 +256,10 @@ function FromOder() {
                           >
                             Đánh giá
                           </button>
-                        </div> */}
+                        </div>
 
                         {/* Form đánh giá */}
-                        {/* {reviewingItemId === item.product_item_id && (
+                        {reviewingItemId === item.product_item_id && (
                           <div className="p-4 mb-2 border border-gray-300 rounded-md bg-gray-50">
                             <div className="mb-2">
                               <span className="font-semibold">Chọn sao: </span>
@@ -303,7 +303,7 @@ function FromOder() {
                               </button>
                             </div>
                           </div>
-                        )} */}
+                        )}
                       </div>
                     ))}
                   </div>
